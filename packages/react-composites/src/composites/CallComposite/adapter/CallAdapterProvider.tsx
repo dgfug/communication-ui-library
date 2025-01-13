@@ -1,15 +1,15 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React, { createContext, useContext } from 'react';
-import { CallAdapter } from './CallAdapter';
+import { CommonCallAdapter } from './CallAdapter';
 
 type CallProviderProps = {
   children: React.ReactNode;
-  adapter: CallAdapter;
+  adapter: CommonCallAdapter;
 };
 
-const CallAdapterContext = createContext<CallAdapter | undefined>(undefined);
+const CallAdapterContext = createContext<CommonCallAdapter | undefined>(undefined);
 
 /**
  * @private
@@ -22,8 +22,10 @@ export const CallAdapterProvider = (props: CallProviderProps): JSX.Element => {
 /**
  * @private
  */
-export const useAdapter = (): CallAdapter => {
+export const useAdapter = (): CommonCallAdapter => {
   const adapter = useContext(CallAdapterContext);
-  if (!adapter) throw 'Cannot find adapter please initialize before usage.';
+  if (!adapter) {
+    throw 'Cannot find adapter please initialize before usage.';
+  }
   return adapter;
 };

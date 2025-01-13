@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React, { createContext, useContext } from 'react';
 
@@ -18,9 +18,17 @@ import React, { createContext, useContext } from 'react';
  */
 export interface _Identifiers {
   /** `data-ui-id` value for `SendBox` Component */
-  sendboxTextfield: string;
+  sendboxTextField: string;
+  /** `data-ui-id` value for `ParticipantButton` Component's People menu item */
+  participantButtonPeopleMenuItem: string;
+  /** `data-ui-id` value for `ParticipantItem` Component's Menu button */
+  participantItemMenuButton: string;
   /** `data-ui-id` value for `ParticipantList` Component */
   participantList: string;
+  /** `data-ui-id` value for `ParticipantList` Component's People Button */
+  participantListPeopleButton: string;
+  /** `data-ui-id` value for `ParticipantList` Component's Remove Participant Button */
+  participantListRemoveParticipantButton: string;
   /** `data-ui-id` value for `MessageThread` components message content */
   messageContent: string;
   /** `data-ui-id` value for `MessageThread` components message timestamp */
@@ -31,16 +39,45 @@ export interface _Identifiers {
   videoGallery: string;
   /** `data-ui-id` value for `VideoTile` Component */
   videoTile: string;
+  /** `data-ui-id` value for overflow gallery component's left navigation button */
+  overflowGalleryLeftNavButton: string;
+  /** `data-ui-id` value for overflow gallery component's right navigation button */
+  overflowGalleryRightNavButton: string;
+  /** `data-ui-id` value for the video tiles in the horizontal gallery */
+  horizontalGalleryVideoTile: string;
+  /** `data-ui-id` value for `VerticalGallery` Component's children video tiles */
+  verticalGalleryVideoTile: string;
+  /** `data-ui-id` value for `VerticalGallery` Component's page counter */
+  verticalGalleryPageCounter: string;
+  /* @conditional-compile-remove(mention) */
+  /** `data-ui-id` value for `MentionPopover` Component's suggestion list */
+  mentionSuggestionList: string;
+  /* @conditional-compile-remove(mention) */
+  /** `data-ui-id` value for `MentionPopover` Component's suggestion list item */
+  mentionSuggestionItem: string;
 }
 
 const defaultIdentifiers: _Identifiers = {
-  sendboxTextfield: 'sendbox-textfield',
+  sendboxTextField: 'sendbox-textfield',
+  participantButtonPeopleMenuItem: 'participant-button-people-menu-item',
+  participantItemMenuButton: 'participant-item-menu-button',
   participantList: 'participant-list',
+  participantListPeopleButton: 'participant-list-people-button',
+  participantListRemoveParticipantButton: 'participant-list-remove-participant-button',
   messageContent: 'message-content',
   messageTimestamp: 'message-timestamp',
   typingIndicator: 'typing-indicator',
   videoGallery: 'video-gallery',
-  videoTile: 'video-tile'
+  videoTile: 'video-tile',
+  overflowGalleryLeftNavButton: 'overflow-gallery-left-nav-button',
+  overflowGalleryRightNavButton: 'overflow-gallery-right-nav-button',
+  verticalGalleryVideoTile: 'vertical-gallery-video-tile',
+  horizontalGalleryVideoTile: 'horizontal-gallery-video-tile',
+  verticalGalleryPageCounter: 'vertical-gallery-page-counter',
+  /* @conditional-compile-remove(mention) */
+  mentionSuggestionList: 'mention-suggestion-list',
+  /* @conditional-compile-remove(mention) */
+  mentionSuggestionItem: 'mention-suggestion-item'
 };
 
 /**

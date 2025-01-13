@@ -1,24 +1,34 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import {
   Call,
   CallAgent,
-  CallFeatureFactoryType,
+  CallAgentKind,
   CollectionUpdatedEvent,
-  DiagnosticsCallFeature,
-  GroupChatCallLocator,
+  UserFacingDiagnosticsFeature,
   GroupLocator,
   IncomingCallEvent,
   JoinCallOptions,
-  MeetingLocator,
+  TeamsMeetingLinkLocator,
   RecordingCallFeature,
-  StartCallOptions,
   TranscriptionCallFeature,
-  TransferCallFeature
+  CallFeatureFactory,
+  StartCallOptions,
+  RoomLocator,
+  TeamsMeetingIdLocator,
+  ConnectionStateChangedEvent,
+  ConnectionState
+} from '@azure/communication-calling';
+/* @conditional-compile-remove(calling-beta-sdk) */
+import {
+  CallAgentFeature,
+  MeetingLocator,
+  GroupChatCallLocator,
+  PushNotificationData
 } from '@azure/communication-calling';
 import { CommunicationUserIdentifier, PhoneNumberIdentifier, UnknownIdentifier } from '@azure/communication-common';
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import { callAgentDeclaratify } from './CallAgentDeclarative';
 import { CallError } from './CallClientState';
 import { CallContext, MAX_CALL_HISTORY_LENGTH } from './CallContext';
@@ -35,7 +45,6 @@ import {
   mockoutObjectFreeze,
   MockRecordingCallFeatureImpl,
   MockTranscriptionCallFeatureImpl,
-  MockTransferCallFeatureImpl,
   StateChangeListener,
   stubCommunicationTokenCredential,
   StubDiagnosticsCallFeatureImpl,
@@ -47,17 +56,14 @@ mockoutObjectFreeze();
 jest.mock('@azure/communication-calling', () => {
   return {
     Features: {
-      get Recording(): CallFeatureFactoryType<RecordingCallFeature> {
-        return MockRecordingCallFeatureImpl;
+      get Recording(): CallFeatureFactory<RecordingCallFeature> {
+        return { callApiCtor: MockRecordingCallFeatureImpl };
       },
-      get Transfer(): CallFeatureFactoryType<TransferCallFeature> {
-        return MockTransferCallFeatureImpl;
+      get Transcription(): CallFeatureFactory<TranscriptionCallFeature> {
+        return { callApiCtor: MockTranscriptionCallFeatureImpl };
       },
-      get Transcription(): CallFeatureFactoryType<TranscriptionCallFeature> {
-        return MockTranscriptionCallFeatureImpl;
-      },
-      get Diagnostics(): CallFeatureFactoryType<DiagnosticsCallFeature> {
-        return StubDiagnosticsCallFeatureImpl;
+      get Diagnostics(): CallFeatureFactory<UserFacingDiagnosticsFeature> {
+        return { callApiCtor: StubDiagnosticsCallFeatureImpl };
       }
     }
   };
@@ -69,8 +75,13 @@ const mockCallId = 'b';
 class MockCallAgent implements CallAgent {
   calls: MockCall[] = [];
   displayName = undefined;
+  connectionState = 'Disconnected' as ConnectionState;
+  kind = 'CallAgent' as CallAgentKind;
   emitter = new EventEmitter();
-
+  /* @conditional-compile-remove(calling-beta-sdk) */
+  feature<TFeature extends CallAgentFeature>(): TFeature {
+    throw new Error('Method not implemented.');
+  }
   startCall(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     participants: (CommunicationUserIdentifier | PhoneNumberIdentifier | UnknownIdentifier)[],
@@ -82,9 +93,19 @@ class MockCallAgent implements CallAgent {
     call.remoteParticipants = [remoteParticipant];
     return call;
   }
+  /* @conditional-compile-remove(calling-beta-sdk) */
+  handlePushNotification(data: PushNotificationData): Promise<void> {
+    console.error('handlePushNotification not implemented, data: ', data);
+    return Promise.resolve();
+  }
   join(groupLocator: GroupLocator, options?: JoinCallOptions): Call;
-  join(groupChatCallLocator: GroupChatCallLocator, options?: JoinCallOptions): Call;
+  /* @conditional-compile-remove(calling-beta-sdk) */
+  join(groupChatCallLoctor: GroupChatCallLocator, options?: JoinCallOptions): Call;
+  /* @conditional-compile-remove(calling-beta-sdk) */
   join(meetingLocator: MeetingLocator, options?: JoinCallOptions): Call;
+  join(meetingLocator: TeamsMeetingLinkLocator, options?: JoinCallOptions): Call;
+  join(meetingLocator: TeamsMeetingIdLocator, options?: JoinCallOptions): Call;
+  join(roomLocator: RoomLocator, options?: JoinCallOptions): Call;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   join(meetingLocator: any, options?: any): Call {
     const remoteParticipant = createMockRemoteParticipant(mockRemoteParticipantId);
@@ -97,11 +118,13 @@ class MockCallAgent implements CallAgent {
   }
   on(event: 'incomingCall', listener: IncomingCallEvent): void;
   on(event: 'callsUpdated', listener: CollectionUpdatedEvent<Call>): void;
+  on(event: 'connectionStateChanged', listener: ConnectionStateChangedEvent): void;
   on(event: any, listener: any): void {
     this.emitter.on(event, listener);
   }
   off(event: 'incomingCall', listener: IncomingCallEvent): void;
   off(event: 'callsUpdated', listener: CollectionUpdatedEvent<Call>): void;
+  off(event: 'connectionStateChanged', listener: ConnectionStateChangedEvent): void;
   off(event: any, listener: any): void {
     this.emitter.off(event, listener);
   }
@@ -111,52 +134,10 @@ class MockCallAgent implements CallAgent {
   }
 }
 
-class MockCallAgentWithMultipleCalls implements CallAgent {
-  calls: MockCall[] = [];
-  displayName = undefined;
-  emitter = new EventEmitter();
-
+class MockCallAgentWithMultipleCalls extends MockCallAgent {
   constructor(calls: MockCall[]) {
+    super();
     this.calls = calls;
-  }
-
-  startCall(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    participants: (CommunicationUserIdentifier | PhoneNumberIdentifier | UnknownIdentifier)[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    options?: StartCallOptions
-  ): Call {
-    const remoteParticipant = createMockRemoteParticipant(mockRemoteParticipantId);
-    const call = createMockCall(mockCallId);
-    call.remoteParticipants = [remoteParticipant];
-    return call;
-  }
-  join(groupLocator: GroupLocator, options?: JoinCallOptions): Call;
-  join(groupChatCallLocator: GroupChatCallLocator, options?: JoinCallOptions): Call;
-  join(meetingLocator: MeetingLocator, options?: JoinCallOptions): Call;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  join(meetingLocator: any, options?: any): Call {
-    const remoteParticipant = createMockRemoteParticipant(mockRemoteParticipantId);
-    const call = createMockCall(mockCallId);
-    call.remoteParticipants = [remoteParticipant];
-    return call;
-  }
-  dispose(): Promise<void> {
-    return Promise.resolve();
-  }
-  on(event: 'incomingCall', listener: IncomingCallEvent): void;
-  on(event: 'callsUpdated', listener: CollectionUpdatedEvent<Call>): void;
-  on(event: any, listener: any): void {
-    this.emitter.on(event, listener);
-  }
-  off(event: 'incomingCall', listener: IncomingCallEvent): void;
-  off(event: 'callsUpdated', listener: CollectionUpdatedEvent<Call>): void;
-  off(event: any, listener: any): void {
-    this.emitter.off(event, listener);
-  }
-
-  emit(event: string, data: any): void {
-    this.emitter.emit(event, data);
   }
 }
 
@@ -208,7 +189,7 @@ describe('declarative call agent', () => {
     mockCallAgent.calls = [];
     callAgentDeclaratify(mockCallAgent, context, internalContext);
     expect(Object.keys(context.getState().calls).length).toBe(0);
-    expect(internalContext.getRemoteRenderInfos().size).toBe(0);
+    expect(Array.from(internalContext.getCallIds()).length).toBe(0);
   });
 
   test('should update state with new call when startCall is invoked', () => {
@@ -231,6 +212,26 @@ describe('declarative call agent', () => {
     expect(Object.keys(context.getState().calls).length).toBe(1);
   });
 
+  test('should update state with new call when join to meeting is invoked', () => {
+    const mockCallAgent = new MockCallAgent();
+    const context = new CallContext({ kind: 'communicationUser', communicationUserId: '' });
+    const internalContext = new InternalCallContext();
+    expect(Object.keys(context.getState().calls).length).toBe(0);
+    const declarativeCallAgent = callAgentDeclaratify(mockCallAgent, context, internalContext);
+    declarativeCallAgent.join({ meetingId: '123', passcode: 'qwe' });
+    expect(Object.keys(context.getState().calls).length).toBe(1);
+  });
+
+  test('should update state with new call when join to meeting and without passcode is invoked', () => {
+    const mockCallAgent = new MockCallAgent();
+    const context = new CallContext({ kind: 'communicationUser', communicationUserId: '' });
+    const internalContext = new InternalCallContext();
+    expect(Object.keys(context.getState().calls).length).toBe(0);
+    const declarativeCallAgent = callAgentDeclaratify(mockCallAgent, context, internalContext);
+    declarativeCallAgent.join({ meetingId: '123' });
+    expect(Object.keys(context.getState().calls).length).toBe(1);
+  });
+
   test('should move call to callEnded when call is removed and add endTime', async () => {
     const mockCallAgent = new MockCallAgent();
     const context = new CallContext({ kind: 'communicationUser', communicationUserId: '' });
@@ -246,16 +247,20 @@ describe('declarative call agent', () => {
 
     expect(Object.keys(context.getState().calls).length).toBe(1);
 
-    mockCall.callEndReason = { code: 1 };
+    mockCall.callEndReason = {
+      code: 1,
+      /* @conditional-compile-remove(calling-beta-sdk) */ resultCategories: [],
+      /* @conditional-compile-remove(calling-beta-sdk) */ message: ''
+    };
     mockCallAgent.calls = [];
     mockCallAgent.emit('callsUpdated', { added: [], removed: [mockCall] });
 
-    await waitWithBreakCondition(() => context.getState().callsEnded.length !== 0);
+    await waitWithBreakCondition(() => Object.keys(context.getState().callsEnded).length !== 0);
 
     expect(Object.keys(context.getState().calls).length).toBe(0);
-    expect(context.getState().callsEnded.length).toBe(1);
-    expect(context.getState().callsEnded[0].callEndReason?.code).toBe(1);
-    expect(context.getState().callsEnded[0].endTime).toBeTruthy();
+    expect(Object.keys(context.getState().callsEnded).length).toBe(1);
+    expect(context.getState().callsEnded[mockCallId]?.callEndReason?.code).toBe(1);
+    expect(context.getState().callsEnded[mockCallId]?.endTime).toBeTruthy();
   });
 
   test('should move incoming call to incomingCallEnded when incoming call is ended and add endTime', async () => {
@@ -274,12 +279,12 @@ describe('declarative call agent', () => {
 
     mockIncomingCall.emit('callEnded', { callEndReason: { code: 1 } });
 
-    await waitWithBreakCondition(() => context.getState().incomingCallsEnded.length !== 0);
+    await waitWithBreakCondition(() => Object.keys(context.getState().incomingCallsEnded).length !== 0);
 
     expect(Object.keys(context.getState().incomingCalls).length).toBe(0);
-    expect(context.getState().incomingCallsEnded.length).toBe(1);
-    expect(context.getState().incomingCallsEnded[0].callEndReason?.code).toBe(1);
-    expect(context.getState().incomingCallsEnded[0].endTime).toBeTruthy();
+    expect(Object.keys(context.getState().incomingCallsEnded).length).toBe(1);
+    expect(context.getState().incomingCallsEnded[mockCallId]?.callEndReason?.code).toBe(1);
+    expect(context.getState().incomingCallsEnded[mockCallId]?.endTime).toBeTruthy();
   });
 
   test('should make sure that callsEnded not exceed max length', async () => {
@@ -303,7 +308,7 @@ describe('declarative call agent', () => {
 
     await waitWithBreakCondition(() => Object.keys(context.getState().calls).length === 0);
 
-    expect(context.getState().callsEnded.length).toBe(MAX_CALL_HISTORY_LENGTH);
+    expect(Object.keys(context.getState().callsEnded).length).toBe(MAX_CALL_HISTORY_LENGTH);
   });
 
   test('should make sure that incomingCallsEnded not exceed max length', async () => {
@@ -328,7 +333,7 @@ describe('declarative call agent', () => {
 
     await waitWithBreakCondition(() => Object.keys(context.getState().incomingCalls).length === 0);
 
-    expect(context.getState().incomingCallsEnded.length).toBe(MAX_CALL_HISTORY_LENGTH);
+    expect(Object.keys(context.getState().incomingCallsEnded).length).toBe(MAX_CALL_HISTORY_LENGTH);
   });
 
   test('should wrap the calls property and the onCallsUpdated and return DeclarativeCall when accessed', async () => {
@@ -363,6 +368,24 @@ describe('declarative call agent', () => {
     expect(receivedEvent.removed).toBeDefined();
     expect(receivedEvent.removed[0]).toBeDefined();
     expect((receivedEvent.removed[0] as DeclarativeCall).unsubscribe).toBeDefined();
+  });
+
+  test('`incomingCalls` should return declarative incoming calls array', () => {
+    const mockIncomingCallOne = createMockIncomingCall('mockIncomingCallIdOne');
+    const mockIncomingCallTwo = createMockIncomingCall('mockIncomingCallIdTwo');
+    const mockCallAgent = new MockCallAgent();
+    const context = new CallContext({ kind: 'communicationUser', communicationUserId: '' });
+    const internalContext = new InternalCallContext();
+    const declarativeCallAgent = callAgentDeclaratify(mockCallAgent, context, internalContext);
+    mockCallAgent.emit('incomingCall', { incomingCall: mockIncomingCallOne });
+    mockCallAgent.emit('incomingCall', { incomingCall: mockIncomingCallTwo });
+    expect(declarativeCallAgent.incomingCalls.length).toBe(2);
+    expect(
+      declarativeCallAgent.incomingCalls.find((incomingCall) => incomingCall.id === 'mockIncomingCallIdOne')
+    ).toBeDefined();
+    expect(
+      declarativeCallAgent.incomingCalls.find((incomingCall) => incomingCall.id === 'mockIncomingCallIdTwo')
+    ).toBeDefined();
   });
 });
 

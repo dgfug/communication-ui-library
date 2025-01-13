@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 /**
  * Functionality for interfacing with Composite adapter state.
@@ -16,21 +16,11 @@ export interface AdapterState<TState> {
 }
 
 /**
- * Functionality for interfacing with Composite adapter pages.
- *
- * @public
- */
-export interface AdapterPages<TPage> {
-  /** Set the current page of the Composite */
-  setPage(page: TPage): void;
-}
-
-/**
  * Functionality for correctly disposing a Composite.
  *
  * @public
  */
-export interface AdapterDisposal {
+export interface Disposable {
   /** Dispose of the Composite */
   dispose(): void;
 }
@@ -48,7 +38,7 @@ export interface AdapterError extends Error {
   /**
    * Error thrown by the failed operation.
    */
-  inner: Error;
+  innerError: Error;
   /**
    * Timestamp added to the error in the adapter implementation.
    */
@@ -63,3 +53,28 @@ export interface AdapterError extends Error {
  * @public
  */
 export type AdapterErrors = { [target: string]: AdapterError };
+
+/* @conditional-compile-remove(breakout-rooms) */
+/**
+ * Notification from call client state stored in adapter state.
+ *
+ * @public
+ */
+export interface AdapterNotification {
+  /**
+   * Target of notification. There should only one notification per target.
+   */
+  target: string;
+  /**
+   * Timestamp added to the notification in the adapter implementation.
+   */
+  timestamp: Date;
+}
+
+/* @conditional-compile-remove(breakout-rooms) */
+/**
+ * Adapters stores the latest notification for each target.
+ *
+ * @public
+ */
+export type AdapterNotifications = { [target: string]: AdapterNotification };

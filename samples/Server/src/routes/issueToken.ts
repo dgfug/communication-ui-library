@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { CommunicationUserToken, TokenScope } from '@azure/communication-identity';
 import * as express from 'express';
@@ -17,9 +17,19 @@ const handleUserTokenRequest = async (requestedScope?: string): Promise<Communic
 };
 
 /**
+ * route: /token/
+ *
+ * purpose: To get Azure Communication Services token with the given scope.
+ *
+ * @param scope: scope for the token as string
+ *
+ * @returns The token as string
+ *
+ * @remarks
  * By default the get and post routes will return a token with scopes ['chat', 'voip'].
  * Optionally ?scope can be passed in containing scopes seperated by comma
  * e.g. ?scope=chat,voip
+ *
  */
 router.get('/', async (req, res, next) => res.send(await handleUserTokenRequest((req.query.scope as string) ?? '')));
 router.post('/', async (req, res, next) => res.send(await handleUserTokenRequest((req.body.scope as string) ?? '')));

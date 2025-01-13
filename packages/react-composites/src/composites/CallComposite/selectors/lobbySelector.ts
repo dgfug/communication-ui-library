@@ -1,19 +1,15 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
+import { _isInCall, _isPreviewOn } from '@internal/calling-component-bindings';
 import * as reselect from 'reselect';
-import { getLocalVideoStreams } from './baseSelectors';
+import { localVideoSelector } from './localVideoStreamSelector';
 
 /**
  * @private
  */
-export const lobbySelector = reselect.createSelector([getLocalVideoStreams], (localVideoStreams) => {
-  const localVideoStream = localVideoStreams?.find((i) => i.mediaStreamType === 'Video');
+export const lobbySelector = reselect.createSelector([localVideoSelector], (localVideoStreamInfo) => {
   return {
-    localParticipantVideoStream: {
-      isAvailable: !!localVideoStream,
-      isMirrored: localVideoStream?.view?.isMirrored,
-      renderElement: localVideoStream?.view?.target
-    }
+    localParticipantVideoStream: localVideoStreamInfo
   };
 });

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 /**
  * @private
@@ -10,6 +10,16 @@ export const MINIMUM_TYPING_INTERVAL_IN_MILLISECONDS = 8000;
  * @private
  */
 export const PARTICIPANTS_THRESHOLD = 20;
+
+/**
+ * @private
+ */
+export const MINUTE_IN_MS = 1000 * 60;
+
+/**
+ * @private
+ */
+export const DEFAULT_DATA_LOSS_PREVENTION_POLICY_URL = 'https://go.microsoft.com/fwlink/?LinkId=2132837';
 
 /**
  * @private

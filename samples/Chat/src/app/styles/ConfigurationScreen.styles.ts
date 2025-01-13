@@ -1,23 +1,31 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { getBackgroundColor } from '../utils/utils';
-import { IStackTokens, mergeStyles } from '@fluentui/react';
+import { IButtonStyles, IStackTokens, mergeStyles, Theme } from '@fluentui/react';
+
+export const headerStyle = mergeStyles({
+  fontWeight: 600,
+  fontSize: '1.5rem', // 36px
+  width: '100%',
+  textAlign: 'center',
+  paddingBottom: '1rem'
+});
 
 export const responsiveLayoutStackTokens: IStackTokens = {
-  childrenGap: '5.25rem 8.6875rem'
+  childrenGap: '4.5rem'
 };
 
 export const responsiveLayoutStyle = mergeStyles({
   height: '100%',
   width: '100% ',
   // half childrenGap from Stack
-  padding: '2.625rem 4.34375rem',
-  // max of min-width from stack items + padding width * 2 = 20 + 4.84375 * 2
-  minWidth: '29.6875rem',
+  padding: '2.25rem',
+  // max of min-width from stack items + padding width * 2 = 20 + 2.25 * 2
+  minWidth: '24.5rem',
   minHeight: 'auto',
-  // sum of max-height of stack items + childrenGap height * (#items - 1) + padding height * 2 = (11.5625 + 15.875) + 6.25 * 1 + 3.125 * 2 =
-  maxHeight: '39.9375rem'
+  // sum of max-height of stack items + childrenGap * (#items - 1) + padding * 2 = (15.0975 + 15.875) + 4.5 * 1 + 2.25 * 2 =
+  maxHeight: '39.97255rem'
 });
 
 export const leftPreviewContainerStackTokens: IStackTokens = {
@@ -25,8 +33,8 @@ export const leftPreviewContainerStackTokens: IStackTokens = {
 };
 
 export const leftPreviewContainerStyle = mergeStyles({
-  height: '11.563rem',
-  width: '9.313rem',
+  width: '10rem',
+  minHeight: '15.0975rem',
   padding: '0.5rem'
 });
 
@@ -46,17 +54,21 @@ export const avatarListContainerStyle = mergeStyles({
   width: '19rem'
 });
 
-export const smallAvatarContainerStyle = (avatar: string, selectedAvatar: string): string =>
+export const smallAvatarContainerStyle = (avatar: string, selectedAvatar: string, theme: Theme): string =>
   mergeStyles({
     width: '3rem',
     height: '3rem',
-    border: avatar === selectedAvatar ? '0.125rem solid #0378D4' : '',
+    border: avatar === selectedAvatar ? `0.125rem solid ${theme.palette.themePrimary}` : '',
     backgroundColor: getBackgroundColor(avatar)?.backgroundColor,
     borderRadius: '50%',
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'center',
-    outline: 'none'
+    outline: 'none',
+    '&:focus': {
+      border: `0.1875rem solid ${theme.palette.neutralSecondary}`,
+      borderRadius: theme.effects.roundedCorner4
+    }
   });
 
 export const largeAvatarContainerStyle = (avatar: string): string =>
@@ -128,12 +140,14 @@ export const buttonStyle = mergeStyles({
   fontSize: '0.875rem' // 14px
 });
 
+export const buttonWithIconStyles: IButtonStyles = {
+  textContainer: {
+    display: 'contents'
+  }
+};
+
 export const mainContainerStyle = mergeStyles({
   maxWidth: '46.875rem',
   width: '100%',
   height: '100%'
-});
-
-export const startChatButtonTextStyle = mergeStyles({
-  fontSize: '0.875rem' // 14px
 });

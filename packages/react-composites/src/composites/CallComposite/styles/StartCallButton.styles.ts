@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { mergeStyles } from '@fluentui/react';
+import { IButtonStyles, mergeStyles } from '@fluentui/react';
 
 /**
  * @private
@@ -18,7 +18,14 @@ export const buttonStyle = mergeStyles({
   fontWeight: 600,
   fontSize: '0.875rem', // 14px
   height: '2.75rem',
-  width: '100%',
-  marginTop: '1.125rem',
-  maxWidth: '18.75rem'
+  width: '100%'
 });
+
+/**
+ * @private
+ */
+export const buttonWithIconStyles: IButtonStyles = {
+  textContainer: {
+    display: 'contents'
+  }
+};

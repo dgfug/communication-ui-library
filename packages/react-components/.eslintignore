@@ -1,5 +1,7 @@
+@types/html-to-react.d.ts
 docs/
 public/
 dist/
 node_modules/
 scripts/
+preprocessed/

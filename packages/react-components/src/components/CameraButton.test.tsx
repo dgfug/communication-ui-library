@@ -1,23 +1,21 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React from 'react';
 import { CameraButton } from './CameraButton';
-import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-import { createTestLocale, mountWithLocalization } from './utils/testUtils';
-
-Enzyme.configure({ adapter: new Adapter() });
+import { createTestLocale, renderWithLocalization } from './utils/testUtils';
+import { screen } from '@testing-library/react';
 
 describe('CameraButton strings should be localizable and overridable', () => {
   test('Should localize button label ', async () => {
     const testLocale = createTestLocale({
       cameraButton: { offLabel: Math.random().toString(), onLabel: Math.random().toString() }
     });
-    const component = mountWithLocalization(<CameraButton showLabel={true} />, testLocale);
-    expect(component.text()).toBe(testLocale.strings.cameraButton.offLabel);
-    component.setProps({ checked: true });
-    expect(component.text()).toBe(testLocale.strings.cameraButton.onLabel);
+    const { rerender } = renderWithLocalization(<CameraButton showLabel={true} />, testLocale);
+    expect(screen.getByRole('button').textContent).toBe(testLocale.strings.cameraButton.offLabel);
+
+    rerender(<CameraButton showLabel={true} checked={true} />);
+    expect(screen.getByRole('button').textContent).toBe(testLocale.strings.cameraButton.onLabel);
   });
 
   test('Should override button label with `strings` prop', async () => {
@@ -25,12 +23,13 @@ describe('CameraButton strings should be localizable and overridable', () => {
       cameraButton: { offLabel: Math.random().toString(), onLabel: Math.random().toString() }
     });
     const cameraButtonStrings = { offLabel: Math.random().toString(), onLabel: Math.random().toString() };
-    const component = mountWithLocalization(
+    const { rerender } = renderWithLocalization(
       <CameraButton showLabel={true} strings={cameraButtonStrings} />,
       testLocale
     );
-    expect(component.text()).toBe(cameraButtonStrings.offLabel);
-    component.setProps({ checked: true });
-    expect(component.text()).toBe(cameraButtonStrings.onLabel);
+    expect(screen.getByRole('button').textContent).toBe(cameraButtonStrings.offLabel);
+
+    rerender(<CameraButton showLabel={true} checked={true} strings={cameraButtonStrings} />);
+    expect(screen.getByRole('button').textContent).toBe(cameraButtonStrings.onLabel);
   });
 });

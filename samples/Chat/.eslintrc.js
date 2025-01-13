@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 module.exports = {
   env: {
@@ -32,10 +32,23 @@ module.exports = {
       }
     ],
     eqeqeq: 'warn',
-    'header/header': ['error', 'line', ' Copyright (c) Microsoft Corporation.\n Licensed under the MIT license.'],
+    '@typescript-eslint/no-non-null-assertion': 'error',
+    'header/header': ['error', 'line', ' Copyright (c) Microsoft Corporation.\n Licensed under the MIT License.'],
     'react/display-name': 'off',
     '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^_' }]
+    '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^_' }],
+    curly: 'error',
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: [
+          {
+            group: ['@internal/*'],
+            message: 'Use @azure/communication-react instead.'
+          }
+        ]
+      }
+    ]
   },
   settings: {
     react: {
@@ -47,13 +60,6 @@ module.exports = {
       files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx', '**/mocks/*'],
       env: {
         jest: true
-      }
-    },
-    {
-      files: ['utils.ts'],
-      rules: {
-        // Allow requiring the package.json
-        '@typescript-eslint/no-var-requires': 'off'
       }
     }
   ]

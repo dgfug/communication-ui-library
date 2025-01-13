@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { ChatMessageReadReceipt, ChatParticipant } from '@azure/communication-chat';
 import { CommunicationIdentifierKind } from '@azure/communication-common';
 import { ChatMessageWithStatus } from './types/ChatMessageWithStatus';
-import { TypingIndicatorReceivedEvent } from '@azure/communication-signaling';
+import { TypingIndicatorReceivedEvent } from '@azure/communication-chat';
 
 /**
  * Centralized state for {@link @azure/communication-chat#ChatClient}.
@@ -80,16 +80,31 @@ export type ChatThreadClientState = {
 /**
  * Properties of a chat thread.
  *
- * \@azure/communication-chat exports two interfaces for this concept,
- * and \@azure/communication-signaling exports another.
- *
  * We define a minimal one that helps us hide the different types used by underlying API.
  *
  * @public
  */
 export type ChatThreadProperties = {
   topic?: string;
+  /* @conditional-compile-remove(rich-text-editor-image-upload) */
+  createdBy?: CommunicationIdentifierKind;
+  /* @conditional-compile-remove(rich-text-editor-image-upload) */
+  messagingPolicy?: MessagingPolicy;
 };
+
+/* @conditional-compile-remove(rich-text-editor-image-upload) */
+/**
+ *
+ * Messaging policy of a chat thread.
+ *
+ * @beta
+ */
+export interface MessagingPolicy {
+  /**
+   * Boolean to track whether or not messages are restricted to only text.
+   * */
+  textOnlyChat?: boolean;
+}
 
 /**
  * Errors teed from API calls to the Chat SDK.
@@ -115,20 +130,20 @@ export class ChatError extends Error {
   /**
    * Error thrown by the failed SDK method.
    */
-  public inner: Error;
+  public innerError: Error;
   /**
    * Timestamp added to the error by the stateful layer.
    */
   public timestamp: Date;
 
-  constructor(target: ChatErrorTarget, inner: Error, timestamp?: Date) {
+  constructor(target: ChatErrorTarget, innerError: Error, timestamp?: Date) {
     super();
     this.target = target;
-    this.inner = inner;
+    this.innerError = innerError;
     // Testing note: It is easier to mock Date::now() than the Date() constructor.
     this.timestamp = timestamp ?? new Date(Date.now());
     this.name = 'ChatError';
-    this.message = `${this.target}: ${this.inner.message}`;
+    this.message = `${this.target}: ${this.innerError.message}`;
   }
 }
 
@@ -158,4 +173,7 @@ export type ChatErrorTarget =
   | 'ChatThreadClient.sendReadReceipt'
   | 'ChatThreadClient.sendTypingNotification'
   | 'ChatThreadClient.updateMessage'
-  | 'ChatThreadClient.updateTopic';
+  | /* @conditional-compile-remove(chat-beta-sdk) */ 'ChatThreadClient.updateProperties'
+  | 'ChatThreadClient.updateTopic'
+  | /* @conditional-compile-remove(chat-beta-sdk) */ 'ChatThreadClient.uploadImage'
+  | /* @conditional-compile-remove(chat-beta-sdk) */ 'ChatThreadClient.deleteImage';

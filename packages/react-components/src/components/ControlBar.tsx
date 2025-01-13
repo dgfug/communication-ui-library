@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { IStyle, mergeStyles, PartialTheme, Stack } from '@fluentui/react';
+import { IStyle, mergeStyles, Stack } from '@fluentui/react';
 import React, { useMemo } from 'react';
-import { BaseCustomStylesProps } from '../types';
+import { BaseCustomStyles } from '../types';
 import { controlBarStyles } from './styles/ControlBar.styles';
 import { useTheme } from '../theming';
 import { isDarkThemed } from '../theming/themeUtils';
@@ -15,7 +15,7 @@ const mainDivStyle: IStyle = { position: 'relative', height: '100%', width: '100
  *
  * @public
  */
-export type ControlBarLayoutType =
+export type ControlBarLayout =
   | 'horizontal'
   | 'vertical'
   | 'dockedTop'
@@ -42,7 +42,7 @@ export interface ControlBarProps {
    * <ControlBar styles={{ root: { background: 'blue' } }} />
    * ```
    */
-  styles?: BaseCustomStylesProps;
+  styles?: BaseCustomStyles;
   /**
    * Changes the layout of the control bar.
    * Available layouts are `horizontal`, `vertical`, `dockedTop`, `dockedBottom`,
@@ -50,7 +50,7 @@ export interface ControlBarProps {
    * `floatingRight`
    * Defaults to a `horizontal` layout.
    */
-  layout?: ControlBarLayoutType;
+  layout?: ControlBarLayout;
 }
 
 /**
@@ -66,27 +66,26 @@ export const ControlBar = (props: ControlBarProps): JSX.Element => {
   const theme = useTheme();
   const controlBarClassName = useMemo(() => {
     const controlBarStyle = controlBarStyles[layout ?? 'horizontal'];
-    // if theme is dark and layout is floating then use palette.neutralQuaternaryAlt as background, otherwise use palette.white
+    // if theme is dark and layout is floating then use palette.neutralQuaternaryAlt as background, otherwise use theme.palette.white
     const backgroundStyle = {
       background:
         isDarkThemed(theme) && layout?.startsWith('floating') ? theme.palette.neutralQuaternaryAlt : theme.palette.white
     };
+    const borderAndBoxShadowStyle = layout?.startsWith('floating')
+      ? {
+          boxShadow: theme.effects.elevation16,
+          borderRadius: theme.effects.roundedCorner6
+        }
+      : {};
     // if rtl is true and layout is either floatingTop or floatingBottom then we need to override the transform-style property
     // to translate 50% to right instead of the left
     const transformOverrideStyle =
       theme.rtl && (layout === 'floatingTop' || layout === 'floatingBottom') ? { transform: 'translateX(50%)' } : {};
-    return mergeStyles(controlBarStyle, backgroundStyle, transformOverrideStyle, styles?.root);
+    return mergeStyles(controlBarStyle, backgroundStyle, borderAndBoxShadowStyle, transformOverrideStyle, styles?.root);
   }, [layout, styles?.root, theme]);
   return (
     <div className={mergeStyles(mainDivStyle)}>
-      <Stack
-        className={mergeStyles(controlBarClassName, {
-          borderRadius: (theme as PartialTheme)?.effects?.roundedCorner6,
-          boxShadow: (theme as PartialTheme)?.effects?.elevation8
-        })}
-      >
-        {props.children}
-      </Stack>
+      <Stack className={controlBarClassName}>{props.children}</Stack>
     </div>
   );
 };

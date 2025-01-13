@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { ChatThreadClient, SendChatMessageResult } from '@azure/communication-chat';
 import { getIdentifierKind } from '@azure/communication-common';
@@ -33,19 +33,21 @@ class ProxyChatThreadClient implements ProxyHandler<ChatThreadClient> {
       case 'sendMessage': {
         return this._context.withAsyncErrorTeedToState(async (...args: Parameters<ChatThreadClient['sendMessage']>) => {
           // Retry logic?
-          const { content } = args[0];
+          const [request, options] = args;
+          const { content } = request;
           const clientMessageId = nanoid(); // Generate a local short uuid for message
           const newMessage: ChatMessageWithStatus = {
             content: { message: content },
             clientMessageId,
             id: '',
-            type: 'text',
+            type: options?.type ?? 'text',
             sequenceId: '',
             version: '',
             createdOn: new Date(),
             status: 'sending',
             senderDisplayName: this._context.getState().displayName,
-            sender: this._context.getState().userId
+            sender: this._context.getState().userId,
+            metadata: options?.metadata
           };
           this._context.setChatMessage(chatThreadClient.threadId, newMessage);
 
@@ -106,6 +108,14 @@ class ProxyChatThreadClient implements ProxyHandler<ChatThreadClient> {
       }
       case 'listReadReceipts': {
         return createDecoratedListReadReceipts(chatThreadClient, this._context);
+      }
+      case 'sendTypingNotification': {
+        return this._context.withAsyncErrorTeedToState(
+          async (...args: Parameters<ChatThreadClient['sendTypingNotification']>) => {
+            return await chatThreadClient.sendTypingNotification(...args);
+          },
+          'ChatThreadClient.sendTypingNotification'
+        );
       }
       case 'removeParticipant': {
         return this._context.withAsyncErrorTeedToState(

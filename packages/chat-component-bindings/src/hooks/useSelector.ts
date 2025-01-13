@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { ChatClientState, StatefulChatClient } from '@internal/chat-stateful-client';
 import { ChatClientContext } from '../providers/ChatClientProvider';
@@ -49,7 +49,9 @@ export const useSelector = <
   const propRef = useRef(props);
   propRef.current = props;
   useEffect(() => {
-    if (!chatClient || !selector) return;
+    if (!chatClient || !selector) {
+      return;
+    }
     const onStateChange = (state: ChatClientState): void => {
       const newProps = selector(state, selectorProps ?? threadConfigProps);
       if (propRef.current !== newProps) {

@@ -1,9 +1,12 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { IIconProps, mergeStyles } from '@fluentui/react';
+import { IButtonStyles, IIconProps, mergeStyles } from '@fluentui/react';
 
 export const chatHeaderContainerStyle = mergeStyles({
+  position: 'absolute',
+  alignSelf: 'flex-end',
+  minHeight: '2.5rem',
   width: '100%',
   height: 'auto',
   paddingLeft: '0.5rem',
@@ -12,7 +15,7 @@ export const chatHeaderContainerStyle = mergeStyles({
 
 export const leaveButtonStyle = mergeStyles({
   marginRight: '0.625rem',
-  width: '6.688rem',
+  width: '8rem',
   borderWidth: '0.125rem',
   fontSize: '0.875rem', // 14px
   fontWeight: 600
@@ -37,6 +40,12 @@ export const largeLeaveButtonContainerStyle = mergeStyles({
     display: 'none'
   }
 });
+
+export const buttonWithIconStyles: IButtonStyles = {
+  textContainer: {
+    display: 'contents'
+  }
+};
 
 export const smallLeaveButtonContainerStyle = mergeStyles({
   whiteSpace: 'nowrap',

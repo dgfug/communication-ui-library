@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "rootDir": "../"
+    // Required for playwright to correctly interpret *test internal* imports.
+    "paths": {}
   },
-  "include": ["./browser/**/*.test.ts", "browser/chat/fixture.ts", "browser/call/fixture.ts"]
+  "include": ["**/*.ts", "**/*.tsx"]
 }

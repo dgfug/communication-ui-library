@@ -1,22 +1,22 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { DefaultButton, PrimaryButton, Stack, Link } from '@fluentui/react';
+import { DefaultButton, PrimaryButton, Stack, Link, Text } from '@fluentui/react';
 import React, { useCallback, useState } from 'react';
 import {
   bottomStackFooterStyle,
   buttonStyle,
-  buttonTextStyle,
+  buttonWithIconStyles,
   buttonsStackTokens,
+  chatIconStyle,
   endChatContainerStyle,
   endChatTitleStyle,
   mainStackTokens,
-  upperStackTokens,
-  videoCameraIconStyle
+  upperStackTokens
 } from './styles/EndChat.styles';
 
 import { Chat20Filled } from '@fluentui/react-icons';
-import { getThreadId } from './utils/getThreadId';
+import { getExistingThreadIdFromURL } from './utils/getParametersFromURL';
 import { joinThread } from './utils/joinThread';
 
 export interface EndCallProps {
@@ -38,13 +38,19 @@ export const EndScreen = (props: EndCallProps): JSX.Element => {
 
   const rejoinThread = useCallback(async (): Promise<void> => {
     if (!isRejoiningThread) {
-      const threadId = getThreadId();
+      const threadId = getExistingThreadIdFromURL();
       if (!threadId) {
         console.error('thread id is null');
         return;
       }
 
-      await joinThread(threadId, userId, displayName);
+      // potential issue where someone changes the threadId in the url to something the adminUserId is not already in.
+      // this will throw an exception on the server and we will fail to rejoin the chat thread
+      const didJoin = await joinThread(threadId, userId, displayName);
+      if (!didJoin) {
+        console.error('invalid thread. unable to add the user to this thread');
+        return;
+      }
 
       setIsRejoiningThread(true);
       rejoinHandler();
@@ -64,23 +70,26 @@ export const EndScreen = (props: EndCallProps): JSX.Element => {
       className={endChatContainerStyle}
     >
       <Stack tokens={upperStackTokens}>
-        <div tabIndex={0} className={endChatTitleStyle}>
+        <Text role={'heading'} aria-level={1} aria-label={leftCall} aria-live={'polite'} className={endChatTitleStyle}>
           {leftCall}
-        </div>
+        </Text>
         <Stack horizontal wrap tokens={buttonsStackTokens}>
           <PrimaryButton
             disabled={isRejoiningThread}
             className={buttonStyle}
+            styles={buttonWithIconStyles}
+            text={isRejoiningThread ? rejoining : rejoinChat}
             onClick={async () => {
               await rejoinThread();
             }}
-          >
-            <Chat20Filled className={videoCameraIconStyle} primaryFill="currentColor" />
-            <div className={buttonTextStyle}>{isRejoiningThread ? rejoining : rejoinChat}</div>
-          </PrimaryButton>
-          <DefaultButton className={buttonStyle} onClick={props.homeHandler}>
-            <div className={buttonTextStyle}> {goHomePage}</div>
-          </DefaultButton>
+            onRenderIcon={() => <Chat20Filled className={chatIconStyle} />}
+          />
+          <DefaultButton
+            className={buttonStyle}
+            styles={buttonWithIconStyles}
+            text={goHomePage}
+            onClick={props.homeHandler}
+          />
         </Stack>
         <div className={bottomStackFooterStyle}>
           <Link href={feedbackLink}>Give Feedback</Link>

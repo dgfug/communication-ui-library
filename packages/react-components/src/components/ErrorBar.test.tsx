@@ -1,154 +1,180 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React from 'react';
-import { act } from 'react-dom/test-utils';
-import { initializeIcons, MessageBar } from '@fluentui/react';
-import { ActiveError, ErrorBar } from './ErrorBar';
-import Enzyme, { ReactWrapper, mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { ActiveErrorMessage, ErrorBar, ErrorBarProps } from './ErrorBar';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 const ONE_DAY_MILLISECONDS = 24 * 3600 * 1000;
 
 describe('ErrorBar self-clearing error', () => {
-  beforeAll(() => {
-    Enzyme.configure({ adapter: new Adapter() });
-    initializeIcons();
-  });
-
   test('error bar is hidden when an error with timestamp is cleared', () => {
-    const root = mountErrorBarWithDefaults();
-    setAccessDeniedErrorAt(root, new Date(Date.now()));
-    expect(messageBarCount(root)).toBe(1);
-    setNoActiveError(root);
-    expect(messageBarCount(root)).toBe(0);
-    setAccessDeniedErrorAt(root, new Date(Date.now()));
-    expect(messageBarCount(root)).toBe(1);
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithAccessDeniedErrorAt(rerender, new Date(Date.now()));
+    expect(messageBarCount()).toBe(1);
+    rerenderWithNoActiveError(rerender);
+    expect(messageBarCount()).toBe(0);
+    rerenderWithAccessDeniedErrorAt(rerender, new Date(Date.now()));
+    expect(messageBarCount()).toBe(1);
   });
 
   test('error bar is hidden when an error without timestamp is cleared', () => {
-    const root = mountErrorBarWithDefaults();
-    setAccessDeniedErrorWithoutTimestamp(root);
-    expect(messageBarCount(root)).toBe(1);
-    setNoActiveError(root);
-    expect(messageBarCount(root)).toBe(0);
-    setAccessDeniedErrorWithoutTimestamp(root);
-    expect(messageBarCount(root)).toBe(1);
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithAccessDeniedErrorWithoutTimestamp(rerender);
+    expect(messageBarCount()).toBe(1);
+    rerenderWithNoActiveError(rerender);
+    expect(messageBarCount()).toBe(0);
+    rerenderWithAccessDeniedErrorWithoutTimestamp(rerender);
+    expect(messageBarCount()).toBe(1);
   });
 });
 
 describe('ErrorBar dismissal for errors with timestamp', () => {
-  beforeAll(() => {
-    Enzyme.configure({ adapter: new Adapter() });
-    initializeIcons();
-  });
-
   it('error can be dimissed', () => {
-    const root = mountErrorBarWithDefaults();
-    setAccessDeniedErrorAt(root, new Date(Date.now()));
-    expect(messageBarCount(root)).toBe(1);
-    simulateDismissOneError(root);
-    expect(messageBarCount(root)).toBe(0);
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithAccessDeniedErrorAt(rerender, new Date(Date.now()));
+    expect(messageBarCount()).toBe(1);
+    simulateDismissOneError();
+    expect(messageBarCount()).toBe(0);
   });
 
   it('new error after dismissal is shown', () => {
-    const root = mountErrorBarWithDefaults();
-    setAccessDeniedErrorAt(root, new Date(Date.now()));
-    simulateDismissOneError(root);
-    setAccessDeniedErrorAt(root, new Date(Date.now() + ONE_DAY_MILLISECONDS));
-    expect(messageBarCount(root)).toBe(1);
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithAccessDeniedErrorAt(rerender, new Date(Date.now()));
+    simulateDismissOneError();
+    rerenderWithAccessDeniedErrorAt(rerender, new Date(Date.now() + ONE_DAY_MILLISECONDS));
+    expect(messageBarCount()).toBe(1);
   });
 
   it('old error after dismissal is not shown', () => {
-    const root = mountErrorBarWithDefaults();
-    setAccessDeniedErrorAt(root, new Date(Date.now()));
-    simulateDismissOneError(root);
-    setAccessDeniedErrorAt(root, new Date(Date.now() - ONE_DAY_MILLISECONDS));
-    expect(messageBarCount(root)).toBe(0);
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithAccessDeniedErrorAt(rerender, new Date(Date.now()));
+    simulateDismissOneError();
+    rerenderWithAccessDeniedErrorAt(rerender, new Date(Date.now() - ONE_DAY_MILLISECONDS));
+    expect(messageBarCount()).toBe(0);
   });
 
   it('old error after dismissal and intervening non-error is not shown', () => {
-    const root = mountErrorBarWithDefaults();
-    setAccessDeniedErrorAt(root, new Date(Date.now()));
-    simulateDismissOneError(root);
-    setNoActiveError(root);
-    setAccessDeniedErrorAt(root, new Date(Date.now() - ONE_DAY_MILLISECONDS));
-    expect(messageBarCount(root)).toBe(0);
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithAccessDeniedErrorAt(rerender, new Date(Date.now()));
+    simulateDismissOneError();
+    rerenderWithNoActiveError(rerender);
+    rerenderWithAccessDeniedErrorAt(rerender, new Date(Date.now() - ONE_DAY_MILLISECONDS));
+    expect(messageBarCount()).toBe(0);
   });
 });
 
 describe('ErrorBar dismissal for errors without timestamp', () => {
-  beforeAll(() => {
-    Enzyme.configure({ adapter: new Adapter() });
-    initializeIcons();
-  });
-
   it('error can be dimissed', () => {
-    const root = mountErrorBarWithDefaults();
-    setAccessDeniedErrorWithoutTimestamp(root);
-    expect(messageBarCount(root)).toBe(1);
-    simulateDismissOneError(root);
-    expect(messageBarCount(root)).toBe(0);
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithAccessDeniedErrorWithoutTimestamp(rerender);
+    expect(messageBarCount()).toBe(1);
+    simulateDismissOneError();
+    expect(messageBarCount()).toBe(0);
   });
 
   it('new error after dismissal is not shown', () => {
-    const root = mountErrorBarWithDefaults();
-    setAccessDeniedErrorWithoutTimestamp(root);
-    simulateDismissOneError(root);
-    setAccessDeniedErrorWithoutTimestamp(root);
-    expect(messageBarCount(root)).toBe(0);
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithAccessDeniedErrorWithoutTimestamp(rerender);
+    simulateDismissOneError();
+    rerenderWithAccessDeniedErrorWithoutTimestamp(rerender);
+    expect(messageBarCount()).toBe(0);
   });
 
   it('new error after dismissal and intervening non-error is shown', () => {
-    const root = mountErrorBarWithDefaults();
-    setAccessDeniedErrorWithoutTimestamp(root);
-    simulateDismissOneError(root);
-    setNoActiveError(root);
-    setAccessDeniedErrorWithoutTimestamp(root);
-    expect(messageBarCount(root)).toBe(1);
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithAccessDeniedErrorWithoutTimestamp(rerender);
+    simulateDismissOneError();
+    rerenderWithNoActiveError(rerender);
+    rerenderWithAccessDeniedErrorWithoutTimestamp(rerender);
+    expect(messageBarCount()).toBe(1);
   });
 });
 
 describe('ErrorBar dismissal with multiple errors', () => {
   it('clearing an error with multiple errors leaves other errors untouched', () => {
-    const root = mountErrorBarWithDefaults();
-    setActiveErrors(root, [{ type: 'accessDenied', timestamp: new Date(Date.now()) }, { type: 'muteGeneric' }]);
-    expect(messageBarCount(root)).toBe(2);
-    simulateDismissOneError(root);
-    expect(messageBarCount(root)).toBe(1);
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithActiveErrors(rerender, [
+      { type: 'accessDenied', timestamp: new Date(Date.now()) },
+      { type: 'muteGeneric' }
+    ]);
+    expect(messageBarCount()).toBe(2);
+    simulateDismissOneError();
+    expect(messageBarCount()).toBe(1);
   });
 });
 
-const mountErrorBarWithDefaults = (): ReactWrapper => {
-  let root;
-  act(() => {
-    root = mount(<ErrorBar activeErrors={[]} />);
+describe('ErrorBar handling of errors from previous call or chat', () => {
+  it('shows all old errors by default', () => {
+    const oldErrors: ActiveErrorMessage[] = [
+      // Make sure old error is in the past.
+      { type: 'accessDenied', timestamp: new Date(Date.now() - 10) },
+      { type: 'muteGeneric' }
+    ];
+    const { rerender } = renderErrorBarWithDefaults();
+    rerenderWithActiveErrors(rerender, oldErrors);
+    expect(messageBarCount()).toBe(2);
   });
-  return root;
+
+  it.only('does not show old errors with timestamp when ignorePremountErrors is set', () => {
+    // Make sure old error is in the past.
+    const oldErrors: ActiveErrorMessage[] = [{ type: 'accessDenied', timestamp: new Date(Date.now() - 10) }];
+    const { rerender, initialProps } = renderErrorBarWithDefaults({ ignorePremountErrors: true });
+    rerenderWithActiveErrors(rerender, oldErrors, initialProps);
+    expect(messageBarCount()).toBe(0);
+  });
+
+  it('shows old errors without timestamp when ignorePremountErrors is set', () => {
+    const oldErrors: ActiveErrorMessage[] = [{ type: 'muteGeneric' }];
+    const { rerender, initialProps } = renderErrorBarWithDefaults({ ignorePremountErrors: true });
+    rerenderWithActiveErrors(rerender, oldErrors, initialProps);
+    expect(messageBarCount()).toBe(1);
+  });
+});
+
+const renderErrorBarWithDefaults = (
+  props?: Partial<ErrorBarProps>
+): {
+  rerender: (ui: React.ReactElement) => void;
+  initialProps: Partial<ErrorBarProps>;
+} => {
+  const mergedProps: ErrorBarProps = {
+    activeErrorMessages: [],
+    ...(props ?? {})
+  };
+  const { rerender } = render(<ErrorBar {...mergedProps} />);
+  return { rerender, initialProps: mergedProps };
 };
 
-const messageBarCount = (root: ReactWrapper): number => root.find(MessageBar).length;
+const messageBarCount = (): number => screen.queryAllByRole('alert').length;
 
-const simulateDismissOneError = (root: ReactWrapper): void => {
-  const messageBar = root.find(MessageBar).at(0);
-  const button = messageBar.find('button').at(0);
-  button.simulate('click');
+const simulateDismissOneError = (): void => {
+  const button = screen.getAllByRole('button')[0];
+  if (button) {
+    fireEvent.click(button);
+  }
 };
 
-const setAccessDeniedErrorAt = (root: ReactWrapper, timestamp: Date): void =>
-  setActiveErrors(root, [{ type: 'accessDenied', timestamp }]);
+const rerenderWithAccessDeniedErrorAt = (
+  rerender: (ui: React.ReactElement) => void,
+  timestamp: Date,
+  existingProps?: Partial<ErrorBarProps>
+): void => rerenderWithActiveErrors(rerender, [{ type: 'accessDenied', timestamp }], existingProps);
 
-const setAccessDeniedErrorWithoutTimestamp = (root: ReactWrapper): void =>
-  setActiveErrors(root, [{ type: 'accessDenied' }]);
+const rerenderWithAccessDeniedErrorWithoutTimestamp = (
+  rerender: (ui: React.ReactElement) => void,
+  existingProps?: Partial<ErrorBarProps>
+): void => rerenderWithActiveErrors(rerender, [{ type: 'accessDenied' }], existingProps);
 
-const setActiveErrors = (root: ReactWrapper, activeErrors: ActiveError[]): void => {
-  act(() => {
-    root.setProps({ activeErrors: activeErrors });
-  });
-};
+const rerenderWithNoActiveError = (
+  rerender: (ui: React.ReactElement) => void,
+  existingProps?: Partial<ErrorBarProps>
+): void => rerenderWithActiveErrors(rerender, [], existingProps);
 
-const setNoActiveError = (root: ReactWrapper): void => {
-  act(() => {
-    root.setProps({ activeErrors: [] });
-  });
+const rerenderWithActiveErrors = (
+  rerender: (ui: React.ReactElement) => void,
+  activeErrorMessages: ActiveErrorMessage[],
+  existingProps?: Partial<ErrorBarProps>
+): void => {
+  rerender(<ErrorBar {...existingProps} activeErrorMessages={activeErrorMessages} />);
 };

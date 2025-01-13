@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React, { createContext, useContext } from 'react';
 import { ChatThreadClient } from '@azure/communication-chat';
@@ -41,7 +41,8 @@ export const ChatThreadClientProvider = (props: ChatThreadClientProviderProps): 
  */
 export const useChatThreadClient = (): ChatThreadClient => {
   const chatThreadClient = useContext(ChatThreadClientContext);
-  if (!chatThreadClient)
+  if (!chatThreadClient) {
     throw 'Please wrap components with ChatThreadClientProvider and initialize a chat thread client before calling the hook.';
+  }
   return chatThreadClient;
 };

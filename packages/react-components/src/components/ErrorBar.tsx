@@ -1,9 +1,17 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import React, { useEffect, useState } from 'react';
-import { IMessageBarProps, MessageBar, MessageBarType, Stack } from '@fluentui/react';
+import React, { useEffect, useRef, useState } from 'react';
+import { IMessageBarProps, MessageBar, Stack } from '@fluentui/react';
 import { useLocale } from '../localization';
+import {
+  DismissedError,
+  dismissError,
+  dropDismissalsForInactiveErrors,
+  errorsToShow,
+  messageBarIconProps,
+  messageBarType
+} from './utils';
 
 /**
  * Props for {@link ErrorBar}.
@@ -22,7 +30,24 @@ export interface ErrorBarProps extends IMessageBarProps {
   /**
    * Currently active errors.
    */
-  activeErrors: ActiveError[];
+  activeErrorMessages: ActiveErrorMessage[];
+
+  /**
+   * If set, errors with {@link ActiveErrorMessage.timestamp} older than the time this component is mounted
+   * are not shown.
+   *
+   * This is useful when using the {@link ErrorBar} with a stateful client that handles more than one call
+   * or chat thread. Set this prop to ignore errors from previous call or chat.
+   *
+   * @defaultValue false
+   */
+  ignorePremountErrors?: boolean;
+
+  /**
+   * Callback called when the dismiss button is triggered.
+   * Use this to control errors shown when they dismissed by the user.
+   */
+  onDismissError?: (dismissedError: ActiveErrorMessage) => void;
 }
 
 /**
@@ -49,25 +74,20 @@ export interface ErrorBarStrings {
   /**
    * User is no longer on the thread.
    *
-   * See also: {@link ErrorBarStrings.sendMessageNotInThisThread} for a more specific error.
+   * See also: {@link ErrorBarStrings.sendMessageNotInChatThread} for a more specific error.
    */
-  userNotInThisThread: string;
+  userNotInChatThread: string;
 
   /**
    * Sending message failed because user is no longer on the thread.
    */
-  sendMessageNotInThisThread: string;
+  sendMessageNotInChatThread: string;
 
   /**
    * A generic message when sending message fails.
    * Prefer more specific error strings when possible.
    */
   sendMessageGeneric: string;
-
-  /**
-   * Detected bad network connection via the Calling SDK.
-   */
-  callingNetworkFailure: string;
 
   /**
    * A generic message when starting video fails.
@@ -98,6 +118,126 @@ export interface ErrorBarStrings {
    * A generic message when stopping screenshare fails.
    */
   stopScreenShareGeneric: string;
+
+  /**
+   * Message shown when poor network quality is detected during a call.
+   */
+  callNetworkQualityLow: string;
+
+  /**
+   * Message shown when poor network quality is detected during a call.
+   */
+  teamsMeetingCallNetworkQualityLow: string;
+  /**
+   * Message shown on failure to detect audio output devices.
+   */
+  callNoSpeakerFound: string;
+
+  /**
+   * Message shown on failure to detect audio input devices.
+   */
+  callNoMicrophoneFound: string;
+
+  /**
+   * Message shown when microphone can be enumerated but access is blocked by the system.
+   */
+  callMicrophoneAccessDenied: string;
+
+  /**
+   * Message shown when microphone can be enumerated but access is blocked by the system, for safari browsers
+   */
+  callMicrophoneAccessDeniedSafari: string;
+
+  /**
+   * Message shown when microphone is muted by the system (not by local or remote participants)
+   */
+  callMicrophoneMutedBySystem: string;
+
+  /**
+   * Message shown when microphone is unmuted by the system (not by local or remote participants).
+   * This typically occurs if the system recovers from an unexpected mute.
+   */
+  callMicrophoneUnmutedBySystem: string;
+
+  /**
+   * Mac OS specific message shown when microphone can be enumerated but access is
+   * blocked by the system.
+   */
+  callMacOsMicrophoneAccessDenied: string;
+
+  /**
+   * Message shown when poor network causes local video stream to be frozen.
+   */
+  callLocalVideoFreeze: string;
+
+  /**
+   * Message shown when camera can be enumerated but access is blocked by the system.
+   */
+  callCameraAccessDenied: string;
+
+  /**
+   * Message shown when camera can be enumerated but access is blocked by the system, for safari browsers
+   */
+  callCameraAccessDeniedSafari: string;
+
+  /**
+   * Message shown when local video fails to start because camera is already in use by
+   * another applciation.
+   */
+  callCameraAlreadyInUse: string;
+
+  /**
+   * Message shown when local video is stopped by the system (not by local or remote participants)
+   */
+  callVideoStoppedBySystem: string;
+
+  /**
+   * Message shown when local video was recovered by the system (not by the local participant)
+   */
+  callVideoRecoveredBySystem: string;
+
+  /**
+   * Mac OS specific message shown when system denies access to camera.
+   */
+  callMacOsCameraAccessDenied: string;
+
+  /**
+   * Mac OS specific message shown when system denies sharing local screen on a call.
+   */
+  callMacOsScreenShareAccessDenied: string;
+  /**
+   * Dimiss errorbar button aria label read by screen reader accessibility tools
+   */
+  dismissButtonAriaLabel?: string;
+
+  /**
+   * An error message when joining a call fails.
+   */
+  failedToJoinCallGeneric?: string;
+
+  /**
+   * An error message when joining a call fails specifically due to an invalid meeting link.
+   */
+  failedToJoinCallInvalidMeetingLink?: string;
+  /**
+   * Error bar string letting you know remote participants see a frozen stream for you.
+   */
+  cameraFrozenForRemoteParticipants?: string;
+
+  /**
+   * Unable to start effect
+   */
+  unableToStartVideoEffect?: string;
+
+  /**
+   * An error message when starting spotlight while max participants are spotlighted
+   */
+  startSpotlightWhileMaxParticipantsAreSpotlighted: string;
+
+  /**
+   * An error message when local user is muted by a remote participant
+   */
+  mutedByRemoteParticipant: string;
 }
 
 /**
@@ -108,11 +248,11 @@ export interface ErrorBarStrings {
 export type ErrorType = keyof ErrorBarStrings;
 
 /**
- * Active error to be shown via {@link ErrorBar}.
+ * Active error messages to be shown via {@link ErrorBar}.
  *
  * @public
  */
-export interface ActiveError {
+export interface ActiveErrorMessage {
   /**
    * Type of error that is active.
    */
@@ -129,11 +269,11 @@ export interface ActiveError {
 /**
  * A component to show error messages on the UI.
  * All strings that can be shown are accepted as the {@link ErrorBarProps.strings} so that they can be localized.
- * Active errors are selected by {@link ErrorBarProps.activeErrors}.
+ * Active errors are selected by {@link ErrorBarProps.activeErrorMessages}.
  *
  * This component internally tracks dismissed by the user.
  *   * Errors that have an associated timestamp: The error is shown on the UI again if it occurs after being dismissed.
- *   * Errors that do not have a timestamp: The error is dismissed until it dissappears from the props.
+ *   * Errors that do not have a timestamp: The error is dismissed until it disappears from the props.
  *         If the error recurs, it is shown in the UI.
  *
  * Uses {@link @fluentui/react#MessageBar} UI element.
@@ -144,104 +284,61 @@ export const ErrorBar = (props: ErrorBarProps): JSX.Element => {
   const localeStrings = useLocale().strings.errorBar;
   const strings = props.strings ?? localeStrings;
 
+  const trackDismissedErrorsInternally = !props.onDismissError;
+
+  // Timestamp for when this comopnent is first mounted.
+  // Never updated through the lifecycle of this component.
+  const mountTimestamp = useRef(new Date(Date.now()));
+
   const [dismissedErrors, setDismissedErrors] = useState<DismissedError[]>([]);
 
   // dropDismissalsForInactiveErrors only returns a new object if `dismissedErrors` actually changes.
   // Without this behaviour, this `useEffect` block would cause a render loop.
-  useEffect(
-    () => setDismissedErrors(dropDismissalsForInactiveErrors(props.activeErrors, dismissedErrors)),
-    [props.activeErrors, dismissedErrors]
+  useEffect(() => {
+    trackDismissedErrorsInternally &&
+      setDismissedErrors(dropDismissalsForInactiveErrors(props.activeErrorMessages, dismissedErrors));
+  }, [props.activeErrorMessages, dismissedErrors, trackDismissedErrorsInternally]);
+
+  const toShow = errorsToShow(
+    props.activeErrorMessages,
+    dismissedErrors,
+    props.ignorePremountErrors ? mountTimestamp.current : undefined
   );
 
-  const toShow = errorsToShow(props.activeErrors, dismissedErrors);
-
   return (
-    <Stack>
+    <Stack data-ui-id="notifications-stack">
       {toShow.map((error) => (
         <MessageBar
           {...props}
+          styles={{
+            innerText: {
+              alignSelf: 'center'
+            },
+            icon: {
+              height: 0
+            },
+            content: {
+              lineHeight: 'inherit'
+            },
+            dismissal: {
+              height: '2rem',
+              paddingBottom: '0.8rem'
+            }
+          }}
           key={error.type}
-          messageBarType={MessageBarType.error}
-          onDismiss={() => setDismissedErrors(dismissError(dismissedErrors, error))}
+          messageBarType={messageBarType(error.type)}
+          messageBarIconProps={messageBarIconProps(error.type)}
+          onDismiss={() =>
+            trackDismissedErrorsInternally
+              ? setDismissedErrors(dismissError(dismissedErrors, error))
+              : props.onDismissError?.(error)
+          }
+          dismissButtonAriaLabel={`${strings[error.type]}, ${strings.dismissButtonAriaLabel}`}
+          dismissIconProps={{ iconName: 'ErrorBarClear' }}
         >
           {strings[error.type]}
         </MessageBar>
       ))}
     </Stack>
   );
-};
-
-interface DismissedError {
-  type: ErrorType;
-  dismissedAt: Date;
-  activeSince?: Date;
-}
-
-// Always returns a new Array so that the state variable is updated, trigerring a render.
-const dismissError = (dismissedErrors: DismissedError[], toDismiss: ActiveError): DismissedError[] => {
-  const now = new Date(Date.now());
-  for (const error of dismissedErrors) {
-    if (error.type === toDismiss.type) {
-      // Bump the timestamp for latest dismissal of this error to now.
-      error.dismissedAt = now;
-      error.activeSince = toDismiss.timestamp;
-      return Array.from(dismissedErrors);
-    }
-  }
-
-  // Record that this error was dismissed for the first time right now.
-  return [
-    ...dismissedErrors,
-    {
-      type: toDismiss.type,
-      dismissedAt: now,
-      activeSince: toDismiss.timestamp
-    }
-  ];
-};
-
-// Returns a new Array if and only if contents change, to avoid re-rendering when nothing was dropped.
-const dropDismissalsForInactiveErrors = (
-  activeErrors: ActiveError[],
-  dismissedErrors: DismissedError[]
-): DismissedError[] => {
-  const active = new Map();
-  for (const error of activeErrors) {
-    active.set(error.type, error);
-  }
-
-  // For an error such that:
-  // * It was previously active, and dismissed.
-  // * It did not have a timestamp associated with it.
-  // * It is no longer active.
-  //
-  // We remove it from dismissals. When it becomes active again next time, it will be shown again on the UI.
-  const shouldDeleteDismissal = (dismissed: DismissedError): boolean =>
-    dismissed.activeSince === undefined && active.get(dismissed.type) === undefined;
-
-  if (dismissedErrors.some((dismissed) => shouldDeleteDismissal(dismissed))) {
-    return dismissedErrors.filter((dismissed) => !shouldDeleteDismissal(dismissed));
-  }
-  return dismissedErrors;
-};
-
-const errorsToShow = (activeErrors: ActiveError[], dismissedErrors: DismissedError[]): ActiveError[] => {
-  const dismissed: Map<ErrorType, DismissedError> = new Map();
-  for (const error of dismissedErrors) {
-    dismissed.set(error.type, error);
-  }
-
-  return activeErrors.filter((error) => {
-    const dismissal = dismissed.get(error.type);
-    if (!dismissal) {
-      // This error was never dismissed.
-      return true;
-    }
-    if (!error.timestamp) {
-      // No timestamp associated with the error. In this case, the existence of a dismissal is enough to suppress the error.
-      return false;
-    }
-    // Error has an associated timestamp, so compare with last dismissal.
-    return error.timestamp > dismissal.dismissedAt;
-  });
 };

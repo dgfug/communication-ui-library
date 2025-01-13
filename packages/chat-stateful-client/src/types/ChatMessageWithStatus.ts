@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { ChatMessage } from '@azure/communication-chat';
 import { MessageStatus } from '@internal/acs-ui-common';
@@ -15,4 +15,13 @@ import { MessageStatus } from '@internal/acs-ui-common';
 export type ChatMessageWithStatus = ChatMessage & {
   clientMessageId?: string;
   status: MessageStatus;
+  resourceCache?: Record<string, ResourceFetchResult>;
+};
+/**
+ * Result of the Resource downloaded from stateful client
+ * @public
+ */
+export type ResourceFetchResult = {
+  sourceUrl?: string;
+  error?: Error;
 };

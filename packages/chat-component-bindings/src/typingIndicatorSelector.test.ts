@@ -1,9 +1,12 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { TypingIndicatorReceivedEvent } from '@azure/communication-signaling';
+import { TypingIndicatorReceivedEvent } from '@azure/communication-chat';
 import { toFlatCommunicationIdentifier } from '@internal/acs-ui-common';
 import { typingIndicatorSelector } from './typingIndicatorSelector';
+
+// TODO: Make it type safe when update unit tests
+const typingIndicatorSelectorResultFunc = (typingIndicatorSelector as any).resultFunc;
 
 describe('typingIndicatorSelector tests', () => {
   test('should filter typing indicators from participant that is the user', async (): Promise<void> => {
@@ -23,7 +26,7 @@ describe('typingIndicatorSelector tests', () => {
         displayName: 'User1'
       }
     };
-    const result = typingIndicatorSelector.resultFunc(
+    const result = typingIndicatorSelectorResultFunc(
       orderedTypingIndicators,
       participants,
       toFlatCommunicationIdentifier({
@@ -62,7 +65,7 @@ describe('typingIndicatorSelector tests', () => {
         displayName: 'User2'
       }
     };
-    const result = typingIndicatorSelector.resultFunc(
+    const result = typingIndicatorSelectorResultFunc(
       orderedTypingIndicators,
       participants,
       toFlatCommunicationIdentifier({
@@ -122,7 +125,7 @@ describe('typingIndicatorSelector tests', () => {
         displayName: 'User4'
       }
     };
-    const result = typingIndicatorSelector.resultFunc(
+    const result = typingIndicatorSelectorResultFunc(
       orderedTypingIndicators,
       participants,
       toFlatCommunicationIdentifier({
@@ -179,7 +182,7 @@ describe('typingIndicatorSelector tests', () => {
         displayName: 'User7'
       }
     };
-    const result = typingIndicatorSelector.resultFunc(
+    const result = typingIndicatorSelectorResultFunc(
       orderedTypingIndicators,
       participants,
       toFlatCommunicationIdentifier({
@@ -203,11 +206,11 @@ describe('typingIndicatorSelector tests', () => {
         receivedOn: new Date()
       }
     ];
-    const participants = {};
+    const participants: { [key: number]: { id: string; displayName: string } } = {};
     Array.from(Array(20).keys()).forEach(
       (num) => (participants[`${num}`] = { id: `${num}`, displayName: `User${num}` })
     );
-    const result = typingIndicatorSelector.resultFunc(
+    const result = typingIndicatorSelectorResultFunc(
       orderedTypingIndicators,
       participants,
       toFlatCommunicationIdentifier({

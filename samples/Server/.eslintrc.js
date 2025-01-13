@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 module.exports = {
   env: {
@@ -26,12 +26,14 @@ module.exports = {
       }
     ],
     eqeqeq: 'warn',
-    'header/header': ['error', 'line', ' Copyright (c) Microsoft Corporation.\n Licensed under the MIT license.'],
+    '@typescript-eslint/no-non-null-assertion': 'error',
+    'header/header': ['error', 'line', ' Copyright (c) Microsoft Corporation.\n Licensed under the MIT License.'],
     'react/display-name': 'off',
 
     '@typescript-eslint/no-explicit-any': 'error',
     // Allow unused vars for routing funtions
-    '@typescript-eslint/no-unused-vars': ['off']
+    '@typescript-eslint/no-unused-vars': ['off'],
+    curly: 'error'
   },
   overrides: [
     {

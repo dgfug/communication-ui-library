@@ -1,16 +1,16 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { Icon, PrimaryButton, Separator, Stack, TextField } from '@fluentui/react';
 import {
   copyIconStyle,
   copyLinkButtonStyle,
+  buttonWithIconStyles,
   footerMainTextStyle,
   paneFooterStyles,
   paneFooterTokens,
   textFieldStyles
 } from '../styles/Footer.styles';
-
 import React from 'react';
 
 const invitePeopleString = 'Invite people to join';
@@ -28,10 +28,13 @@ export const Footer = (): JSX.Element => {
       <Separator />
       <div className={footerMainTextStyle}>{invitePeopleString}</div>
       <TextField styles={textFieldStyles} id="inputText" type="text" value={`${document.baseURI}`}></TextField>
-      <PrimaryButton className={copyLinkButtonStyle} onClick={copyJoinLink}>
-        <Icon iconName="Copy" className={copyIconStyle} />
-        {copyJoinInfoString}
-      </PrimaryButton>
+      <PrimaryButton
+        className={copyLinkButtonStyle}
+        styles={buttonWithIconStyles}
+        text={copyJoinInfoString}
+        onClick={copyJoinLink}
+        onRenderIcon={() => <Icon iconName="Copy" className={copyIconStyle} />}
+      />
     </Stack>
   );
 };

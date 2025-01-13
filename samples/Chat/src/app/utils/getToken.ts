@@ -1,44 +1,24 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 export type UserToken = {
-  expiresIn: number;
+  expiresOn: number;
   identity: string;
   token: string;
 };
 
-// TODO: Need to revisit if cachedUserToken with respect to auto refresh token
-let cachedUserToken: UserToken | undefined = undefined;
-
 /**
- * This is implemented by contoso and passed to ChatProvider to use.
+ * This is implemented by contoso and passed to createAzureCommunicationChatAdapter
  */
 export const getToken = async (): Promise<UserToken> => {
-  if (!cachedUserToken) {
-    try {
-      const getTokenRequestOptions = {
-        method: 'POST'
-      };
-      const getTokenResponse = await fetch('/token', getTokenRequestOptions);
-      cachedUserToken = (await getTokenResponse.json().then((_responseJson) => {
-        return {
-          expiresOn: _responseJson.expiresOn,
-          identity: _responseJson.user.communicationUserId,
-          token: _responseJson.token
-        };
-      })) as UserToken;
-    } catch (error) {
-      console.error('Failed at getting token, Error: ', error);
-    }
-  }
-
-  if (!cachedUserToken) {
-    throw new Error('user token undefined');
-  }
-
-  return cachedUserToken;
+  const getTokenRequestOptions = {
+    method: 'POST'
+  };
+  const getTokenResponse = await fetch('token?scope=chat', getTokenRequestOptions);
+  const responseJson = await getTokenResponse.json();
+  return {
+    expiresOn: responseJson.expiresOn,
+    identity: responseJson.user.communicationUserId,
+    token: responseJson.token
+  };
 };
-
-export function clearCachedUserToken(): void {
-  cachedUserToken = undefined;
-}

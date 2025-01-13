@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { CallClientState, StatefulCallClient } from '@internal/calling-stateful-client';
-import { CallClientContext, useCall } from '../providers';
+import { CallClientContext, CallContext } from '../providers';
 
 import { useState, useEffect, useRef, useMemo, useContext } from 'react';
 
@@ -22,7 +22,7 @@ export const useSelector = <
   selectorProps?: Parameters<SelectorT>[1]
 ): ParamT extends SelectorT ? ReturnType<SelectorT> : undefined => {
   const callClient: StatefulCallClient | undefined = useContext(CallClientContext)?.callClient;
-  const callId = useCall()?.id;
+  const callId = useContext(CallContext)?.call?.id;
 
   // Keeps track of whether the current component is mounted or not. If it has unmounted, make sure we do not modify the
   // state or it will cause React warnings in the console. https://skype.visualstudio.com/SPOOL/_workitems/edit/2453212
@@ -48,7 +48,9 @@ export const useSelector = <
   const propRef = useRef(props);
   propRef.current = props;
   useEffect(() => {
-    if (!callClient || !selector) return;
+    if (!callClient || !selector) {
+      return;
+    }
     const onStateChange = (state: CallClientState): void => {
       if (!mounted.current) {
         return;

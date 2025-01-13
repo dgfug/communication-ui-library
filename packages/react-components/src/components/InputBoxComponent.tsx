@@ -1,37 +1,44 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import React, { useState, ReactNode, FormEvent, useCallback } from 'react';
-import { Stack, TextField, mergeStyles, IStyle, ITextField, concatStyleSets } from '@fluentui/react';
-import { BaseCustomStylesProps } from '../types';
+import React, { ReactNode, FormEvent, useCallback } from 'react';
+
+import { Stack, TextField, mergeStyles, IStyle, ITextField, concatStyleSets, ITextFieldProps } from '@fluentui/react';
+import { BaseCustomStyles } from '../types';
+import { isEnterKeyEventFromCompositionSession } from './utils';
+
 import {
   inputBoxStyle,
   inputBoxWrapperStyle,
-  inputButtonContainerStyle,
-  inputButtonStyle,
-  textFieldStyle
+  textFieldStyle,
+  textContainerStyle
 } from './styles/InputBoxComponent.style';
 
-import { isDarkThemed } from '../theming/themeUtils';
-import { useTheme } from '../theming/FluentThemeProvider';
+/* @conditional-compile-remove(mention) */
+import { MentionLookupOptions } from './MentionPopover';
+/* @conditional-compile-remove(mention) */
+import { TextFieldWithMention, TextFieldWithMentionProps } from './TextFieldWithMention/TextFieldWithMention';
 
 /**
  * @private
  */
-export interface InputBoxStylesProps extends BaseCustomStylesProps {
+export interface InputBoxStylesProps extends BaseCustomStyles {
   /** Styles for the text field. */
   textField?: IStyle;
 
   /** Styles for the system message; These styles will be ignored when a custom system message component is provided. */
   systemMessage?: IStyle;
+
+  /** Styles for customizing the container of the text field */
+  textFieldContainer?: IStyle;
 }
 
 type InputBoxComponentProps = {
-  children: ReactNode;
+  children?: ReactNode;
   'data-ui-id'?: string;
   id?: string;
-  textValue: string;
-  onChange: (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string | undefined) => void;
+  textValue: string; // This could be plain text or HTML.
+  onChange: (event?: FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => void;
   textFieldRef?: React.RefObject<ITextField>;
   inputClassName?: string;
   placeholderText?: string;
@@ -42,6 +49,9 @@ type InputBoxComponentProps = {
   errorMessage?: string | React.ReactElement;
   disabled?: boolean;
   styles?: InputBoxStylesProps;
+  autoFocus?: 'sendBoxTextField';
+  /* @conditional-compile-remove(mention) */
+  mentionLookupOptions?: MentionLookupOptions;
 };
 
 /**
@@ -64,21 +74,24 @@ export const InputBoxComponent = (props: InputBoxComponentProps): JSX.Element =>
     disabled,
     children
   } = props;
-
-  const theme = useTheme();
   const mergedRootStyle = mergeStyles(inputBoxWrapperStyle, styles?.root);
-  const mergedTextFiledStyle = mergeStyles(inputBoxStyle, inputClassName);
+  const mergedInputFieldStyle = mergeStyles(inputBoxStyle, inputClassName);
 
-  const mergedTextFieldStyle = concatStyleSets(
-    textFieldStyle(isDarkThemed(theme) ? '#f1707b' : '#a80000', !!errorMessage, !!disabled),
-    {
-      fieldGroup: styles?.textField,
-      errorMessage: styles?.systemMessage
+  const mergedTextContainerStyle = mergeStyles(textContainerStyle, styles?.textFieldContainer);
+  const mergedTextFieldStyle = concatStyleSets(textFieldStyle, {
+    fieldGroup: styles?.textField,
+    errorMessage: styles?.systemMessage,
+    suffix: {
+      backgroundColor: 'transparent',
+      padding: '0 0'
     }
-  );
+  });
 
-  const onTexFieldKeyDown = useCallback(
+  const onTextFieldKeyDown = useCallback(
     (ev: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      if (isEnterKeyEventFromCompositionSession(ev.nativeEvent)) {
+        return;
+      }
       if (ev.key === 'Enter' && (ev.shiftKey === false || !supportNewline)) {
         ev.preventDefault();
         onEnterKeyDown && onEnterKeyDown();
@@ -88,66 +101,66 @@ export const InputBoxComponent = (props: InputBoxComponentProps): JSX.Element =>
     [onEnterKeyDown, onKeyDown, supportNewline]
   );
 
-  return (
-    <Stack className={mergedRootStyle}>
-      <div style={{ position: 'relative' }}>
+  const onRenderChildren = (): JSX.Element => {
+    return <>{children}</>;
+  };
+
+  const renderTextField = (): JSX.Element => {
+    const textFieldProps: ITextFieldProps = {
+      autoFocus: props.autoFocus === 'sendBoxTextField',
+      multiline: true,
+      autoAdjustHeight: true,
+      multiple: false,
+      resizable: false,
+      componentRef: textFieldRef,
+      id,
+      inputClassName: mergedInputFieldStyle,
+      placeholder: placeholderText,
+      autoComplete: 'off',
+      styles: mergedTextFieldStyle,
+      disabled,
+      errorMessage,
+      onRenderSuffix: props.children ? onRenderChildren : undefined
+    };
+
+    /* @conditional-compile-remove(mention) */
+    const textFieldWithMentionProps: TextFieldWithMentionProps = {
+      textFieldProps: textFieldProps,
+      dataUiId: dataUiId,
+      textValue: textValue,
+      onChange: onChange,
+      onKeyDown: onKeyDown,
+      onEnterKeyDown: onEnterKeyDown,
+      textFieldRef: textFieldRef,
+      supportNewline: supportNewline,
+      mentionLookupOptions: props.mentionLookupOptions
+    };
+    /* @conditional-compile-remove(mention) */
+    if (props.mentionLookupOptions) {
+      return <TextFieldWithMention {...textFieldWithMentionProps} />;
+    }
+    return (
+      <div style={textFieldProps.errorMessage ? { padding: '0 0 5px 5px' } : undefined}>
         <TextField
+          {...textFieldProps}
           data-ui-id={dataUiId}
-          multiline
-          autoAdjustHeight
-          multiple={false}
-          resizable={false}
-          componentRef={textFieldRef}
-          id={id}
-          ariaLabel={'Type'}
-          inputClassName={mergedTextFiledStyle}
-          placeholder={placeholderText}
           value={textValue}
           onChange={onChange}
-          autoComplete="off"
-          onKeyDown={onTexFieldKeyDown}
-          styles={mergedTextFieldStyle}
-          disabled={disabled}
-          errorMessage={errorMessage}
+          onKeyDown={onTextFieldKeyDown}
+          onFocus={(e) => {
+            // Fix for setting the cursor to the correct position when multiline is true
+            // This approach should be reviewed during migration to FluentUI v9
+            e.currentTarget.value = '';
+            e.currentTarget.value = textValue;
+          }}
         />
-        <div className={inputButtonContainerStyle(theme.rtl)}>{children}</div>
       </div>
-    </Stack>
-  );
-};
+    );
+  };
 
-/**
- * Props for dispalying a send button besides the text input area.
- *
- * @public
- */
-export type InputBoxButtonProps = {
-  onRenderIcon: (props: InputBoxButtonProps, isMouseOverSendIcon: boolean) => JSX.Element;
-  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  className?: string;
-  id?: string;
-};
-
-/**
- * @private
- */
-export const InputBoxButton = (props: InputBoxButtonProps): JSX.Element => {
-  const { onRenderIcon, onClick, className, id } = props;
-  const [isMouseOverSendIcon, setIsMouseOverSendIcon] = useState(false);
-  const mergedButtonStyle = mergeStyles(inputButtonStyle, className);
   return (
-    <div
-      className={mergedButtonStyle}
-      onClick={onClick}
-      id={id}
-      onMouseEnter={() => {
-        setIsMouseOverSendIcon(true);
-      }}
-      onMouseLeave={() => {
-        setIsMouseOverSendIcon(false);
-      }}
-    >
-      {onRenderIcon(props, isMouseOverSendIcon)}
-    </div>
+    <Stack className={mergedRootStyle}>
+      <div className={mergedTextContainerStyle}>{renderTextField()}</div>
+    </Stack>
   );
 };

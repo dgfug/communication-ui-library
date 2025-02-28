@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { mergeStyles } from '@fluentui/react';
 
@@ -7,7 +7,9 @@ import { mergeStyles } from '@fluentui/react';
  * @private
  */
 export const typingIndicatorContainerStyle = mergeStyles({
-  height: '2.125rem'
+  minHeight: '2.125rem',
+  // flexFlow set to column-reverse to align the text to the bottom of the container
+  flexFlow: 'column-reverse'
 });
 
 /**
@@ -15,16 +17,7 @@ export const typingIndicatorContainerStyle = mergeStyles({
  */
 export const typingIndicatorStringStyle = mergeStyles({
   fontWeight: 400,
-  whiteSpace: 'pre',
-  display: 'flex',
-  alignItems: 'center'
-});
-
-/**
- * @private
- */
-export const typingIndicatorPrefixImageStyle = mergeStyles({
-  width: '2.125rem',
-  height: '2.125rem',
-  paddingRight: '0.1875rem'
+  width: '100%',
+  alignSelf: 'center',
+  wordBreak: 'break-word'
 });

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 let endpointUrl: string | undefined;
 
@@ -9,7 +9,7 @@ export const getEndpointUrl = async (): Promise<string> => {
       const getRequestOptions = {
         method: 'GET'
       };
-      const response = await fetch('/getEndpointUrl', getRequestOptions);
+      const response = await fetch('getEndpointUrl', getRequestOptions);
       const retrievedendpointUrl = await response.text().then((endpointUrl) => endpointUrl);
       endpointUrl = retrievedendpointUrl;
       return retrievedendpointUrl;

@@ -1,28 +1,10 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-export { createStatefulCallClient } from './StatefulCallClient';
-export type { StatefulCallClient, StatefulCallClientArgs, StatefulCallClientOptions } from './StatefulCallClient';
-export type { StatefulDeviceManager } from './DeviceManagerDeclarative';
-export type {
-  CallAgentState,
-  CallClientState,
-  CallError,
-  CallErrors,
-  CallErrorTarget,
-  CallState,
-  DeviceManagerState,
-  DiagnosticsCallFeatureState,
-  IncomingCallState,
-  LocalVideoStreamState,
-  MediaDiagnosticsState,
-  NetworkDiagnosticsState,
-  RecordingCallFeatureState as RecordingCallFeature,
-  RemoteParticipantState,
-  RemoteVideoStreamState,
-  TranscriptionCallFeatureState as TranscriptionCallFeature,
-  Transfer,
-  TransferCallFeatureState,
-  TransferRequest,
-  VideoStreamRendererViewState
-} from './CallClientState';
+export * from './index-public';
+
+export { _createStatefulCallClientInner } from './StatefulCallClient';
+
+export { _isACSCall, _isACSCallAgent, _isTeamsCall, _isTeamsCallAgent } from './TypeGuards';
+
+export type { CallAgentCommon, CallCommon, TeamsCall } from './BetaToStableTypes';

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { PagedAsyncIterableIterator } from '@azure/core-paging';
 import { ChatMessage, ChatMessageReadReceipt, ChatParticipant, ChatThreadClient } from '@azure/communication-chat';
@@ -13,7 +13,7 @@ import {
   mockReadReceipts
 } from './mocks/createMockChatThreadClient';
 import { StateChangeListener, createMockChatClient, defaultClientArgs, failingPagedAsyncIterator } from './TestHelpers';
-import { createStatefulChatClientWithDeps, StatefulChatClient } from './StatefulChatClient';
+import { _createStatefulChatClientWithDeps, StatefulChatClient } from './StatefulChatClient';
 import { ChatError } from './ChatClientState';
 
 const threadId = '1';
@@ -101,10 +101,11 @@ describe('declarative chatThreadClient list iterators', () => {
   test('declarative listReadReceipts should generate latestReadTime properly', async () => {
     const context = new ChatContext();
     const pages = createMockChatClientAndDeclaratify(context).listReadReceipts().byPage();
+    // eslint-disable-next-line curly
     for await (const _page of pages);
     const latestReadTime = context.getState().threads[threadId]?.latestReadTime;
 
-    const maxReadTime = mockReadReceipts[mockReadReceipts.length - 1].readOn;
+    const maxReadTime = mockReadReceipts[mockReadReceipts.length - 1]?.readOn;
     expect(latestReadTime && latestReadTime).toBe(maxReadTime);
   });
 });
@@ -127,16 +128,16 @@ describe('declarative chatThreadClient basic api functions', () => {
     const chatMessages = Object.values(context.getState().threads[threadId]?.chatMessages ?? {});
 
     expect(chatMessages.length).toBe(1);
-    expect(chatMessages[0].clientMessageId).toBeDefined();
-    expect(chatMessages[0].status).toBe('sending');
+    expect(chatMessages[0]?.clientMessageId).toBeDefined();
+    expect(chatMessages[0]?.status).toBe('sending');
 
     // await sending message result
     const result = await sendMessagePromise;
     const chatMessagesAfterSending = Object.values(context.getState().threads[threadId]?.chatMessages ?? {});
 
-    expect(chatMessagesAfterSending[0].id).toBe(result.id);
-    expect(chatMessagesAfterSending[0].content?.message).toBe(content);
-    expect(chatMessagesAfterSending[0].status).toBe('delivered');
+    expect(chatMessagesAfterSending[0]?.id).toBe(result.id);
+    expect(chatMessagesAfterSending[0]?.content?.message).toBe(content);
+    expect(chatMessagesAfterSending[0]?.status).toBe('delivered');
   });
 
   test('set internal store correctly when proxy sendMessage', async () => {
@@ -156,8 +157,8 @@ describe('declarative chatThreadClient basic api functions', () => {
     const chatMessagesAfterSending = Object.values(context.getState().threads[threadId]?.chatMessages ?? {});
 
     expect(failResult).toBeTruthy();
-    expect(chatMessagesAfterSending[0].content?.message).toBe(content);
-    expect(chatMessagesAfterSending[0].status).toBe('failed');
+    expect(chatMessagesAfterSending[0]?.content?.message).toBe(content);
+    expect(chatMessagesAfterSending[0]?.status).toBe('failed');
   });
 
   test('should be able to proxy add participants and remove participants', async () => {
@@ -173,7 +174,7 @@ describe('declarative chatThreadClient basic api functions', () => {
     expect(Object.keys(participantsInContext).length).toBe(2);
 
     // Test removal function
-    await mockClient.removeParticipant(participants[0].id);
+    await mockClient.removeParticipant({ communicationUserId: 'User1' });
 
     const participantsAfterRemoval = Array.from(
       Object.values(context.getState().threads[threadId]?.participants ?? {}) ?? []
@@ -316,6 +317,17 @@ describe('stateful chatThreadClient correctly wraps errors', () => {
     );
   });
 
+  test('when sendTypingNotification fails', async () => {
+    const chatThreadClient = createMockChatThreadClient('threadId');
+    chatThreadClient.sendTypingNotification = async (): Promise<boolean> => {
+      throw new Error('injected error');
+    };
+    const client = createMockChatClientWithChatThreadClient(chatThreadClient);
+    await expect(client.getChatThreadClient('threadId').sendTypingNotification()).rejects.toThrow(
+      new ChatError('ChatThreadClient.sendTypingNotification', new Error('injected error'))
+    );
+  });
+
   test('when sendMessage fails', async () => {
     const chatThreadClient = createMockChatThreadClient('threadId');
     chatThreadClient.sendMessage = async (): Promise<any> => {
@@ -430,5 +442,5 @@ const createMockChatClientWithChatThreadClient = (chatThreadClient: ChatThreadCl
   client.getChatThreadClient = () => {
     return chatThreadClient;
   };
-  return createStatefulChatClientWithDeps(client, defaultClientArgs);
+  return _createStatefulChatClientWithDeps(client, defaultClientArgs);
 };

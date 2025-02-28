@@ -1,13 +1,70 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { Icon, IContextualMenuItem, PersonaPresence, Stack } from '@fluentui/react';
-import React, { useMemo } from 'react';
+import {
+  Icon,
+  IContextualMenuItem,
+  IContextualMenuItemStyles,
+  merge,
+  mergeStyles,
+  PersonaPresence,
+  Stack,
+  Theme
+} from '@fluentui/react';
+import { Text } from '@fluentui/react';
+import { useTheme, CallingTheme } from '../theming';
+import { RaisedHandIcon } from './assets/RaisedHandIcon';
+import React, { useCallback, useMemo } from 'react';
 import { useIdentifiers } from '../identifiers';
 import { useLocale } from '../localization';
-import { CallParticipant, CommunicationParticipant, OnRenderAvatarCallback } from '../types';
-import { ParticipantItem } from './ParticipantItem';
+import {
+  BaseCustomStyles,
+  CallParticipantListParticipant,
+  OnRenderAvatarCallback,
+  ParticipantListParticipant
+} from '../types';
+import { CustomAvatarOptions } from '../types';
+import {
+  formatParticipantStateString,
+  ParticipantItem,
+  ParticipantItemStrings,
+  ParticipantItemStyles
+} from './ParticipantItem';
 import { iconStyles, participantListItemStyle, participantListStyle } from './styles/ParticipantList.styles';
+import { _formatString } from '@internal/acs-ui-common';
+
+/**
+ * Styles for the {@link ParticipantList} {@link ParticipantItem}.
+ *
+ * @public
+ */
+export interface ParticipantListItemStyles extends ParticipantItemStyles {
+  /** Styles applied to the sub-menu of the {@link ParticipantList} {@link ParticipantItem}. */
+  participantSubMenuItemsStyles?: IContextualMenuItemStyles;
+}
+
+/**
+ * Styles for the {@link ParticipantList}.
+ *
+ * @public
+ */
+export interface ParticipantListStyles extends BaseCustomStyles {
+  /** Styles for the {@link ParticipantList} {@link ParticipantItem}. */
+  participantItemStyles?: ParticipantListItemStyles;
+}
+
+/* @conditional-compile-remove(total-participant-count) */
+/**
+ * Strings for the {@link ParticipantList}.
+ *
+ * @beta
+ */
+export interface ParticipantListStrings {
+  /**
+   * String for rendering the count of participants not contained in the displayed participant list
+   */
+  overflowParticipantCount?: string;
+}
 
 /**
  * A callback for providing custom menu items for each participant in {@link ParticipantList}.
@@ -27,7 +84,7 @@ export type ParticipantMenuItemsCallback = (
  */
 export type ParticipantListProps = {
   /** Participants in user call or chat */
-  participants: CommunicationParticipant[];
+  participants: ParticipantListParticipant[];
   /** User ID of user */
   myUserId?: string;
   /**
@@ -37,73 +94,207 @@ export type ParticipantListProps = {
    */
   excludeMe?: boolean;
   /** Optional callback to render each participant. If no callback is provided, each participant will be rendered with `ParticipantItem`  */
-  onRenderParticipant?: (participant: CommunicationParticipant) => JSX.Element | null;
+  onRenderParticipant?: (participant: ParticipantListParticipant) => JSX.Element | null;
   /** Optional callback to render the avatar for each participant. This property will have no effect if `onRenderParticipant` is assigned.  */
   onRenderAvatar?: OnRenderAvatarCallback;
   /** Optional callback to render the context menu for each participant  */
-  onParticipantRemove?: (userId: string) => void;
+  onRemoveParticipant?: (userId: string) => void;
   /** Optional callback to render custom menu items for each participant. */
   onFetchParticipantMenuItems?: ParticipantMenuItemsCallback;
+  /** Optional callback when rendered ParticipantItem is clicked */
+  onParticipantClick?: (participant?: ParticipantListParticipant) => void;
+  /** Optional callback to render a context menu to mute a participant */
+  onMuteParticipant?: (userId: string) => Promise<void>;
+  styles?: ParticipantListStyles;
+  /** Optional value to determine if the tooltip should be shown for participants or not */
+  showParticipantOverflowTooltip?: boolean;
+  /* @conditional-compile-remove(total-participant-count) */
+  /** Total number of people in the call. This number can be larger than the remote participant count. */
+  totalParticipantCount?: number;
+  /* @conditional-compile-remove(total-participant-count) */
+  /** Strings for the participant list */
+  strings?: ParticipantListStrings;
+  /** Optional aria-labelledby prop that prefixes each ParticipantItem aria-label */
+  participantAriaLabelledBy?: string;
+  /** List of pinned participants */
+  pinnedParticipants?: string[];
 };
 
 const onRenderParticipantDefault = (
-  participant: CommunicationParticipant,
+  participant: ParticipantListParticipant,
+  strings: ParticipantItemStrings,
   myUserId?: string,
-  onParticipantRemove?: (userId: string) => void,
   onRenderAvatar?: OnRenderAvatarCallback,
-  createParticipantMenuItems?: (participant: CommunicationParticipant) => IContextualMenuItem[]
+  createParticipantMenuItems?: (participant: ParticipantListParticipant) => IContextualMenuItem[],
+  styles?: ParticipantListItemStyles,
+  onParticipantClick?: (participant?: ParticipantListParticipant) => void,
+  showParticipantOverflowTooltip?: boolean,
+  participantAriaLabelledBy?: string,
+  theme?: Theme,
+  pinnedParticipants?: string[]
 ): JSX.Element | null => {
-  // Try to consider CommunicationParticipant as CallParticipant
-  const callingParticipant = participant as CallParticipant;
+  const callingParticipant = participant as CallParticipantListParticipant;
 
   let presence: PersonaPresence | undefined = undefined;
   if (callingParticipant) {
-    if (callingParticipant.state === 'Connected') {
-      presence = PersonaPresence.online;
-    } else if (callingParticipant.state === 'Idle') {
-      presence = PersonaPresence.away;
-    }
+    presence = PersonaPresence.none;
   }
 
   const menuItems = createParticipantMenuItems && createParticipantMenuItems(participant);
 
-  const onRenderIcon =
-    callingParticipant?.isScreenSharing || callingParticipant?.isMuted
-      ? () => (
-          <Stack horizontal={true} tokens={{ childrenGap: '0.5rem' }}>
-            {callingParticipant.isScreenSharing && (
-              <Icon iconName="ParticipantItemScreenShareStart" className={iconStyles} ariaLabel={'Sharing'} />
-            )}
-            {callingParticipant.isMuted && (
-              <Icon iconName="ParticipantItemMicOff" className={iconStyles} ariaLabel={'Muted'} />
-            )}
-          </Stack>
-        )
-      : () => null;
+  const formatDisplayName = (displayName?: string): string | undefined => {
+    if (displayName && strings.attendeeRole) {
+      return _formatString(displayName, { AttendeeRole: strings.attendeeRole });
+    }
+    return displayName;
+  };
+  const displayName = formatDisplayName(participant.displayName);
 
-  if (participant.displayName) {
-    return (
-      <ParticipantItem
-        styles={participantListItemStyle}
-        key={participant.userId}
-        userId={participant.userId}
-        displayName={participant.displayName}
-        me={myUserId ? participant.userId === myUserId : false}
-        menuItems={menuItems}
-        presence={presence}
-        onRenderIcon={onRenderIcon}
-        onRenderAvatar={onRenderAvatar}
-      />
-    );
-  }
-  return null;
+  const callingPalette = (theme as unknown as CallingTheme).callingPalette;
+  const isPinned = pinnedParticipants && pinnedParticipants?.includes(participant.userId);
+  const isScreenSharing = callingParticipant?.isScreenSharing;
+  const isMuted = callingParticipant?.isMuted;
+  const hasRaisedHand = callingParticipant?.raisedHand;
+  const isAudioPermitted = callingParticipant?.mediaAccess ? callingParticipant.mediaAccess.isAudioPermitted : true;
+  const isVideoPermitted = callingParticipant?.mediaAccess ? callingParticipant.mediaAccess.isVideoPermitted : true;
+
+  const shouldRenderParticipantIcon =
+    isScreenSharing || isMuted || hasRaisedHand || isPinned || !isAudioPermitted || !isVideoPermitted;
+
+  const onRenderIcon = shouldRenderParticipantIcon
+    ? () => (
+        <Stack horizontal={true} tokens={{ childrenGap: '0.5rem' }}>
+          {callingParticipant.raisedHand && (
+            <Stack
+              horizontal={true}
+              tokens={{ childrenGap: '0.2rem' }}
+              style={{
+                alignItems: 'center',
+                padding: '0.1rem 0.2rem',
+                backgroundColor: theme?.palette.neutralLighter,
+                borderRadius: '0.3rem'
+              }}
+            >
+              {callingParticipant.raisedHand.raisedHandOrderPosition && (
+                <Stack.Item>
+                  <Text>{callingParticipant.raisedHand?.raisedHandOrderPosition}</Text>
+                </Stack.Item>
+              )}
+              <Stack.Item>
+                <RaisedHandIcon />
+              </Stack.Item>
+            </Stack>
+          )}
+          {callingParticipant.isScreenSharing && (
+            <Icon
+              iconName="ParticipantItemScreenShareStart"
+              className={iconStyles}
+              ariaLabel={strings.sharingIconLabel}
+            />
+          )}
+          {callingParticipant.spotlight && <Icon iconName="ParticipantItemSpotlighted" className={iconStyles} />}
+          {isPinned && <Icon iconName="ParticipantItemPinned" className={iconStyles} />}
+          {callingParticipant.mediaAccess && !callingParticipant.mediaAccess.isVideoPermitted ? (
+            <Icon iconName="ControlButtonCameraProhibited" className={iconStyles} ariaLabel={strings.mutedIconLabel} />
+          ) : undefined}
+          {callingParticipant.mediaAccess && !callingParticipant.mediaAccess?.isAudioPermitted ? (
+            <Icon iconName="ControlButtonMicProhibited" className={iconStyles} ariaLabel={strings.mutedIconLabel} />
+          ) : undefined}
+          {(callingParticipant.mediaAccess ? callingParticipant.mediaAccess.isAudioPermitted : true) &&
+          callingParticipant.isMuted ? (
+            <Icon iconName="ParticipantItemMicOff" className={iconStyles} ariaLabel={strings.mutedIconLabel} />
+          ) : undefined}
+        </Stack>
+      )
+    : () => null;
+
+  const onRenderAvatarWithRaiseHand =
+    callingParticipant?.raisedHand && onRenderAvatar
+      ? (
+          userId?: string,
+          options?: CustomAvatarOptions,
+          defaultOnRender?: (props: CustomAvatarOptions) => JSX.Element
+        ) =>
+          onRenderAvatar(
+            userId,
+            { ...options, styles: { root: { border: callingPalette.raiseHandGold } } },
+            defaultOnRender
+          )
+      : onRenderAvatar;
+
+  const ariaLabelTemplate =
+    (menuItems && menuItems.length > 0 ? strings?.participantItemWithMoreOptionsAriaLabel : undefined) ??
+    strings?.participantItemAriaLabel;
+  const ariaLabel = _formatString(ariaLabelTemplate ?? '', {
+    displayName: displayName ?? '',
+    connectionState: formatParticipantStateString(callingParticipant, strings) ?? '',
+    mutedState: (callingParticipant.isMuted ? strings?.mutedIconLabel : undefined) ?? '',
+    micDisabledState:
+      (callingParticipant.mediaAccess?.isAudioPermitted === false ? strings?.micDisabledIconLabel : undefined) ?? '',
+    cameraDisabledState:
+      (callingParticipant.mediaAccess?.isVideoPermitted === false ? strings?.cameraDisabledIconLabel : undefined) ?? '',
+    sharingState: (callingParticipant.isScreenSharing ? strings?.sharingIconLabel : undefined) ?? '',
+    handRaisedState:
+      (callingParticipant.raisedHand?.raisedHandOrderPosition
+        ? _formatString(strings?.handRaisedIconLabel ?? '', {
+            position: callingParticipant.raisedHand?.raisedHandOrderPosition?.toString() ?? ''
+          })
+        : undefined) ?? ''
+  });
+
+  return (
+    <ParticipantItem
+      styles={styles}
+      key={participant.userId}
+      userId={participant.userId}
+      displayName={displayName}
+      me={myUserId ? participant.userId === myUserId : false}
+      menuItems={menuItems}
+      presence={presence}
+      onRenderIcon={onRenderIcon}
+      onRenderAvatar={onRenderAvatarWithRaiseHand}
+      onClick={onParticipantClick ? () => onParticipantClick?.(participant) : undefined}
+      showParticipantOverflowTooltip={showParticipantOverflowTooltip}
+      participantState={callingParticipant.state}
+      ariaLabelledBy={participantAriaLabelledBy}
+      strings={{
+        participantItemAriaLabel: ariaLabel
+      }}
+    />
+  );
+};
+
+/**
+ * Sort participants by raised hand order position
+ */
+const sortParticipants = (participants: ParticipantListParticipant[]): ParticipantListParticipant[] => {
+  const isParticipantListCallParticipant = function (participant: ParticipantListParticipant): boolean {
+    return 'raisedHand' in participant;
+  };
+
+  participants.sort((a, b) => {
+    if (!isParticipantListCallParticipant(a) || !isParticipantListCallParticipant(b)) {
+      return 0;
+    }
+    const callA = a as CallParticipantListParticipant;
+    const callB = b as CallParticipantListParticipant;
+    if (callA.raisedHand && callB.raisedHand) {
+      return callA.raisedHand.raisedHandOrderPosition - callB.raisedHand.raisedHandOrderPosition;
+    } else if (callA.raisedHand) {
+      return -1;
+    } else if (callB.raisedHand) {
+      return 1;
+    }
+    return 0;
+  });
+  return participants;
 };
 
 const getParticipantsForDefaultRender = (
-  participants: CommunicationParticipant[],
+  participants: ParticipantListParticipant[],
   excludeMe: boolean,
   myUserId: string | undefined
-): CommunicationParticipant[] => {
+): ParticipantListParticipant[] => {
   if (!excludeMe || !myUserId) {
     return [...participants];
   }
@@ -132,49 +323,111 @@ export const ParticipantList = (props: ParticipantListProps): JSX.Element => {
     excludeMe = false,
     myUserId,
     participants,
-    onParticipantRemove,
+    onRemoveParticipant,
     onRenderAvatar,
     onRenderParticipant,
-    onFetchParticipantMenuItems
+    onFetchParticipantMenuItems,
+    showParticipantOverflowTooltip,
+    /* @conditional-compile-remove(total-participant-count) */
+    totalParticipantCount,
+    /* @conditional-compile-remove(total-participant-count) */
+    strings,
+    participantAriaLabelledBy,
+    pinnedParticipants
   } = props;
 
+  const theme = useTheme();
   const ids = useIdentifiers();
-  const strings = useLocale().strings.participantItem;
+  const participantItemStrings = useLocale().strings.participantItem;
+  /* @conditional-compile-remove(total-participant-count) */
+  const participantListStrings = useLocale().strings.ParticipantList;
 
-  const displayedParticipants: CommunicationParticipant[] = useMemo(() => {
+  const displayedParticipants: ParticipantListParticipant[] = useMemo(() => {
     return onRenderParticipant ? participants : getParticipantsForDefaultRender(participants, excludeMe, myUserId);
   }, [participants, excludeMe, myUserId, onRenderParticipant]);
 
-  const createParticipantMenuItems = (participant): IContextualMenuItem[] => {
-    let menuItems: IContextualMenuItem[] = [];
-    if (participant.userId !== myUserId && onParticipantRemove) {
-      menuItems.push({
-        key: 'remove',
-        text: strings.removeButtonLabel,
-        onClick: () => onParticipantRemove(participant.userId)
-      });
-    }
+  sortParticipants(displayedParticipants);
 
-    if (onFetchParticipantMenuItems) {
-      menuItems = onFetchParticipantMenuItems(participant.userId, myUserId, menuItems);
-    }
+  const createParticipantMenuItems = useCallback(
+    (participant: ParticipantListParticipant): IContextualMenuItem[] => {
+      let menuItems: IContextualMenuItem[] = [];
 
-    return menuItems;
-  };
+      const participantIsRemovable = participant.isRemovable;
+      if (participant.userId !== myUserId && onRemoveParticipant && participantIsRemovable) {
+        menuItems.push({
+          key: 'remove',
+          text: participantItemStrings.removeButtonLabel,
+          onClick: () => onRemoveParticipant(participant.userId),
+          itemProps: {
+            styles: props.styles?.participantItemStyles?.participantSubMenuItemsStyles
+          },
+          iconProps: {
+            iconName: 'ContextMenuRemoveParticipant',
+            styles: { root: { lineHeight: 0 } }
+          },
+          'data-ui-id': ids.participantListRemoveParticipantButton
+        });
+      }
+
+      if (onFetchParticipantMenuItems) {
+        menuItems = onFetchParticipantMenuItems(participant.userId, myUserId, menuItems);
+      }
+
+      return menuItems;
+    },
+    [
+      ids.participantListRemoveParticipantButton,
+      myUserId,
+      onFetchParticipantMenuItems,
+      onRemoveParticipant,
+      props.styles?.participantItemStyles?.participantSubMenuItemsStyles,
+      participantItemStrings.removeButtonLabel
+    ]
+  );
+
+  const participantItemStyles = useMemo(
+    () => merge(participantListItemStyle, props.styles?.participantItemStyles),
+    [props.styles?.participantItemStyles]
+  );
+
+  /* @conditional-compile-remove(total-participant-count) */
+  const overflowParticipantCountString =
+    strings?.overflowParticipantCount ?? participantListStrings?.overflowParticipantCount;
 
   return (
-    <Stack data-ui-id={ids.participantList} className={participantListStyle}>
-      {displayedParticipants.map((participant: CommunicationParticipant) =>
+    <Stack
+      data-ui-id={ids.participantList}
+      className={mergeStyles(participantListStyle, props.styles?.root)}
+      role={'menu'}
+    >
+      {displayedParticipants.map((participant: ParticipantListParticipant) =>
         onRenderParticipant
           ? onRenderParticipant(participant)
           : onRenderParticipantDefault(
               participant,
+              participantItemStrings,
               myUserId,
-              onParticipantRemove,
               onRenderAvatar,
-              createParticipantMenuItems
+              createParticipantMenuItems,
+              participantItemStyles,
+              props.onParticipantClick,
+              showParticipantOverflowTooltip,
+              participantAriaLabelledBy,
+              theme,
+              pinnedParticipants
             )
       )}
+      {
+        /* @conditional-compile-remove(total-participant-count) */ overflowParticipantCountString &&
+          totalParticipantCount &&
+          totalParticipantCount > displayedParticipants.length && (
+            <Text style={{ fontWeight: 400, margin: '0.5rem' }}>
+              {_formatString(overflowParticipantCountString, {
+                overflowCount: `${totalParticipantCount - displayedParticipants.length}`
+              })}
+            </Text>
+          )
+      }
     </Stack>
   );
 };

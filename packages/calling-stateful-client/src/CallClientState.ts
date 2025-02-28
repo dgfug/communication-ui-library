@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import {
   AudioDeviceInfo,
@@ -9,82 +9,42 @@ import {
   CallState as CallStatus,
   DeviceAccess,
   DominantSpeakersInfo,
+  IncomingCallKind,
   LatestMediaDiagnostics,
   LatestNetworkDiagnostics,
   MediaStreamType,
+  ParticipantRole,
   RemoteParticipantState as RemoteParticipantStatus,
   ScalingMode,
-  TransferErrorCode,
-  TransferState,
-  VideoDeviceInfo
+  VideoDeviceInfo,
+  CommunicationServicesError
 } from '@azure/communication-calling';
-import {
-  CommunicationUserIdentifier,
-  CommunicationUserKind,
-  MicrosoftTeamsUserKind,
-  PhoneNumberIdentifier,
-  PhoneNumberKind,
-  UnknownIdentifierKind
-} from '@azure/communication-common';
-
-/**
- * State only version of {@link @azure/communication-calling#TransferRequestedEventArgs}. At the time of writing
- * Transfer Call is experimental. Not tested and not ready for consumption.
- *
- * @beta
- */
-export interface TransferRequest {
-  targetParticipant: CommunicationUserKind | PhoneNumberKind | MicrosoftTeamsUserKind;
-}
-
-/**
- * State only version of {@link @azure/communication-calling#Transfer}. At the time of writing Transfer Call is
- * experimental. Not tested and not ready for consumption.
- *
- * @beta
- */
-export interface Transfer {
-  /**
-   * Added by Declarative and used internally.
-   */
-  id: number;
-  /**
-   * Added by {@link StatefulClientClient}, stores the targetParticipant passed to
-   * {@link @azure/communication-calling#TransferCallFeature.transfer}
-   */
-  targetParticipant: CommunicationUserIdentifier | PhoneNumberIdentifier;
-  /**
-   * Proxy of {@link @azure/communication-calling#Transfer.state}.
-   */
-  state: TransferState;
-  /**
-   * Proxy of {@link @azure/communication-calling#Transfer.error}.
-   */
-  error?: TransferErrorCode;
-}
-
-/**
- * Holds all the state found in {@link @azure/communication-calling#TransferCallFeature} and
- * {@link @azure/communication-calling#Transfer}. At the time of writing Transfer Call is experimental. Not tested and
- * not ready for consumption.
- *
- * @beta
- */
-export interface TransferCallFeatureState {
-  /**
-   * These are requests received in the {@link @azure/communication-calling#TransferCallFeature}'s 'transferRequested'
-   * event. Only MAX_TRANSFER_REQUEST_LENGTH number of TransferRequest are kept in this array with the older ones being
-   * replaced by newer ones. To accept/reject a transfer request, the {@link @azure/communication-calling#Call} must be
-   * used (TODO: do we want to provide an API?).
-   */
-  receivedTransferRequests: TransferRequest[];
-  /**
-   * These are requests initiated by the local user using {@link StatefulCallClient.transfer}. Only
-   * MAX_TRANSFER_REQUEST_LENGTH number of TransferRequest are kept in this array with the older ones being replaced by
-   * newer ones.
-   */
-  requestedTransfers: Transfer[];
-}
+/* @conditional-compile-remove(breakout-rooms) */
+import { BreakoutRoom, BreakoutRoomsSettings } from '@azure/communication-calling';
+/* @conditional-compile-remove(remote-ufd) */
+import type {
+  ServerDiagnosticType,
+  MediaDiagnosticType,
+  NetworkDiagnosticType,
+  DiagnosticValueType,
+  DiagnosticQuality,
+  DiagnosticFlag
+} from '@azure/communication-calling';
+/* @conditional-compile-remove(rtt) */
+import { ParticipantInfo, RealTimeTextResultType } from '@azure/communication-calling';
+import { TeamsCallInfo } from '@azure/communication-calling';
+import { CallInfo } from '@azure/communication-calling';
+import { CapabilitiesChangeInfo, ParticipantCapabilities } from '@azure/communication-calling';
+import { CaptionsResultType } from '@azure/communication-calling';
+import { CaptionsKind } from '@azure/communication-calling';
+import { VideoEffectName } from '@azure/communication-calling';
+import { CallKind } from '@azure/communication-calling';
+import { EnvironmentInfo } from '@azure/communication-calling';
+import { CommunicationIdentifierKind } from '@azure/communication-common';
+import { ReactionMessage } from '@azure/communication-calling';
+import { SpotlightedParticipant } from '@azure/communication-calling';
+/* @conditional-compile-remove(local-recording-notification) */
+import { LocalRecordingInfo, RecordingInfo } from '@azure/communication-calling';
 
 /**
  * State only version of {@link @azure/communication-calling#CallAgent} except calls is moved to be a child directly of
@@ -102,6 +62,137 @@ export interface CallAgentState {
 }
 
 /**
+ * @public
+ */
+export interface CaptionsInfo {
+  /**
+   * The state in which this caption data can be classified.
+   */
+  resultType: CaptionsResultType;
+  /**
+   * The information of the call participant who spoke the captioned text.
+   */
+  speaker: CallerInfo;
+  /**
+   * The language that the spoken words were interpretted as. Corresponds to the language specified in startCaptions / setSpokenLanguage.
+   */
+  spokenLanguage: string;
+  /**
+   * The caption text.
+   */
+  captionText: string;
+  /**
+   * Timestamp of when the captioned words were initially spoken.
+   */
+  timestamp: Date;
+  /**
+   * Timestamp of when the captions were last updated.
+   */
+  lastUpdatedTimestamp?: Date;
+  /**
+   * The language that the captions are presented in. Corresponds to the captionLanguage specified in startCaptions / setCaptionLanguage.
+   */
+  captionLanguage?: string;
+  /**
+   * The original spoken caption text prior to translating to subtitle language
+   */
+  spokenText?: string;
+}
+
+/* @conditional-compile-remove(rtt) */
+/**
+ * @beta
+ */
+export interface RealTimeTextInfo {
+  /**
+   * The sequence id of the real time text.
+   */
+  sequenceId: number;
+  /**
+   * The sender of the real time text.
+   */
+  sender: ParticipantInfo;
+  /**
+   * The real time text message.
+   */
+  message: string;
+  /**
+   * The result type of the real time text message.
+   */
+  resultType: RealTimeTextResultType;
+  /**
+   * The timestamp when the real time text message was created.
+   */
+  receivedTimestamp?: Date;
+  /**
+   * The timestamp when the real time text message was last updated.
+   */
+  updatedTimestamp?: Date;
+  /**
+   * If message originated from the local participant
+   * default is false
+   */
+  isMe?: boolean;
+}
+
+/**
+ * @public
+ */
+export interface CaptionsCallFeatureState {
+  /**
+   * supported spoken languages
+   */
+  supportedSpokenLanguages: string[];
+  /**
+   * array of received captions
+   */
+  captions: CaptionsInfo[];
+  /**
+   * whether captions is on/off
+   */
+  isCaptionsFeatureActive: boolean;
+  /**
+   * whether start captions button is clicked or now
+   */
+  startCaptionsInProgress: boolean;
+  /**
+   * supported caption languages
+   */
+  supportedCaptionLanguages: string[];
+  /**
+   * current spoken language
+   */
+  currentSpokenLanguage: string;
+  /**
+   * current caption language
+   */
+  currentCaptionLanguage: string;
+  /**
+   * current caption kind: teams or acs captions
+   */
+  captionsKind: CaptionsKind;
+}
+
+/* @conditional-compile-remove(rtt) */
+/**
+ * @beta
+ */
+export interface RealTimeTextCallFeatureState {
+  /**
+   * array of received captions
+   */
+  realTimeTexts: {
+    completedMessages?: RealTimeTextInfo[];
+    currentInProgress?: RealTimeTextInfo[];
+    myInProgress?: RealTimeTextInfo;
+  };
+  /**
+   * whether real time text is on/off
+   */
+  isRealTimeTextFeatureActive?: boolean;
+}
+
+/**
  * State only version of {@link @azure/communication-calling#TranscriptionCallFeature}. {@link StatefulCallClient} will
  * automatically listen for transcription state of the call and update the state exposed by {@link StatefulCallClient}
  * accordingly.
@@ -116,6 +207,69 @@ export interface TranscriptionCallFeatureState {
 }
 
 /**
+ * State only version of {@link @azure/communication-calling#CapabilitiesFeature}
+ *
+ * @public
+ */
+export interface CapabilitiesFeatureState {
+  /**
+   * Proxy of {@link @azure/communication-calling#CapabilitiesFeature.capabilities}.
+   */
+  capabilities: ParticipantCapabilities;
+  /**
+   * Proxy of the latest {@link @azure/communication-calling#CapabilitiesChangeInfo}
+   */
+  latestCapabilitiesChangeInfo: CapabilitiesChangeInfo;
+}
+
+/**
+ * State only version of {@link @azure/communication-calling#SpotlightCallFeature}
+ *
+ * @public
+ */
+export interface SpotlightCallFeatureState {
+  /**
+   * Ordered array of spotlighted participants in call
+   */
+  spotlightedParticipants: SpotlightedParticipant[];
+  /**
+   * Local participant spotlight
+   */
+  localParticipantSpotlight?: SpotlightState;
+  /**
+   * Proxy of {@link @azure/communication-calling#SpotlightCallFeature.maxParticipantsToSpotlight}.
+   */
+  maxParticipantsToSpotlight: number;
+}
+
+/**
+ * Spotlight state with order
+ *
+ * @public
+ */
+export interface SpotlightState {
+  /**
+   * Order position of spotlight in call
+   */
+  spotlightedOrderPosition?: number;
+}
+
+/* @conditional-compile-remove(breakout-rooms) */
+/**
+ * Breakout rooms state
+ *
+ * @public
+ */
+export interface BreakoutRoomsState {
+  /** Breakout room assigned to local user in call */
+  assignedBreakoutRoom?: BreakoutRoom;
+  /** Breakout room settings of call. This is defined when call is a breakout room. */
+  breakoutRoomSettings?: BreakoutRoomsSettings;
+  /** Display name of breakout room. This is defined when call is a breakout room. */
+  breakoutRoomDisplayName?: string;
+}
+
+/**
  * State only version of {@link @azure/communication-calling#RecordingCallFeature}. {@link StatefulCallClient} will
  * automatically listen for recording state of the call and update the state exposed by {@link StatefulCallClient} accordingly.
  *
@@ -126,7 +280,167 @@ export interface RecordingCallFeatureState {
    * Proxy of {@link @azure/communication-calling#RecordingCallFeature.isRecordingActive}.
    */
   isRecordingActive: boolean;
+  /* @conditional-compile-remove(local-recording-notification) */
+  /**
+   * Contains list of information of started recordings
+   * Proxy of {@link @azure/communication-calling#RecordingCallFeature.recordings}.
+   */
+  activeRecordings?: RecordingInfo[];
+  /* @conditional-compile-remove(local-recording-notification) */
+  /**
+   * Contains list of information of stopped recordings
+   */
+  lastStoppedRecording?: RecordingInfo[];
 }
+
+/* @conditional-compile-remove(local-recording-notification) */
+/**
+ * State only version of {@link @azure/communication-calling#LocalRecordingCallFeature}. {@link StatefulCallClient} will
+ * automatically listen for local recording state of the call and update the state exposed by {@link StatefulCallClient} accordingly.
+ *
+ * @beta
+ */
+export interface LocalRecordingCallFeatureState {
+  /**
+   * Proxy of {@link @azure/communication-calling#LocalRecordingCallFeature.isRecordingActive}.
+   */
+  isLocalRecordingActive: boolean;
+  /**
+   * Contains list of information of started recordings
+   * Proxy of {@link @azure/communication-calling#LocalRecordingCallFeature.recordings}.
+   */
+  activeLocalRecordings?: LocalRecordingInfo[];
+  /**
+   * Contains list of information of stopped recordings
+   */
+  lastStoppedLocalRecording?: LocalRecordingInfo[];
+}
+
+/**
+ * State only version of {@link @azure/communication-calling#RaiseHandCallFeature}. {@link StatefulCallClient} will
+ * automatically listen for raised hands on the call and update the state exposed by {@link StatefulCallClient} accordingly.
+ *
+ * @public
+ */
+export interface RaiseHandCallFeatureState {
+  /**
+   * Proxy of {@link @azure/communication-calling#RaiseHandCallFeature.raisedHands}.
+   */
+  raisedHands: RaisedHandState[];
+  /**
+   * Contains information for local participant from list {@link @azure/communication-calling#RaiseHandCallFeature.raisedHands}.
+   */
+  localParticipantRaisedHand?: RaisedHandState;
+}
+
+/* @conditional-compile-remove(together-mode) */
+/**
+ * Represents the name of the call feature stream
+ * @beta
+ */
+export type CallFeatureStreamName = 'togetherMode';
+
+/* @conditional-compile-remove(together-mode) */
+/**
+ * State only version of {@link @azure/communication-calling#CallFeatureStream}.
+ * Represents call feature stream state.
+ * @beta
+ */
+export interface CallFeatureStreamState extends RemoteVideoStreamState {
+  feature?: CallFeatureStreamName;
+}
+
+/* @conditional-compile-remove(together-mode) */
+/**
+ * State only version of {@link @azure/communication-calling#TogetherModeSeatingMap}.
+ * @beta
+ *
+ * Represents the seating position of a participant in Together Mode.
+ */
+export interface TogetherModeSeatingPositionState {
+  /* The top left offset from the top of the together mode view.*/
+  top: number;
+  /* The left offset position from the left of the together mode view. */
+  left: number;
+  /*  The width of the seating area */
+  width: number;
+  /* The height of the seating area. */
+  height: number;
+}
+
+/* @conditional-compile-remove(together-mode) */
+/**
+ * Represents the seating positions of participants in Together Mode.
+ *
+ * @beta
+ */
+export type TogetherModeParticipantSeatingState = Record<string, TogetherModeSeatingPositionState>;
+
+/* @conditional-compile-remove(together-mode) */
+/**
+ * Represents the streams in Together Mode.
+ *
+ * @beta
+ */
+export interface TogetherModeStreamsState {
+  mainVideoStream?: CallFeatureStreamState;
+}
+
+/* @conditional-compile-remove(together-mode) */
+/**
+ * State only version of {@link @azure/communication-calling#TogetherModeCallFeature}. {@link StatefulCallClient}.
+ * Represents the state of the Together Mode feature.
+ * @beta
+ */
+export interface TogetherModeCallFeatureState {
+  isActive: boolean;
+  /**
+   * Proxy of {@link @azure/communication-calling#TogetherModeCallFeature.togetherModeStream}.
+   */
+  streams: TogetherModeStreamsState;
+  /**
+   * Proxy of {@link @azure/communication-calling#TogetherModeCallFeature.TogetherModeSeatingMap}.
+   */
+  seatingPositions: TogetherModeParticipantSeatingState;
+}
+
+/**
+ * State only version of {@link @azure/communication-calling#PPTLiveCallFeature}. {@link StatefulCallClient} will
+ * automatically listen for pptLive on the call and update the state exposed by {@link StatefulCallClient} accordingly.
+ *
+ * @public
+ */
+export interface PPTLiveCallFeatureState {
+  /**
+   * Proxy of {@link @azure/communication-calling#PPTLiveCallFeature.isActive}.
+   */
+  isActive: boolean;
+}
+/**
+ * Raised hand state with order
+ *
+ * @public
+ */
+export type RaisedHandState = {
+  raisedHandOrderPosition: number;
+};
+
+/**
+ * State only version of {@link @azure/communication-calling#Call.ReactionMessage} with UI helper props receivedOn.
+ * Reaction state with a timestamp which helps UI to decide to render the reaction accordingly.
+ *
+ * @public
+ */
+export type ReactionState = {
+  /**
+   * Reaction message from the meeting {@link @azure/communication-calling#Call.ReactionMessage}
+   */
+  reactionMessage: ReactionMessage;
+  /**
+   * Received timestamp of the reaction message in a meeting.
+   */
+  receivedOn: Date;
+};
 
 /**
  * State only version of {@link @azure/communication-calling#LocalVideoStream}.
@@ -147,6 +461,36 @@ export interface LocalVideoStreamState {
    * API. This can be undefined if the stream has not yet been rendered and defined after createView creates the view.
    */
   view?: VideoStreamRendererViewState;
+
+  /**
+   * Stores the state of the video effects.
+   * @public
+   */
+  videoEffects?: LocalVideoStreamVideoEffectsState;
+}
+
+/**
+ * State only version of a LocalVideoStream's {@link @azure/communication-calling#VideoEffectsFeature}.
+ *
+ * @public
+ */
+export interface LocalVideoStreamVideoEffectsState {
+  /**
+   * List of effects if any are active.
+   */
+  activeEffects?: VideoEffectName[];
+}
+
+/**
+ * State only version of Optimal Video Count Feature {@link @azure/communication-calling#OptimalVideoCountCallFeature}.
+ *
+ * @public
+ */
+export interface OptimalVideoCountFeatureState {
+  /**
+   * State of the current optimal video count.
+   */
+  maxRemoteVideoStreams: number;
 }
 
 /**
@@ -168,18 +512,24 @@ export interface RemoteVideoStreamState {
    */
   isAvailable: boolean;
   /**
+   * Proxy of {@link @azure/communication-calling#RemoteVideoStream.isReceiving}.
+   * @public
+   */
+  isReceiving: boolean;
+  /**
    * {@link VideoStreamRendererView} that is managed by createView/disposeView in {@link StatefulCallClient}
    * API. This can be undefined if the stream has not yet been rendered and defined after createView creates the view.
    */
   view?: VideoStreamRendererViewState;
+  /**
+   * Proxy of {@link @azure/communication-calling#RemoteVideoStream.size}.
+   */
+  streamSize?: { width: number; height: number };
 }
 
 /**
- * State only version of {@link @azure/communication-calling#VideoStreamRendererView}. Currently no API is provided to
- * modify scalingMode after the stream as been rendered by {@link StatefulCallClient}. In order to change scalingMode
- * stop rendering the stream and re-start it using the desired scalingMode. This property is added to the state exposed
- * by {@link StatefulCallClient} by {@link StatefulCallClient.createView} and removed by
- * {@link StatefulCallClient.disposeView}.
+ * State only version of {@link @azure/communication-calling#VideoStreamRendererView}. This property is added to the state exposed
+ * by {@link StatefulCallClient} by {@link StatefulCallClient.createView} and removed by {@link StatefulCallClient.disposeView}.
  *
  * @public
  */
@@ -199,6 +549,21 @@ export interface VideoStreamRendererViewState {
 }
 
 /**
+ * Media access state
+ * @public
+ */
+export interface MediaAccessState {
+  /**
+   * Whether the audio is forcibly muted
+   */
+  isAudioPermitted: boolean;
+  /**
+   * Whether the video is forcibly muted
+   */
+  isVideoPermitted: boolean;
+}
+
+/**
  * State only version of {@link @azure/communication-calling#RemoteParticipant}. {@link StatefulCallClient} will
  * automatically retrieve RemoteParticipants and add their state to the state exposed by {@link StatefulCallClient}.
  *
@@ -208,7 +573,7 @@ export interface RemoteParticipantState {
   /**
    * Proxy of {@link @azure/communication-calling#RemoteParticipant.identifier}.
    */
-  identifier: CommunicationUserKind | PhoneNumberKind | MicrosoftTeamsUserKind | UnknownIdentifierKind;
+  identifier: CommunicationIdentifierKind;
   /**
    * Proxy of {@link @azure/communication-calling#RemoteParticipant.displayName}.
    */
@@ -234,6 +599,40 @@ export interface RemoteParticipantState {
    * Proxy of {@link @azure/communication-calling#RemoteParticipant.isSpeaking}.
    */
   isSpeaking: boolean;
+  /**
+   * Proxy of {@link @azure/communication-calling#RemoteParticipant.role}.
+   */
+  role?: ParticipantRole;
+  /**
+   * Proxy of {@link @azure/communication-calling#Call.RaisedHand.raisedHands}.
+   */
+  raisedHand?: RaisedHandState;
+  /**
+   * Proxy of {@link @azure/communication-calling#Call.PPTLive.target}.
+   *
+   * @public
+   */
+  contentSharingStream?: HTMLElement;
+  /**
+   * Proxy of {@link @azure/communication-calling#Call.ReactionMessage} with
+   * UI helper props receivedOn which indicates the timestamp when the message was received.
+   *
+   * @public
+   */
+  reactionState?: ReactionState;
+  /**
+   * Proxy of {@link @azure/communication-calling#SpotlightCallFeature.spotlightedParticipants}.
+   */
+  spotlight?: SpotlightState;
+  /**
+   * Proxy of {@link @azure/communication-calling#Call.MediaAccessCallFeature.MediaAccess}.
+   */
+  mediaAccess?: MediaAccessState;
+  /* @conditional-compile-remove(remote-ufd) */
+  /**
+   * The diagnostic status of RemoteParticipant{@link @azure/communication-calling#RemoteDiagnostics}.
+   */
+  diagnostics?: Partial<Record<RemoteDiagnosticType, RemoteDiagnosticState>>;
 }
 
 /**
@@ -247,6 +646,11 @@ export interface CallState {
    * Proxy of {@link @azure/communication-calling#Call.id}.
    */
   id: string;
+
+  /**
+   * Type of the call.
+   */
+  kind: CallKind;
   /**
    * Proxy of {@link @azure/communication-calling#Call.callerInfo}.
    */
@@ -298,14 +702,50 @@ export interface CallState {
    */
   transcription: TranscriptionCallFeatureState;
   /**
+   * Proxy of {@link @azure/communication-calling#CaptionsCallFeature}.
+   */
+  captionsFeature: CaptionsCallFeatureState;
+  /* @conditional-compile-remove(rtt) */
+  /**
+   * Proxy of {@link @azure/communication-calling#RealTimeTextCallFeature}.
+   */
+  realTimeTextFeature: RealTimeTextCallFeatureState;
+  /**
+   * Proxy of {@link @azure/communication-calling#OptimalVideoCountCallFeature}.
+   */
+  optimalVideoCount: OptimalVideoCountFeatureState;
+  /**
    * Proxy of {@link @azure/communication-calling#RecordingCallFeature}.
    */
   recording: RecordingCallFeatureState;
+  /* @conditional-compile-remove(local-recording-notification) */
   /**
-   * Proxy of {@link @azure/communication-calling#TransferCallFeature} with some differences see
-   * {@link TransferCallFeatureState} for details.
+   * Proxy of {@link @azure/communication-calling#LocalRecordingCallFeature}.
    */
-  transfer: TransferCallFeatureState;
+  localRecording: LocalRecordingCallFeatureState;
+  /**
+   * Proxy of {@link @azure/communication-calling#PPTLiveCallFeature}.
+   *
+   *@public
+   */
+  pptLive: PPTLiveCallFeatureState;
+  /**
+   * Proxy of {@link @azure/communication-calling#RaiseHandCallFeature}.
+   */
+  raiseHand: RaiseHandCallFeatureState;
+  /* @conditional-compile-remove(together-mode) */
+  /**
+   * Proxy of {@link @azure/communication-calling#TogetherModeCallFeature}.
+   * @beta
+   */
+  togetherMode: TogetherModeCallFeatureState;
+  /**
+   * Proxy of {@link @azure/communication-calling#Call.ReactionMessage} with
+   * UI helper props receivedOn which indicates the timestamp when the message was received.
+   *
+   * @public
+   */
+  localParticipantReaction?: ReactionState;
   /**
    * Stores the currently active screenshare participant's key. If there is no screenshare active, then this will be
    * undefined. You can use this key to access the remoteParticipant data in {@link CallState.remoteParticipants} object.
@@ -315,7 +755,18 @@ export interface CallState {
    *
    * This property is added by the stateful layer and is not a proxy of SDK state
    */
-  screenShareRemoteParticipant: string | undefined;
+  screenShareRemoteParticipant?: string;
+  /**
+   * Stores the currently active pptlive participant's key. Will be reused by White board etc. If there is no screenshare active, then this will be
+   * undefined. You can use this key to access the remoteParticipant data in {@link CallState.remoteParticipants} object.
+   *
+   * Note this only applies to PPTLive in RemoteParticipant.
+   *
+   * This property is added by the stateful layer and is not a proxy of SDK state
+   *
+   * @public
+   */
+  contentSharingRemoteParticipant?: string;
   /**
    * Stores the local date when the call started on the client. This property is added by the stateful layer and is not
    * a proxy of SDK state.
@@ -331,6 +782,104 @@ export interface CallState {
    * Stores the latest call diagnostics.
    */
   diagnostics: DiagnosticsCallFeatureState;
+  /**
+   * Proxy of {@link @azure/communication-calling#Call.role}.
+   */
+  role?: ParticipantRole;
+
+  /* @conditional-compile-remove(total-participant-count) */
+  /**
+   * Proxy of {@link @azure/communication-calling#Call.totalParticipantCount}.
+   */
+  totalParticipantCount?: number;
+  /**
+   * Transfer state of call
+   */
+  transfer: TransferFeatureState;
+
+  /**
+   * Proxy of {@link @azure/communication-calling#CapabilitiesFeature}.
+   */
+  capabilitiesFeature?: CapabilitiesFeatureState;
+  /**
+   * Hide attendee names in teams meeting
+   */
+  hideAttendeeNames?: boolean;
+  /**
+   * Proxy of {@link @azure/communication-calling#SpotlightCallFeature}.
+   */
+  spotlight?: SpotlightCallFeatureState;
+  /**
+   * Proxy of {@link @azure/communication-calling#Call.info}.
+   */
+  info?: TeamsCallInfo | /* @conditional-compile-remove(calling-beta-sdk) */ CallInfo;
+
+  /**
+   * Proxy of {@link @azure/communication-calling#TeamsMeetingAudioConferencingCallFeature}.
+   */
+  meetingConference?: { conferencePhones: ConferencePhoneInfo[] };
+
+  /* @conditional-compile-remove(breakout-rooms) */
+  /**
+   * Proxy of {@link @azure/communication-calling#BreakoutRoomsFeature}.
+   */
+  breakoutRooms?: BreakoutRoomsState;
+
+  /**
+   * Proxy of {@link @azure/communication-calling#MediaAccessFeature}.
+   */
+  meetingMediaAccess?: MediaAccessState;
+}
+
+/**
+ * Transfer feature state
+ *
+ * @public
+ */
+export interface TransferFeatureState {
+  /**
+   * Accepted transfer requests
+   */
+  acceptedTransfers: { [key: string]: AcceptedTransfer };
+}
+
+/**
+ * Transfer feature state
+ *
+ * @public
+ */
+export interface AcceptedTransfer {
+  /**
+   * Stores call id of accepted transfer
+   */
+  callId: string;
+  /**
+   * Stores timestamp when transfer was accepted
+   */
+  timestamp: Date;
+}
+
+/**
+ * State to track the types {@link CallInfo} and {@link TeamsCallInfo}
+ * @public
+ */
+export interface CallInfoState {
+  /**
+   * GroupId of the call that you joined
+   */
+  groupId?: string;
+  /**
+   * The teams meeting thread id
+   */
+  threadId?: string;
+  /**
+   * participant id of the local user
+   */
+  participantId: string;
+  /**
+   * Differentiator between the Call and TeamsCall types
+   */
+  kind: IncomingCallKind;
 }
 
 /**
@@ -344,6 +893,10 @@ export interface IncomingCallState {
    * Proxy of {@link @azure/communication-calling#IncomingCall.id}.
    */
   id: string;
+  /**
+   * Proxy of {@link @azure/communication-calling#IncomingCall.callInfo}.
+   */
+  info: CallInfoState;
   /**
    * Proxy of {@link @azure/communication-calling#IncomingCall.callerInfo}.
    */
@@ -362,7 +915,41 @@ export interface IncomingCallState {
    * Stores the local date when the call ended on the client. This property is added by the stateful layer and is not a
    * proxy of SDK state. It is undefined if the call is not ended yet.
    */
-  endTime: Date | undefined;
+  endTime?: Date;
+}
+
+/**
+ * State only version of {@link @azure/communication-calling#TeamsIncomingCall}
+ * @public
+ */
+export interface TeamsIncomingCallState {
+  /**
+   * Proxy of {@link @azure/communication-calling#TeamsIncomingCall.id}.
+   */
+  id: string;
+  /**
+   * Proxy of {@link @azure/communication-calling#TeamsIncomingCall.teamsCallInfo}.
+   */
+  info: CallInfoState;
+  /**
+   * Proxy of {@link @azure/communication-calling#TeamsIncomingCall.callerInfo}.
+   */
+  callerInfo: CallerInfo;
+  /**
+   * Set to the state returned by 'callEnded' event on {@link @azure/communication-calling#IncomingCall} when received.
+   * This property is added by the stateful layer and is not a proxy of SDK state.
+   */
+  callEndReason?: CallEndReason;
+  /**
+   * Stores the local date when the call started on the client. This property is added by the stateful layer and is not
+   * a proxy of SDK state.
+   */
+  startTime: Date;
+  /**
+   * Stores the local date when the call ended on the client. This property is added by the stateful layer and is not a
+   * proxy of SDK state. It is undefined if the call is not ended yet.
+   */
+  endTime?: Date;
 }
 
 /**
@@ -437,25 +1024,28 @@ export interface CallClientState {
    */
   calls: { [key: string]: CallState };
   /**
-   * Calls that have ended are stored here so the callEndReason could be checked. It is an array of CallState
-   * {@link CallState}. Calls are pushed on to the array as they end, meaning this is sorted by endTime ascending. Only
-   * {@link MAX_CALL_HISTORY_LENGTH} number of Calls are kept in this array with the older ones being replaced by newer
-   * ones.
+   * Calls that have ended are stored here so the callEndReason could be checked.
+   * It is an object with {@link @azure/communication-calling#Call.id} keys and {@link CallState} values.
+   *
+   * Only {@link MAX_CALL_HISTORY_LENGTH} Calls are kept in the history. Oldest calls are evicted if required.
    */
-  callsEnded: CallState[];
+  callsEnded: { [key: string]: CallState };
   /**
-   * Proxy of {@link @azure/communication-calling#IncomingCall} as an object with IncomingCall {@link IncomingCall} fields.
+   * Proxy of {@link @azure/communication-calling#IncomingCall} as an object with {@link IncomingCall} fields.
    * It is keyed by {@link @azure/communication-calling#IncomingCall.id}.
    */
-  incomingCalls: { [key: string]: IncomingCallState };
+  incomingCalls: {
+    [key: string]: IncomingCallState | TeamsIncomingCallState;
+  };
   /**
-   * Incoming Calls that have ended are stored here so the callEndReason could be checked. It is a array of IncomingCall
-   * {@link IncomingCall} received in the event 'incomingCall' emitted by
-   * {@link @azure/communication-calling#CallAgent}. IncomingCalls are pushed on to the array as they end, meaning this
-   * is sorted by endTime ascending. Only MAX_CALL_HISTORY_LENGTH number of IncomingCalls are kept in this array with
-   * the older ones being replaced by newer ones.
+   * Incoming Calls that have ended are stored here so the callEndReason could be checked.
+   * It is an as an object with {@link @azure/communication-calling#Call.id} keys and {@link IncomingCall} values.
+   *
+   * Only {@link MAX_CALL_HISTORY_LENGTH} Calls are kept in the history. Oldest calls are evicted if required.
    */
-  incomingCallsEnded: IncomingCallState[];
+  incomingCallsEnded: {
+    [key: string]: IncomingCallState | TeamsIncomingCallState;
+  };
   /**
    * Proxy of {@link @azure/communication-calling#DeviceManager}. Please review {@link DeviceManagerState}.
    */
@@ -469,13 +1059,29 @@ export interface CallClientState {
    * developer for easier access to userId. Must be passed in at initialization of the {@link StatefulCallClient}.
    * Completely controlled by the developer.
    */
-  userId: CommunicationUserKind;
+  userId: CommunicationIdentifierKind;
   /**
    * Stores the latest error for each API method.
    *
    * See documentation of {@Link CallErrors} for details.
    */
   latestErrors: CallErrors;
+  /**
+   * Stores the latest notifications.
+   *
+   * See documentation of {@Link CallNotifications} for details.
+   */
+  latestNotifications: CallNotifications;
+  /**
+   * A phone number in E.164 format that will be used to represent callers identity.
+   * For example, using the alternateCallerId to add a participant using PSTN, this number will
+   * be used as the caller id in the PSTN call.
+   */
+  alternateCallerId?: string;
+  /**
+   * state to track the environment that the stateful client was made in is supported
+   */
+  environmentInfo?: EnvironmentInfo;
 }
 
 /**
@@ -508,20 +1114,35 @@ export class CallError extends Error {
   /**
    * Error thrown by the failed SDK method.
    */
-  public inner: Error;
+  public innerError: Error;
   /**
    * Timestamp added to the error by the stateful layer.
    */
   public timestamp: Date;
+  /**
+   * Primary code for the calling error
+   */
+  public code?: number;
+  /**
+   * Sub code for the calling error
+   */
+  public subCode?: number;
 
-  constructor(target: CallErrorTarget, inner: Error, timestamp?: Date) {
+  /** needs to be a (innerError as CommunicationServicesError) */
+  constructor(target: CallErrorTarget, innerError: Error, timestamp?: Date) {
     super();
     this.target = target;
-    this.inner = inner;
+    this.innerError = innerError;
+    if ('code' in (innerError as CommunicationServicesError)) {
+      this.code = (innerError as CommunicationServicesError).code;
+    }
+    if ('subCode' in (innerError as CommunicationServicesError)) {
+      this.subCode = (innerError as CommunicationServicesError).subCode;
+    }
     // Testing note: It is easier to mock Date::now() than the Date() constructor.
     this.timestamp = timestamp ?? new Date(Date.now());
     this.name = 'CallError';
-    this.message = `${this.target}: ${this.inner.message}`;
+    this.message = `${this.target}: ${this.innerError.message} code=${this.code} subCode=${this.subCode}`;
   }
 }
 
@@ -532,27 +1153,36 @@ export class CallError extends Error {
  */
 export type CallErrorTarget =
   | 'Call.addParticipant'
-  | 'Call.api'
+  | 'Call.dispose'
+  | 'Call.feature'
   | 'Call.hangUp'
   | 'Call.hold'
   | 'Call.mute'
+  | 'Call.muteIncomingAudio'
   | 'Call.off'
   | 'Call.on'
   | 'Call.removeParticipant'
   | 'Call.resume'
   | 'Call.sendDtmf'
+  | 'Call.startAudio'
   | 'Call.startScreenSharing'
   | 'Call.startVideo'
   | 'Call.stopScreenSharing'
+  | 'Call.stopAudio'
   | 'Call.stopVideo'
   | 'Call.unmute'
+  | 'Call.unmuteIncomingAudio'
   | 'CallAgent.dispose'
+  | 'CallAgent.feature'
   | 'CallAgent.join'
   | 'CallAgent.off'
   | 'CallAgent.on'
   | 'CallAgent.startCall'
   | 'CallClient.createCallAgent'
+  | 'CallClient.createTeamsCallAgent'
+  | 'CallClient.feature'
   | 'CallClient.getDeviceManager'
+  | 'CallClient.getEnvironmentInfo'
   | 'DeviceManager.askDevicePermission'
   | 'DeviceManager.getCameras'
   | 'DeviceManager.getMicrophones'
@@ -560,12 +1190,54 @@ export type CallErrorTarget =
   | 'DeviceManager.off'
   | 'DeviceManager.on'
   | 'DeviceManager.selectMicrophone'
-  | 'DeviceManager.selectSpeaker';
+  | 'DeviceManager.selectSpeaker'
+  | 'IncomingCall.accept'
+  | 'IncomingCall.reject'
+  | 'TeamsCall.addParticipant'
+  | 'VideoEffectsFeature.startEffects'
+  | /* @conditional-compile-remove(calling-beta-sdk) */ 'CallAgent.handlePushNotification'
+  | /* @conditional-compile-remove(calling-beta-sdk) */ 'Call.admit'
+  | /* @conditional-compile-remove(calling-beta-sdk) */ 'Call.rejectParticipant'
+  | /* @conditional-compile-remove(calling-beta-sdk) */ 'Call.admitAll'
+  | 'Call.mutedByOthers'
+  | 'Call.muteAllRemoteParticipants'
+  | 'Call.setConstraints';
+
+/**
+ * @public
+ */
+export type CallNotifications = {
+  [target in NotificationTarget]: CallNotification;
+};
+
+/**
+ * @public
+ */
+export interface CallNotification {
+  target: NotificationTarget;
+
+  timestamp: Date;
+}
+
+/** @public */
+export type NotificationTarget =
+  | /* @conditional-compile-remove(breakout-rooms) */ 'assignedBreakoutRoomOpened'
+  | /* @conditional-compile-remove(breakout-rooms) */ 'assignedBreakoutRoomOpenedPromptJoin'
+  | /* @conditional-compile-remove(breakout-rooms) */ 'assignedBreakoutRoomChanged'
+  | /* @conditional-compile-remove(breakout-rooms) */ 'assignedBreakoutRoomClosed'
+  | /* @conditional-compile-remove(breakout-rooms) */ 'breakoutRoomJoined'
+  | /* @conditional-compile-remove(breakout-rooms) */ 'breakoutRoomClosingSoon'
+  | 'capabilityTurnVideoOnPresent'
+  | 'capabilityTurnVideoOnAbsent'
+  | 'capabilityUnmuteMicPresent'
+  | 'capabilityUnmuteMicAbsent'
+  | /* @conditional-compile-remove(together-mode) */ 'togetherModeStarted'
+  | /* @conditional-compile-remove(together-mode) */ 'togetherModeEnded';
 
 /**
  * State only proxy for {@link @azure/communication-calling#DiagnosticsCallFeature}.
  *
- * @beta
+ * @public
  */
 export interface DiagnosticsCallFeatureState {
   /**
@@ -579,10 +1251,30 @@ export interface DiagnosticsCallFeatureState {
   media: MediaDiagnosticsState;
 }
 
+/* @conditional-compile-remove(remote-ufd) */
+/**
+ * All type names for {@link @azure/communication-calling#RemoteDiagnosticState}.
+ *
+ * @beta
+ */
+export type RemoteDiagnosticType = NetworkDiagnosticType | MediaDiagnosticType | ServerDiagnosticType;
+
+/* @conditional-compile-remove(remote-ufd) */
+/**
+ * State only proxy for {@link @azure/communication-calling#DiagnosticsCallFeature}.
+ *
+ * @beta
+ */
+export declare type RemoteDiagnosticState = {
+  readonly diagnostic: RemoteDiagnosticType;
+  readonly value: DiagnosticQuality | DiagnosticFlag;
+  readonly valueType: DiagnosticValueType;
+};
+
 /**
  * State only proxy for {@link @azure/communication-calling#NetworkDiagnostics}.
  *
- * @beta
+ * @public
  */
 export interface NetworkDiagnosticsState {
   latest: LatestNetworkDiagnostics;
@@ -591,8 +1283,35 @@ export interface NetworkDiagnosticsState {
 /**
  * State only proxy for {@link @azure/communication-calling#MediaDiagnostics}.
  *
- * @beta
+ * @public
  */
 export interface MediaDiagnosticsState {
   latest: LatestMediaDiagnostics;
+}
+
+/**
+ * @public
+ * Information for conference phone info
+ */
+export interface ConferencePhoneInfo {
+  /**
+   * Phone number for the conference
+   */
+  phoneNumber: string;
+  /**
+   * Conference id for the conference
+   */
+  conferenceId: string;
+  /**
+   * Is toll free phone number
+   */
+  isTollFree: boolean;
+  /**
+   * phone number country
+   */
+  country?: string;
+  /**
+   * phone number city
+   */
+  city?: string;
 }

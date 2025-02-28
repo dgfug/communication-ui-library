@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React, { createContext, useContext } from 'react';
 
@@ -7,6 +7,7 @@ import { ComponentLocale, LocalizationProvider as ComponentLocalizationProvider 
 
 import { COMPOSITE_LOCALE_EN_US } from './locales';
 import { CallCompositeStrings } from '../CallComposite';
+import { CallWithChatCompositeStrings } from '../CallWithChatComposite';
 import { ChatCompositeStrings } from '../ChatComposite';
 
 /**
@@ -41,6 +42,11 @@ export interface CompositeStrings {
    * Strings used by {@link ChatComposite}.
    */
   chat: ChatCompositeStrings;
+
+  /**
+   * Strings used by {@link CallWithChatComposite}.
+   */
+  callWithChat: CallWithChatCompositeStrings;
 }
 
 /**

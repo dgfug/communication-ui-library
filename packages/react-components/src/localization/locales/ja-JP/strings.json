@@ -2,7 +2,21 @@
   "participantItem": {
     "isMeText": "(自分)",
     "menuTitle": "その他のオプション",
-    "removeButtonLabel": "削除"
+    "removeButtonLabel": "削除",
+    "sharingIconLabel": "共有",
+    "mutedIconLabel": "ミュート状態",
+    "handRaisedIconLabel": "挙手 - 位置 {position}",
+    "displayNamePlaceholder": "名前のない参加者",
+    "participantStateRinging": "呼び出し中...",
+    "participantStateHold": "保留中",
+    "participantItemAriaLabel": "{displayName}、{handRaisedState}、{mutedState}、{micDisabledState}、{cameraDisabledState}、{sharingState}、{connectionState}",
+    "participantItemWithMoreOptionsAriaLabel": "{displayName}、{handRaisedState}、{mutedState}、{micDisabledState}、{cameraDisabledState}、{sharingState}、{connectionState}、その他のオプション",
+    "attendeeRole": "出席者",
+    "micDisabledIconLabel": "マイクが無効になっています",
+    "cameraDisabledIconLabel": "カメラが無効になっています"
+  },
+  "ParticipantList": {
+    "overflowParticipantCount": "その他 {overflowCount} 個"
   },
   "typingIndicator": {
     "singleUser": "{user} さんが入力しています...",
@@ -12,44 +26,287 @@
     "delimiter": ","
   },
   "sendBox": {
-    "placeholderText": "メッセージを入力"
+    "placeholderText": "メッセージを入力",
+    "textTooLong": "メッセージの長さが上限を超えています。",
+    "sendButtonAriaLabel": "メッセージの送信",
+    "attachmentUploadsPendingError": "ファイルをアップロードしています。お待ちください。",
+    "removeAttachment": "ファイルの削除",
+    "uploading": "アップロード中",
+    "uploadCompleted": "アップロードが完了しました",
+    "attachmentMoreMenu": "その他のオプション"
+  },
+  "richTextSendBox": {
+    "placeholderText": "メッセージを入力してください",
+    "textTooLong": "メッセージの長さが上限を超えています。",
+    "sendButtonAriaLabel": "メッセージの送信",
+    "attachmentUploadsPendingError": "ファイルをアップロードしています。お待ちください。",
+    "imageUploadsPendingError": "画像をアップロードしています。お待ちください。",
+    "removeAttachment": "ファイルを削除します",
+    "uploading": "アップロード中",
+    "uploadCompleted": "アップロード完了",
+    "richTextBoldTooltip": "太字",
+    "richTextItalicTooltip": "斜体",
+    "richTextUnderlineTooltip": "下線",
+    "richTextBulletListTooltip": "箇条書き",
+    "richTextNumberListTooltip": "番号付きリスト",
+    "richTextIncreaseIndentTooltip": "インデントを増やします",
+    "richTextDecreaseIndentTooltip": "インデントを減らします",
+    "richTextInsertTableTooltip": "表を挿入します",
+    "richTextFormatButtonTooltip": "形式",
+    "richTextInsertRowOrColumnMenu": "挿入",
+    "richTextInsertTableMenuTitle": "{column} x {row} の表を挿入する",
+    "richTextInsertRowAboveMenu": "上に挿入",
+    "richTextInsertRowBelowMenu": "下に挿入",
+    "richTextInsertColumnLeftMenu": "左に挿入",
+    "richTextInsertColumnRightMenu": "右に挿入",
+    "richTextDeleteRowOrColumnMenu": "削除",
+    "richTextDeleteColumnMenu": "列の削除",
+    "richTextDeleteRowMenu": "行の削除",
+    "richTextDeleteTableMenu": "表の削除",
+    "richTextToolbarAriaLabel": "メッセージの書式設定ツール バー",
+    "richTextToolbarMoreButtonAriaLabel": "その他のオプション",
+    "attachmentMoreMenu": "その他のオプション",
+    "richTextNewBulletedListItemAnnouncement": "行頭文字、改行",
+    "richTextNewNumberedListItemAnnouncement": "{0}、改行",
+    "richTextBulletedListAppliedAnnouncement": "箇条書きが適用されました",
+    "richTextNumberedListAppliedAnnouncement": "番号付きリストが適用されました"
+  },
+  "realTimeTextModal": {
+    "realTimeTextModalAriaLabel": "RTT モーダルを有効にする",
+    "realTimeTextModalTitle": "RTT を有効にしますか?",
+    "realTimeTextModalText": "会議の全員に対してリアルタイム テキスト (RTT) が有効になります。",
+    "realTimeTextConfirmButtonLabel": "有効にする",
+    "realTimeTextCancelButtonLabel": "キャンセル",
+    "realTimeTextCloseModalButtonAriaLabel": "RTT モーダルを閉じる"
+  },
+  "captionsBanner": {
+    "captionsBannerSpinnerText": "キャプションを開始しています...",
+    "realTimeTextInputBoxDefaultText": "リアルタイムにメッセージを入力",
+    "realTimeTextInputErrorMessage": "メッセージは 2,000 文字以下にする必要があります",
+    "realTimeTextBannerTitle": "RTT",
+    "realTimeTextBannerContent": "RTT (リアルタイム テキスト) は、会議の全期間のすべての参加者に対して有効になっています。",
+    "realTimeTextBannerLinkLabel": "詳細情報",
+    "captionsOnlyContainerTitle": "キャプション",
+    "realTimeTextOnlyContainerTitle": "リアルタイム テキスト",
+    "captionsAndRealTimeTextContainerTitle": "キャプションとリアルタイム テキスト",
+    "expandButtonAriaLabel": "展開",
+    "minimizeButtonAriaLabel": "折りたたむ"
+  },
+  "mentionPopover": {
+    "mentionPopoverHeader": "候補"
+  },
+  "imageOverlay": {
+    "downloadButtonLabel": "ダウンロード",
+    "dismissButtonAriaLabel": "閉じる",
+    "overlayVisibleMessage": "画像の詳細のオーバーレイ"
   },
   "messageStatusIndicator": {
+    "deliveredAriaLabel": "メッセージを送信しました",
     "deliveredTooltipText": "送信しました",
+    "seenAriaLabel": "他のユーザーが表示したメッセージ",
     "seenTooltipText": "既読",
+    "readByTooltipText": "{remoteParticipantsCount} の {messageThreadReadCount} による読み取り",
+    "sendingAriaLabel": "メッセージを送信しています",
     "sendingTooltipText": "送信中",
+    "failedToSendAriaLabel": "メッセージの送信に失敗しました",
     "failedToSendTooltipText": "送信できませんでした"
   },
   "endCallButton": {
-    "label": "退出"
+    "label": "退出",
+    "tooltipContent": "通話を終了",
+    "leaveOption": "退出",
+    "endCallOption": "全員の通話を終了"
   },
   "cameraButton": {
-    "onLabel": "オフにする",
-    "offLabel": "オンにする"
+    "onLabel": "カメラ",
+    "offLabel": "カメラ",
+    "tooltipDisabledContent": "カメラが無効になっています",
+    "tooltipOnContent": "カメラをオフ",
+    "tooltipOffContent": "カメラをオンにする",
+    "tooltipVideoLoadingContent": "ビデオの読み込み中です",
+    "cameraMenuTitle": "カメラ",
+    "cameraMenuTooltip": "カメラを選択する",
+    "cameraButtonSplitRoleDescription": "分割ボタン",
+    "onSplitButtonAriaLabel": "カメラをオフにする",
+    "offSplitButtonAriaLabel": "カメラをオンにする",
+    "cameraActionTurnedOnAnnouncement": "カメラがオンになっています",
+    "cameraActionTurnedOffAnnouncement": "カメラがオフになっています",
+    "onSplitButtonPrimaryActionCamera": "カメラをオフにする",
+    "offSplitButtonPrimaryActionCamera": "カメラをオンにする",
+    "cameraPrimaryActionSplitButtonTitle": "カメラを使用する",
+    "videoEffectsMenuItemTitle": "効果",
+    "cameraButtonAriaDescription": "カメラのオプション"
   },
   "microphoneButton": {
-    "onLabel": "ミュート",
-    "offLabel": "ミュート解除"
-  },
-  "optionsButton": {
-    "label": "オプション",
-    "cameraMenuTitle": "カメラ",
-    "cameraMenuTooltip": "カメラの選択",
+    "onLabel": "マイク",
+    "offLabel": "マイク",
+    "tooltipDisabledContent": "マイクが無効になっています",
+    "tooltipOnContent": "マイクをミュートにする",
+    "tooltipOffContent": "マイクのミュートを解除する",
     "microphoneMenuTitle": "マイク",
-    "microphoneMenuTooltip": "マイクの選択",
+    "microphoneMenuTooltip": "マイクを選択する",
     "speakerMenuTitle": "スピーカー",
-    "speakerMenuTooltip": "スピーカーの選択"
+    "speakerMenuTooltip": "スピーカーを選択する",
+    "microphoneButtonSplitRoleDescription": "分割ボタン",
+    "onSplitButtonAriaLabel": "マイクをミュートする",
+    "offSplitButtonAriaLabel": "マイクのミュートを解除する",
+    "microphoneActionTurnedOnAnnouncement": "マイクがオンになっています",
+    "microphoneActionTurnedOffAnnouncement": "マイクがオフになっています",
+    "offSplitButtonMicrophonePrimaryAction": "マイクのミュートを解除する",
+    "onSplitButtonMicrophonePrimaryAction": "マイクをミュートする",
+    "microphonePrimaryActionSplitButtonTitle": "マイクを使用する",
+    "microphoneAriaDescription": "オーディオのオプション",
+    "deepNoiseSuppressionTitle": "ノイズ抑制",
+    "deepNoiseSuppressionOnAnnouncement": "ディープ ノイズ抑制がオンになっています",
+    "deepNoiseSuppressionOffAnnouncement": "ディープ ノイズ抑制がオフになっています"
+  },
+  "devicesButton": {
+    "label": "デバイス",
+    "tooltipContent": "デバイスの管理",
+    "cameraMenuTitle": "カメラ",
+    "cameraMenuTooltip": "カメラを選択する",
+    "audioDeviceMenuTitle": "オーディオ デバイス",
+    "audioDeviceMenuTooltip": "オーディオ デバイスを選択する",
+    "microphoneMenuTitle": "マイク",
+    "microphoneMenuTooltip": "マイクを選択する",
+    "speakerMenuTitle": "スピーカー",
+    "speakerMenuTooltip": "スピーカーを選択する"
   },
   "participantsButton": {
     "label": "ユーザー",
+    "ariaLabel": "連絡先",
+    "tooltipContent": "参加者を表示",
     "menuHeader": "この通話で",
     "participantsListButtonLabel": "{numParticipants} 人",
     "muteAllButtonLabel": "全員をミュート",
-    "copyInviteLinkButtonLabel": "招待用のリンクをコピー"
+    "copyInviteLinkButtonLabel": "招待用のリンクをコピー",
+    "copyInviteLinkActionedAriaLabel": "招待用のリンクがコピーされました"
   },
   "screenShareButton": {
-    "onLabel": "停止",
-    "offLabel": "共有"
+    "onLabel": "プレゼンテーションの停止",
+    "offLabel": "提示",
+    "tooltipDisabledContent": "プレゼンテーションは無効です",
+    "tooltipOnContent": "画面の表示",
+    "tooltipOffContent": "画面のプレゼンテーション"
+  },
+  "raiseHandButton": {
+    "offLabel": "手を挙げる",
+    "onLabel": "低い",
+    "tooltipDisabledContent": "手を挙げる操作が無効になっています",
+    "tooltipOnContent": "手を下げる",
+    "tooltipOffContent": "手を挙げる"
+  },
+  "reactionButton": {
+    "label": "リアクションする",
+    "ariaLabel": "リアクションする",
+    "tooltipDisabledContent": "リアクション操作が無効になっています",
+    "tooltipContent": "リアクションを送信します",
+    "likeReactionTooltipContent": "いいね!",
+    "heartReactionTooltipContent": "大好き",
+    "laughReactionTooltipContent": "笑い",
+    "applauseReactionTooltipContent": "喝采",
+    "surprisedReactionTooltipContent": "驚いた"
+  },
+  "realTimeText": {
+    "isTypingText": "RTT 入力"
+  },
+  "captionsSettingsModal": {
+    "captionsSettingsModalTitle": "ライブ キャプションの設定",
+    "captionsSettingsSpokenLanguageDropdownLabel": "音声言語",
+    "captionsSettingsCaptionLanguageDropdownLabel": "ライブ キャプションの言語",
+    "captionsSettingsSpokenLanguageDropdownInfoText": "この通話の全員が話す言語。",
+    "captionsSettingsCaptionLanguageDropdownInfoText": "ライブ キャプションはこの言語で表示されます。",
+    "captionsSettingsConfirmButtonLabel": "確認する",
+    "captionsSettingsCancelButtonLabel": "キャンセル",
+    "captionsSettingsModalAriaLabel": "ライブ キャプション設定モーダル",
+    "captionsSettingsCloseModalButtonAriaLabel": "ライブ キャプション設定を閉じる"
+  },
+  "spokenLanguages": {
+    "ar-ae": "アラビア語 - U.A.E.",
+    "ar-sa": "アラビア語 - サウジアラビア",
+    "da-dk": "デンマーク語",
+    "de-de": "ドイツ語 - ドイツ",
+    "en-au": "英語 - オーストラリア",
+    "en-ca": "英語 - カナダ",
+    "en-gb": "英語 - イギリス",
+    "en-in": "英語 - インド",
+    "en-nz": "英語 - ニュージーランド",
+    "en-us": "英語 - 米国",
+    "es-es": "スペイン語 - スペイン (モダン)",
+    "es-mx": "スペイン語 - メキシコ",
+    "fi-fi": "フィンランド語",
+    "fr-ca": "フランス語 - カナダ",
+    "fr-fr": "フランス語 - フランス",
+    "hi-in": "ヒンディー語",
+    "it-it": "イタリア語 - イタリア",
+    "ja-jp": "日本語",
+    "ko-kr": "韓国語",
+    "nb-no": "ノルウェー語 (ブークモール)",
+    "nl-be": "オランダ語 - ベルギー",
+    "nl-nl": "オランダ語 - オランダ",
+    "pl-pl": "ポーランド語",
+    "pt-br": "ポルトガル語 - ブラジル",
+    "ru-ru": "ロシア語",
+    "sv-se": "スウェーデン語",
+    "zh-cn": "中国語 - 中国",
+    "zh-hk": "中国語 - 香港特別行政区",
+    "cs-cz": "チェコ語",
+    "pt-pt": "ポルトガル語 - ポルトガル",
+    "tr-tr": "トルコ語",
+    "vi-vn": "ベトナム語",
+    "th-th": "タイ語",
+    "he-il": "ヘブライ語",
+    "cy-gb": "ウェールズ語",
+    "uk-ua": "ウクライナ語",
+    "el-gr": "ギリシャ語",
+    "hu-hu": "ハンガリー語",
+    "ro-ro": "ルーマニア語",
+    "sk-sk": "スロバキア語",
+    "zh-tw": "中国語 - 台湾"
+  },
+  "captionLanguages": {
+    "ar": "アラビア語",
+    "da": "デンマーク語",
+    "de": "ドイツ語",
+    "en": "英語",
+    "es": "スペイン語",
+    "fi": "フィンランド語",
+    "fr-ca": "フランス語 - カナダ",
+    "fr": "フランス語 - フランス",
+    "hi": "ヒンディー語",
+    "it": "イタリア語",
+    "ja": "日本語",
+    "ko": "韓国語",
+    "nb": "ノルウェー語 (ブークモール)",
+    "nl": "オランダ語",
+    "pl": "ポーランド語",
+    "pt": "ポルトガル語 - ブラジル",
+    "ru": "ロシア語",
+    "sv": "スウェーデン語",
+    "zh-Hans": "中国語 (簡体字)",
+    "zh-Hant": "中国語 (繁体字)",
+    "cs": "チェコ語",
+    "pt-pt": "ポルトガル語 - ポルトガル",
+    "tr": "トルコ語",
+    "vi": "ベトナム語",
+    "th": "タイ語",
+    "he": "ヘブライ語",
+    "cy": "ウェールズ語",
+    "uk": "ウクライナ語",
+    "el": "ギリシャ語",
+    "hu": "ハンガリー語",
+    "ro": "ルーマニア語",
+    "sk": "スロバキア語"
+  },
+  "startCaptionsButton": {
+    "onLabel": "ライブ キャプションをオンにする",
+    "offLabel": "キャプションをオフにする",
+    "tooltipOnContent": "キャプションをオフにする",
+    "tooltipOffContent": "ライブ キャプションをオンにする"
+  },
+  "startRealTimeTextButton": {
+    "label": "この呼び出しの RTT を有効にする",
+    "tooltipOffContent": "この呼び出しの RTT を有効にする"
   },
   "messageThread": {
     "yesterday": "昨日",
@@ -61,13 +318,63 @@
     "friday": "金曜日",
     "saturday": "土曜日",
     "participantJoined": "チャットに参加しました。",
-    "participantLeft": "チャットから退出しました。"
+    "participantLeft": "チャットから退出しました。",
+    "editMessage": "編集",
+    "removeMessage": "削除",
+    "resendMessage": "もう一度送信",
+    "failToSendTag": "送信できませんでした",
+    "editedTag": "編集済み",
+    "liveAuthorIntro": "{author} からのメッセージ",
+    "editedMessageLiveAuthorIntro": "{author} さんからのメッセージを編集しました",
+    "editedMessageLocalUserLiveAuthorIntro": "メッセージを編集しました",
+    "messageContentAriaText": "{status} {author} さんが {message} と言いました",
+    "messageContentMineAriaText": "{status} あなたが {message} と言いました",
+    "editBoxTextLimit": "メッセージが{limitNumber}文字の制限を超えています",
+    "editBoxPlaceholderText": "メッセージを編集する",
+    "newMessagesIndicator": "新しいメッセージ",
+    "noDisplayNameSub": "名前がありません",
+    "editBoxCancelButton": "取り消し",
+    "editBoxSubmitButton": "完了",
+    "messageReadCount": "{remoteParticipantsCount} の {messageReadByCount} による読み取り",
+    "actionMenuMoreOptions": "その他のオプション",
+    "downloadAttachment": "ファイルをダウンロード",
+    "openAttachment": "ファイルを開く",
+    "blockedWarningText": "組織のポリシーにより、このメッセージは削除されました。",
+    "blockedWarningLinkText": "詳細",
+    "attachmentCardGroupMessage": "メッセージに添付ファイルが {attachmentCount} 個あります",
+    "messageDeletedAnnouncementAriaLabel": "メッセージが削除されます",
+    "richTextBoldTooltip": "太字",
+    "richTextItalicTooltip": "斜体",
+    "richTextUnderlineTooltip": "下線",
+    "richTextBulletListTooltip": "箇条書き",
+    "richTextNumberListTooltip": "番号付きリスト",
+    "richTextIncreaseIndentTooltip": "インデントを増やす",
+    "richTextDecreaseIndentTooltip": "インデントを減らす",
+    "richTextInsertTableTooltip": "表の挿入",
+    "richTextFormatButtonTooltip": "書式設定します",
+    "richTextInsertRowOrColumnMenu": "挿入",
+    "richTextInsertTableMenuTitle": "{column} x {row} の表を挿入する",
+    "richTextInsertRowAboveMenu": "上に挿入",
+    "richTextInsertRowBelowMenu": "下に挿入",
+    "richTextInsertColumnLeftMenu": "左に挿入",
+    "richTextInsertColumnRightMenu": "右に挿入",
+    "richTextDeleteRowOrColumnMenu": "削除",
+    "richTextDeleteColumnMenu": "列の削除",
+    "richTextDeleteRowMenu": "行の削除",
+    "richTextDeleteTableMenu": "テーブルの削除",
+    "richTextToolbarMoreButtonAriaLabel": "その他のオプション",
+    "attachmentUploadsPendingError": "ファイルをアップロードしています。お待ちください。",
+    "imageUploadsPendingError": "画像をアップロードしています。お待ちください。",
+    "richTextNewBulletedListItemAnnouncement": "行頭文字、改行",
+    "richTextNewNumberedListItemAnnouncement": "{0}、改行",
+    "richTextBulletedListAppliedAnnouncement": "箇条書きが適用されました",
+    "richTextNumberedListAppliedAnnouncement": "番号付きリストが適用されました"
   },
   "errorBar": {
     "unableToReachChatService": "オフラインです",
     "accessDenied": "チャット サービスにアクセスできません- 指定されたユーザー資格情報をご確認ください",
-    "userNotInThisThread": "このチャット スレッドにはもう参加していません",
-    "sendMessageNotInThisThread": "このチャット スレッドに参加していないため、メッセージを送信できませんでした",
+    "userNotInChatThread": "このチャット スレッドにはもう参加していません",
+    "sendMessageNotInChatThread": "このチャット スレッドに参加していないため、メッセージを送信できませんでした",
     "sendMessageGeneric": "メッセージを送信できませんでした。",
     "callingNetworkFailure": "通話の接続中に問題が発生しました。オフラインのようです。",
     "startVideoGeneric": "ビデオを開始できませんでした",
@@ -75,7 +382,469 @@
     "muteGeneric": "マイクをミュートできませんでした",
     "unmuteGeneric": "マイクのミュートを解除できませんでした",
     "speakingWhileMuted": "マイクがミュートになっています",
-    "startScreenShareGeneric": "画面の共有を開始できませんでした",
-    "stopScreenShareGeneric": "画面の共有を停止できませんでした"
+    "startScreenShareGeneric": "画面共有の開始中に問題が発生しました。",
+    "stopScreenShareGeneric": "画面の共有を停止できませんでした",
+    "callNetworkQualityLow": "ネットワークの品質が低くなっています。",
+    "teamsMeetingCallNetworkQualityLow": "ネットワークの品質が低くなっています。",
+    "callNoSpeakerFound": "スピーカーまたはヘッドフォンが見つかりません。音声デバイスを接続して通話を聞きます。",
+    "callNoMicrophoneFound": "マイクが見つかりません。オーディオ入力デバイスを接続します。",
+    "callMicrophoneAccessDenied": "マイクにアクセスできません。アドレス バーのロックをクリックして、この Web ページにアクセス許可を付与します。",
+    "callMicrophoneAccessDeniedSafari": "マイクにアクセスできません。ページを更新してアクセス許可を可能にするか、このブラウザーの設定を確認し、この Web サイトのアクセス許可が有効になっていることを確認してください。",
+    "callMicrophoneMutedBySystem": "システムによってミュートになっています。",
+    "callMicrophoneUnmutedBySystem": "マイクが回復し、システムによってミュートが解除されました。",
+    "callMacOsMicrophoneAccessDenied": "マイクにアクセスできません。macOS のプライバシー設定でマイクへのアクセス許可を付与します。",
+    "callLocalVideoFreeze": "ネットワーク帯域幅が不十分です。通話中に他のユーザーのビデオが一時停止している可能性があります。",
+    "callCameraAccessDenied": "カメラにアクセスできません。アドレス バーのロックをクリックして、この Web ページにアクセス許可を付与します。",
+    "callCameraAccessDeniedSafari": "カメラにアクセスできません。ページを更新してアクセス許可を可能にするか、このブラウザーの設定を確認し、この Web サイトのアクセス許可が有効になっていることを確認してください。",
+    "callCameraAlreadyInUse": "カメラにアクセスできません。別のアプリケーションによって既に使用されている可能性があります。",
+    "callVideoStoppedBySystem": "ビデオはシステムによって停止されました。",
+    "callVideoRecoveredBySystem": "ビデオが再開されました。",
+    "callMacOsCameraAccessDenied": "MacOS がカメラへのアクセスをブロックしています。プライバシー設定を更新して、このブラウザーがカメラにアクセスできるようにします。",
+    "callMacOsScreenShareAccessDenied": "MacOS は画面の共有をブロックしています。プライバシー設定を更新して、このブラウザーで画面を録画できるようにします。",
+    "dismissButtonAriaLabel": "閉じる",
+    "failedToJoinCallGeneric": "通話に参加できませんでした",
+    "failedToJoinCallInvalidMeetingLink": "会議に参加できません。リンクが無効です。",
+    "cameraFrozenForRemoteParticipants": "通話のユーザーにビデオの表示で問題が発生しています。デバイスとネットワークを確認してください。",
+    "unableToStartVideoEffect": "ビデオ効果を適用できません。",
+    "startSpotlightWhileMaxParticipantsAreSpotlighted": "最大数の参加者に既にスポットライトが設定されているため、参加者にスポットライトを開始できません。",
+    "mutedByRemoteParticipant": "他の参加者によってミュートにされました。"
+  },
+  "notificationStack": {
+    "callingNetworkFailure": {
+      "title": "通話の接続に問題があります",
+      "message": "オフラインのようです。ネットワーク接続を確認して、もう一度お試しください。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "startVideoGeneric": {
+      "title": "ビデオを開始できませんでした。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "stopVideoGeneric": {
+      "title": "ビデオを停止できませんでした。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "muteGeneric": {
+      "title": "マイクをミュートできませんでした。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "unmuteGeneric": {
+      "title": "マイクのミュートを解除できませんでした。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "speakingWhileMuted": {
+      "title": "ミュートにしています。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "startScreenShareGeneric": {
+      "title": "画面共有の開始中に問題が発生しました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "stopScreenShareGeneric": {
+      "title": "画面の共有を停止できませんでした。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callNetworkQualityLow": {
+      "title": "ネットワークの品質が低くなっています。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "teamsMeetingCallNetworkQualityLow": {
+      "title": "ネットワークの品質が低くなっています。",
+      "dismissButtonAriaLabel": "閉じる",
+      "message": "サウンドを向上させるには、電話からこの通話に参加してください。このデバイスで引き続き会議を表示できます。",
+      "primaryButtonLabel": "電話で参加"
+    },
+    "callNoSpeakerFound": {
+      "title": "スピーカーまたはヘッドフォンが見つかりません",
+      "message": "音声デバイスを接続して通話を聞いてください。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callNoMicrophoneFound": {
+      "title": "マイクが見つかりません",
+      "message": "オーディオ入力デバイスを接続します。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callMicrophoneAccessDenied": {
+      "title": "マイクにアクセスできません",
+      "message": "アドレス バーのロックをクリックして、この Web ページにアクセス許可を付与します。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callMicrophoneAccessDeniedSafari": {
+      "title": "マイクにアクセスできません",
+      "message": "ページを更新してアクセス許可を可能にするか、このブラウザーの設定を確認し、この Web サイトのアクセス許可が有効になっていることを確認してください。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callMicrophoneMutedBySystem": {
+      "title": "システムによってミュートになっています。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callMicrophoneUnmutedBySystem": {
+      "title": "マイクが回復し、システムによってミュートが解除されました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callMacOsMicrophoneAccessDenied": {
+      "title": "マイクにアクセスできません",
+      "message": "macOS のプライバシー設定でマイクへのアクセス許可を付与します。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callLocalVideoFreeze": {
+      "title": "ネットワーク帯域幅が貧弱です",
+      "message": "通話中に他のユーザーのビデオが一時停止している可能性があります。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callCameraAccessDenied": {
+      "title": "カメラにアクセスできません",
+      "message": "アドレス バーのロックをクリックして、この Web ページにアクセス許可を付与します。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callCameraAccessDeniedSafari": {
+      "title": "カメラにアクセスできません",
+      "message": "ページを更新してアクセス許可を可能にするか、このブラウザーの設定を確認し、この Web サイトのアクセス許可が有効になっていることを確認してください。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callCameraAlreadyInUse": {
+      "title": "カメラにアクセスできません",
+      "message": "別のアプリケーションによって既に使用されている可能性があります。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callVideoStoppedBySystem": {
+      "title": "ビデオはシステムによって停止されました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callVideoRecoveredBySystem": {
+      "title": "ビデオが再開されました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callMacOsCameraAccessDenied": {
+      "title": "MacOS がカメラへのアクセスをブロックしています",
+      "message": "プライバシー設定を更新して、このブラウザーがカメラにアクセスできるようにします。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "callMacOsScreenShareAccessDenied": {
+      "title": "MacOS で画面共有がブロックされています",
+      "message": "プライバシー設定を更新して、このブラウザーで画面を録画できるようにします。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "failedToJoinCallGeneric": {
+      "title": "通話に参加できませんでした。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "failedToJoinCallInvalidMeetingLink": {
+      "title": "会議に参加できません。リンクが無効です。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "cameraFrozenForRemoteParticipants": {
+      "title": "通話中のユーザーにビデオの表示で問題が発生しています",
+      "message": "デバイスとネットワークをチェックしてください。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "unableToStartVideoEffect": {
+      "title": "ビデオ効果を適用できません。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "startSpotlightWhileMaxParticipantsAreSpotlighted": {
+      "title": "参加者にスポットライトを開始できません",
+      "message": "参加者の最大数は既にスポットライトが設定されています。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "mutedByRemoteParticipant": {
+      "title": "他の参加者によってミュートにされました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "recordingStarted": {
+      "title": "レコーディングが開始しました。",
+      "message": "参加すると、この会議のトランスクリプトの作成に同意したことになります。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "transcriptionStarted": {
+      "title": "文字起こしが開始しました。",
+      "message": "参加すると、この会議のトランスクリプトの作成に同意したことになります。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "recordingStopped": {
+      "title": "レコーディングを保存しています。",
+      "message": "レコーディングが停止しました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "transcriptionStopped": {
+      "title": "文字起こしを保存しています。",
+      "message": "文字起こしが停止しました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "recordingAndTranscriptionStarted": {
+      "title": "レコーディングとトランスクリプトが開始されました。",
+      "message": "参加すると、この会議のトランスクリプトの作成に同意したことになります。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "recordingAndTranscriptionStopped": {
+      "title": "レコーディングとトランスクリプトを保存されました。",
+      "message": "レコーディングとトランスクリプトを停止しました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "recordingStoppedStillTranscribing": {
+      "title": "レコーディングが停止しました。",
+      "message": "この会議のトランスクリプトを作成しています。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "transcriptionStoppedStillRecording": {
+      "title": "文字起こしが停止しました。",
+      "message": "今はこの会議の録画のみを行っています。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "assignedBreakoutRoomOpened": {
+      "title": "5 秒後に、割り当てられた会議室に移動します。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "assignedBreakoutRoomChanged": {
+      "title": "ブレークアウト ルームが変更されました",
+      "message": "5 秒後に、割り当てられた会議室に移動します。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "assignedBreakoutRoomClosed": {
+      "title": "ブレークアウト ルームが終了しました",
+      "message": "5 秒後に会議に戻ります。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "assignedBreakoutRoomOpenedPromptJoin": {
+      "title": "ブレークアウト ルームに参加しますか?",
+      "message": "ブレークアウト ルームに割り当てられました。",
+      "dismissButtonAriaLabel": "閉じる",
+      "primaryButtonLabel": "ルームに参加",
+      "secondaryButtonLabel": "後で"
+    },
+    "breakoutRoomJoined": {
+      "title": "ブレークアウト ルームに参加しました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "breakoutRoomClosingSoon": {
+      "title": "ルームの時間制限がもうすぐ切れます。",
+      "message": "このルームは 30 秒後に終了します",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "capabilityTurnVideoOnPresent": {
+      "title": "カメラが有効になっています",
+      "message": "ビデオを共有したい場合はオンにしてください。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "capabilityTurnVideoOnAbsent": {
+      "title": "カメラが無効になっています",
+      "message": "ビデオを共有できなくなりました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "capabilityUnmuteMicPresent": {
+      "title": "マイクが有効になりました",
+      "message": "音声機能を使用する場合は、ミュートを解除します。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "capabilityUnmuteMicAbsent": {
+      "title": "マイクが無効になっています",
+      "message": "ミュートを解除できなくなりました。",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "togetherModeStarted": {
+      "title": "Togethermode が開始しました",
+      "dismissButtonAriaLabel": "閉じる"
+    },
+    "togetherModeEnded": {
+      "title": "Togethermode が終了しました",
+      "dismissButtonAriaLabel": "閉じる"
+    }
+  },
+  "videoGallery": {
+    "screenIsBeingSharedMessage": "画面を共有しています",
+    "screenShareLoadingMessage": "{participant} の画面を読み込んでいます",
+    "localScreenShareLoadingMessage": "画面を読み込んでいます",
+    "localVideoLabel": "自分",
+    "localVideoCameraSwitcherLabel": "カメラを切り替え",
+    "localVideoMovementLabel": "移動可能なローカル ビデオ タイル",
+    "localVideoMovementAriaLabel": "移動可能なローカル ビデオ タイル",
+    "localVideoSelectedDescription": "{cameraName} が選択されました。",
+    "displayNamePlaceholder": "名前のない参加者",
+    "fitRemoteParticipantToFrame": "フレームに収める",
+    "fillRemoteParticipantFrame": "トリミングする",
+    "pinParticipantForMe": "自分用にピン留め",
+    "pinParticipantForMeLimitReached": "ピン留め (上限に達しました)",
+    "unpinParticipantForMe": "ピンを外す",
+    "pinParticipantMenuItemAriaLabel": "{participantName} さんをピン留めする",
+    "unpinParticipantMenuItemAriaLabel": "{participantName} さんのピンを外す",
+    "pinnedParticipantAnnouncementAriaLabel": "{participantName} さんをピン留めしました",
+    "unpinnedParticipantAnnouncementAriaLabel": "{participantName} さんのピンを外しました",
+    "startSpotlightVideoTileMenuLabel": "全員にスポットライトを設定",
+    "addSpotlightVideoTileMenuLabel": "スポットライトを追加",
+    "spotlightLimitReachedMenuTitle": "スポットライトの上限に達しました",
+    "stopSpotlightVideoTileMenuLabel": "スポットライトの設定を解除",
+    "stopSpotlightOnSelfVideoTileMenuLabel": "スポットライトを終了",
+    "attendeeRole": "出席者",
+    "muteParticipantMenuItemLabel": "ミュート",
+    "waitingScreenText": "他のユーザーの参加を待っています",
+    "forbidAudio": "マイクを無効にする",
+    "permitAudio": "マイクを許可する",
+    "forbidAudioTileMenuLabel": "マイクを無効にする",
+    "permitAudioTileMenuLabel": "マイクを許可する",
+    "forbidVideo": "カメラを無効にする",
+    "permitVideo": "カメラを許可する",
+    "forbidVideoTileMenuLabel": "カメラを無効にする",
+    "permitVideoTileMenuLabel": "カメラを許可する"
+  },
+  "dialpad": {
+    "placeholderText": "電話番号を入力してください",
+    "deleteButtonAriaLabel": "削除"
+  },
+  "holdButton": {
+    "onLabel": "再開",
+    "offLabel": "保留",
+    "tooltipOnContent": "通話の再開",
+    "tooltipOffContent": "通話の保留"
+  },
+  "videoTile": {
+    "participantStateRinging": "呼び出し中...",
+    "participantReconnecting": "再接続中...",
+    "participantStateHold": "保留中",
+    "moreOptionsButtonAriaLabel": "その他のオプションの {displayName} {isMuted} {micDisabledState} {cameraDisabledState} {isHandRaised} {state} {isSpeaking}",
+    "moreOptionsParticipantMutedStateMutedAriaLabel": "ミュート中",
+    "moreOptionsParticipantMutedStateUnmutedAriaLabel": "ミュート解除",
+    "moreOptionsParticipantHandRaisedAriaLabel": "挙手しました",
+    "moreOptionsParticipantIsSpeakingAriaLabel": "話し中",
+    "moreOptionsParticipantMicDisabledAriaLabel": "マイクが無効になっています",
+    "moreOptionsParticipantCameraDisabledAriaLabel": "カメラが無効になっています"
+  },
+  "CameraAndMicrophoneSitePermissionsRequest": {
+    "primaryText": "{appName}にカメラとマイクの使用を許可する",
+    "secondaryText": "これは、参加者があなたのことを見たり聞いたりできるようにするものです。",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示",
+    "primaryButtonText": "カメラとマイクなしで続行する",
+    "ariaLabel": "カメラとマイクへのアクセスが許可する"
+  },
+  "CameraSitePermissionsRequest": {
+    "primaryText": "{appName} にカメラの使用を許可する",
+    "secondaryText": "これは、参加者に表示されるようにするためです。",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示",
+    "primaryButtonText": "カメラなしで続行",
+    "ariaLabel": "カメラへのアクセスを許可"
+  },
+  "MicrophoneSitePermissionsRequest": {
+    "primaryText": "{appName} にマイクの使用を許可する",
+    "secondaryText": "これは、参加者に聞こえるようにするためです。",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示",
+    "primaryButtonText": "マイクなしで続行",
+    "ariaLabel": "マイクへのアクセスを許可する"
+  },
+  "CameraAndMicrophoneSitePermissionsCheck": {
+    "primaryText": "カメラとマイクへのアクセスを確認しています",
+    "secondaryText": "プロンプトが表示されたら、アクセスを許可します。これは、参加者があなたを見たり聞いたりできるようにするためです。",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示",
+    "primaryButtonText": "カメラとマイクなしで続行する",
+    "ariaLabel": "カメラとマイクへのアクセスを確認しています。プロンプトが表示されたら、アクセスを許可します。"
+  },
+  "CameraSitePermissionsCheck": {
+    "primaryText": "カメラへのアクセスを確認しています",
+    "secondaryText": "プロンプトが表示されたら、アクセスを許可します。これは、参加者があなたを見ることができるようにするためです。",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示",
+    "primaryButtonText": "カメラなしで続行する",
+    "ariaLabel": "カメラへのアクセスを確認しています。プロンプトが表示されたら、アクセスを許可します。"
+  },
+  "MicrophoneSitePermissionsCheck": {
+    "primaryText": "マイクへのアクセスを確認しています",
+    "secondaryText": "プロンプトが表示されたら、アクセスを許可します。これは、参加者があなたの声を聞くことができるようにするためです。",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示",
+    "primaryButtonText": "マイクなしで続行する",
+    "ariaLabel": "マイクへのアクセスを確認しています。プロンプトが表示されたら、アクセスを許可します。"
+  },
+  "CameraAndMicrophoneSitePermissionsDenied": {
+    "primaryText": "カメラとマイクにアクセスできません",
+    "secondaryText": "アドレス バーのロック アイコンをクリックして、この Web ページにマイクのアクセス許可を付与します。ページの更新が必要な可能性があります。",
+    "primaryButtonText": "カメラとマイクなしで続行",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示"
+  },
+  "CameraAndMicrophoneSitePermissionsDeniedSafari": {
+    "primaryText": "カメラとマイクにアクセスできません",
+    "secondaryText": "ページを更新してアクセス許可を可能にするか、このブラウザーの設定を確認し、この Web サイトのアクセス許可が有効になっていることを確認してください。",
+    "primaryButtonText": "カメラとマイクなしで続行",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示"
+  },
+  "CameraSitePermissionsDenied": {
+    "primaryText": "カメラにアクセスできません",
+    "secondaryText": "アドレス バーのロック アイコンをクリックして、この Web ページにカメラのアクセス許可を付与します。ページの更新が必要な可能性があります。",
+    "primaryButtonText": "カメラなしで続行",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示"
+  },
+  "MicrophoneSitePermissionsDenied": {
+    "primaryText": "マイクにアクセスできません",
+    "secondaryText": "アドレス バーのロック アイコンをクリックして、この Web ページにマイクのアクセス許可を付与します。ページの更新が必要な可能性があります。",
+    "primaryButtonText": "マイクなしで続行する",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示"
+  },
+  "CameraSitePermissionsDeniedSafari": {
+    "primaryText": "カメラにアクセスできません",
+    "secondaryText": "ページを更新してアクセス許可を可能にするか、このブラウザーの設定を確認し、この Web サイトのアクセス許可が有効になっていることを確認してください。",
+    "primaryButtonText": "カメラなしで続行する",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示"
+  },
+  "MicrophoneSitePermissionsDeniedSafari": {
+    "primaryText": "マイクにアクセスできません",
+    "secondaryText": "ページを更新してアクセス許可を可能にするか、このブラウザーの設定を確認し、この Web サイトのアクセス許可が有効になっていることを確認してください。",
+    "primaryButtonText": "マイクなしで続行",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示"
+  },
+  "UnsupportedBrowser": {
+    "primaryText": "サポートされていないブラウザーです",
+    "secondaryText": "互換性のあるブラウザーを使用して、この通話に参加してください。",
+    "moreHelpLinkText": "互換性要件を確認する"
+  },
+  "UnsupportedBrowserVersion": {
+    "primaryText": "ブラウザーの更新が必要です",
+    "secondaryText": "可能な限り最善の通話を行うために、ブラウザーを更新してから、もう一度通話に参加してみてください。",
+    "moreHelpLinkText": "互換性要件を確認する",
+    "continueAnywayButtonText": "更新せずに通話を開始する"
+  },
+  "UnsupportedOperatingSystem": {
+    "primaryText": "オペレーティング システムがサポートされていません",
+    "secondaryText": "互換性のあるオペレーティング システムのデバイスを使用して、この通話に参加してください。",
+    "moreHelpLinkText": "互換性要件を確認する"
+  },
+  "BrowserPermissionDenied": {
+    "primaryText": "カメラまたはマイクを使用できません",
+    "secondaryText": "お使いのブラウザーはカメラまたはマイクにアクセスできない可能性があります。この問題を解決するには、[システム環境設定] を開きます。",
+    "primaryButtonText": "再試行",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示"
+  },
+  "BrowserPermissionDeniedIOS": {
+    "primaryText": "マイクへのアクセスを許可して続行する",
+    "secondaryText": "そのため、他の参加者はあなたの声を聞くことができます。",
+    "primaryButtonText": "再試行",
+    "imageAltText": "iOS のマイクとカメラ デバイスのアクセス許可の場所",
+    "linkText": "ヘルプが必要ですか? トラブルシューティングのヘルプを表示",
+    "step1Text": "設定アプリに移動します。",
+    "step2Text": "このブラウザーの設定まで下にスクロール",
+    "step3Text": "マイクをオンにする (カメラはオプション)",
+    "step4Text": "もう一度通話に参加してみてください",
+    "step1DigitText": "1",
+    "step2DigitText": "2",
+    "step3DigitText": "3",
+    "step4DigitText": "4"
+  },
+  "verticalGallery": {
+    "leftNavButtonAriaLabel": "前のページ {current}/{total}",
+    "rightNavButtonAriaLabel": "次のページ {current}/{total}"
+  },
+  "meetingConferencePhoneInfo": {
+    "meetingConferencePhoneInfoModalTitle": "電話から通話に参加",
+    "meetingConferencePhoneInfoModalDialIn": "ダイヤル番号",
+    "meetingConferencePhoneInfoModalMeetingId": "会議 ID の入力",
+    "meetingConferencePhoneInfoModalWait": "開催者に許可されるのを待つ",
+    "meetingConferencePhoneInfoModalNoPhoneAvailable": "利用可能な電話がありません",
+    "meetingConferencePhoneInfoModalTollGeoData": "{country}、{city}",
+    "meetingConferencePhoneInfoModalTollFree": "(無料電話番号)",
+    "meetingConferencePhoneInfoModalToll": "(有料電話番号)"
+  },
+  "IncomingCallNotification": {
+    "incomingCallNotificationPlaceholderId": "不明なユーザー",
+    "incomingCallNotificationPlaceholderAlert": "{callerName} が呼び出しています",
+    "incomingCallNoticicationAcceptWithAudioAriaLabel": "オーディオで承諾する",
+    "incomingCallNoticicationAcceptWithVideoAriaLabel": "ビデオで承諾する",
+    "incomingCallNoticicationRejectAriaLabel": "拒否する",
+    "incomingCallNotificationAcceptButtonLabel": "承諾",
+    "incomingCallNotificationRejectButtonLabel": "拒否",
+    "incomingCallNotificationAccceptWithVideoButtonLabel": "ビデオで受ける",
+    "incomingCallNotificationDismissButtonAriaLabel": "閉じる"
   }
 }

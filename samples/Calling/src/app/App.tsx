@@ -1,49 +1,58 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { GroupCallLocator, GroupLocator, TeamsMeetingLinkLocator } from '@azure/communication-calling';
 import { CommunicationUserIdentifier } from '@azure/communication-common';
-import { DEFAULT_COMPONENT_ICONS } from '@azure/communication-react';
-import { initializeIcons, registerIcons, Spinner } from '@fluentui/react';
+import { ParticipantRole } from '@azure/communication-calling';
+import { fromFlatCommunicationIdentifier, StartCallIdentifier } from '@azure/communication-react';
+import { MicrosoftTeamsUserIdentifier } from '@azure/communication-common';
+import { setLogLevel } from '@azure/logger';
+import { initializeIcons, Spinner, Stack } from '@fluentui/react';
+import { CallAdapterLocator } from '@azure/communication-react';
 import React, { useEffect, useState } from 'react';
 import {
   buildTime,
   callingSDKVersion,
+  commitID,
+  communicationReactSDKVersion,
   createGroupId,
   fetchTokenResponse,
   getGroupIdFromUrl,
   getTeamsLinkFromUrl,
-  isMobileSession,
+  isLandscape,
   isOnIphoneAndNotSafari,
-  isSmallScreen,
-  navigateToHomePage
+  navigateToHomePage,
+  WEB_APP_TITLE
 } from './utils/AppUtils';
+import { createRoom, getRoomIdFromUrl, addUserToRoom } from './utils/AppUtils';
+import { useIsMobile } from './utils/useIsMobile';
 import { CallError } from './views/CallError';
 import { CallScreen } from './views/CallScreen';
-import { EndCall } from './views/EndCall';
 import { HomeScreen } from './views/HomeScreen';
 import { UnsupportedBrowserPage } from './views/UnsupportedBrowserPage';
+import { getMeetingIdFromUrl } from './utils/AppUtils';
+
+setLogLevel('error');
 
 console.log(
-  `ACS sample calling app. Last Updated ${buildTime} Using @azure/communication-calling:${callingSDKVersion}`
+  `ACS sample calling app. Last Updated ${buildTime} with CommitID:${commitID} using @azure/communication-calling:${callingSDKVersion} and @azure/communication-react:${communicationReactSDKVersion}`
 );
 
 initializeIcons();
-registerIcons({ icons: DEFAULT_COMPONENT_ICONS });
 
-type AppPages = 'home' | 'call' | 'endCall' | 'callError' | 'teamsMeetingDenied' | 'removed';
+type AppPages = 'home' | 'call';
 
 const App = (): JSX.Element => {
   const [page, setPage] = useState<AppPages>('home');
-
   // User credentials to join a call with - these are retrieved from the server
   const [token, setToken] = useState<string>();
-  const [userId, setUserId] = useState<CommunicationUserIdentifier>();
+  const [userId, setUserId] = useState<CommunicationUserIdentifier | MicrosoftTeamsUserIdentifier>();
   const [userCredentialFetchError, setUserCredentialFetchError] = useState<boolean>(false);
-
   // Call details to join a call - these are collected from the user on the home screen
-  const [callLocator, setCallLocator] = useState<GroupLocator | TeamsMeetingLinkLocator>(createGroupId());
+  const [callLocator, setCallLocator] = useState<CallAdapterLocator>();
+  const [targetCallees, setTargetCallees] = useState<StartCallIdentifier[] | undefined>(undefined);
   const [displayName, setDisplayName] = useState<string>('');
+  const [isTeamsCall, setIsTeamsCall] = useState<boolean>(false);
+  const [alternateCallerId, setAlternateCallerId] = useState<string | undefined>();
 
   // Get Azure Communications Service token from the server
   useEffect(() => {
@@ -59,68 +68,108 @@ const App = (): JSX.Element => {
     })();
   }, []);
 
-  const supportedBrowser = !isOnIphoneAndNotSafari();
-  if (!supportedBrowser) return <UnsupportedBrowserPage />;
+  const isMobileSession = useIsMobile();
+  const isLandscapeSession = isLandscape();
 
-  if (isMobileSession() || isSmallScreen()) {
-    console.log('ACS Calling sample: This is experimental behaviour');
+  useEffect(() => {
+    if (isMobileSession && isLandscapeSession) {
+      console.log('ACS Calling sample: Mobile landscape view is experimental behavior');
+    }
+  }, [isMobileSession, isLandscapeSession]);
+
+  const supportedBrowser = !isOnIphoneAndNotSafari();
+  if (!supportedBrowser) {
+    return <UnsupportedBrowserPage />;
   }
 
   switch (page) {
     case 'home': {
+      document.title = `home - ${WEB_APP_TITLE}`;
       // Show a simplified join home screen if joining an existing call
-      const joiningExistingCall: boolean = !!getGroupIdFromUrl() || !!getTeamsLinkFromUrl();
+      const joiningExistingCall: boolean =
+        !!getGroupIdFromUrl() || !!getTeamsLinkFromUrl() || !!getMeetingIdFromUrl() || !!getRoomIdFromUrl();
       return (
         <HomeScreen
           joiningExistingCall={joiningExistingCall}
-          startCallHandler={(callDetails) => {
+          startCallHandler={async (callDetails) => {
             setDisplayName(callDetails.displayName);
-            const isTeamsCall = !!callDetails.teamsLink;
-            const callLocator =
-              callDetails.teamsLink || getTeamsLinkFromUrl() || getGroupIdFromUrl() || createGroupId();
-            setCallLocator(callLocator);
+            setAlternateCallerId(callDetails.alternateCallerId);
+            let callLocator: CallAdapterLocator | undefined =
+              callDetails.callLocator ||
+              getRoomIdFromUrl() ||
+              getTeamsLinkFromUrl() ||
+              getMeetingIdFromUrl() ||
+              getGroupIdFromUrl() ||
+              createGroupId();
 
-            // Update window URL to have a joinable link
-            if (!joiningExistingCall) {
-              const joinParam = isTeamsCall
-                ? '?teamsLink=' + encodeURIComponent((callLocator as TeamsMeetingLinkLocator).meetingLink)
-                : '?groupId=' + (callLocator as GroupCallLocator).groupId;
-              window.history.pushState({}, document.title, window.location.origin + joinParam);
+            if (callDetails.option === 'Rooms') {
+              callLocator = getRoomIdFromUrl() || callDetails.callLocator;
             }
 
+            if (callDetails.option === '1:N' || callDetails.option === 'PSTN') {
+              const outboundUsers = callDetails.outboundParticipants?.map((user) => {
+                return fromFlatCommunicationIdentifier(user);
+              });
+              callLocator = undefined;
+              setTargetCallees(outboundUsers);
+            }
+
+            if (callDetails.option === 'TeamsAdhoc') {
+              const outboundTeamsUsers = callDetails.outboundTeamsUsers?.map((user) => {
+                return fromFlatCommunicationIdentifier(user) as StartCallIdentifier;
+              });
+              callLocator = undefined;
+              setTargetCallees(outboundTeamsUsers);
+            }
+
+            // There is an API call involved with creating a room so lets only create one if we know we have to
+            if (callDetails.option === 'StartRooms') {
+              let roomId = '';
+              try {
+                roomId = await createRoom();
+              } catch (e) {
+                console.log(e);
+              }
+
+              callLocator = { roomId: roomId };
+            }
+
+            if (callLocator && 'roomId' in callLocator) {
+              if (userId && 'communicationUserId' in userId) {
+                await addUserToRoom(
+                  userId.communicationUserId,
+                  callLocator.roomId,
+                  callDetails.role as ParticipantRole
+                );
+              } else {
+                throw 'Invalid userId!';
+              }
+            }
+            setCallLocator(callLocator);
+            // Update window URL to have a joinable link
+            if (callLocator && !joiningExistingCall) {
+              window.history.pushState(
+                {},
+                document.title,
+                window.location.origin +
+                  window.location.pathname +
+                  getJoinParams(callLocator) +
+                  getIsCTEParam(!!callDetails.teamsToken)
+              );
+            }
+            setIsTeamsCall(!!callDetails.teamsToken);
+            callDetails.teamsToken && setToken(callDetails.teamsToken);
+            callDetails.teamsId &&
+              setUserId(fromFlatCommunicationIdentifier(callDetails.teamsId) as MicrosoftTeamsUserIdentifier);
             setPage('call');
           }}
         />
       );
     }
-    case 'endCall': {
-      return <EndCall rejoinHandler={() => setPage('call')} homeHandler={navigateToHomePage} />;
-    }
-    case 'callError': {
-      return <CallError rejoinHandler={() => setPage('call')} homeHandler={navigateToHomePage} />;
-    }
-    case 'teamsMeetingDenied': {
-      return (
-        <CallError
-          title="Error joining Teams Meeting"
-          reason="Access to the Teams meeting was denied."
-          rejoinHandler={() => setPage('call')}
-          homeHandler={navigateToHomePage}
-        />
-      );
-    }
-    case 'removed': {
-      return (
-        <CallError
-          title="Oops! You are no longer a participant of the call."
-          reason="Access to the meeting has been stopped"
-          rejoinHandler={() => setPage('call')}
-          homeHandler={navigateToHomePage}
-        />
-      );
-    }
+
     case 'call': {
       if (userCredentialFetchError) {
+        document.title = `error - ${WEB_APP_TITLE}`;
         return (
           <CallError
             title="Error getting user credentials from server"
@@ -130,8 +179,14 @@ const App = (): JSX.Element => {
           />
         );
       }
-      if (!token || !userId || !displayName || !callLocator) {
-        return <Spinner label={'Getting user credentials from server'} ariaLive="assertive" labelPosition="top" />;
+
+      if (!token || !userId || (!displayName && !isTeamsCall) || (!targetCallees && !callLocator)) {
+        document.title = `credentials - ${WEB_APP_TITLE}`;
+        return (
+          <Stack horizontalAlign="center" verticalAlign="center" styles={{ root: { height: '100%' } }}>
+            <Spinner label={'Getting user credentials from server'} ariaLive="assertive" labelPosition="top" />
+          </Stack>
+        );
       }
       return (
         <CallScreen
@@ -139,14 +194,38 @@ const App = (): JSX.Element => {
           userId={userId}
           displayName={displayName}
           callLocator={callLocator}
-          onCallEnded={() => setPage('endCall')}
-          onCallError={() => setPage('callError')}
+          targetCallees={targetCallees}
+          alternateCallerId={alternateCallerId}
+          isTeamsIdentityCall={isTeamsCall}
         />
       );
     }
     default:
+      document.title = `error - ${WEB_APP_TITLE}`;
       return <>Invalid page</>;
   }
+};
+
+const getIsCTEParam = (isCTE?: boolean): string => {
+  return isCTE ? '&isCTE=true' : '';
+};
+
+const getJoinParams = (locator: CallAdapterLocator): string => {
+  if ('meetingLink' in locator) {
+    return '?teamsLink=' + encodeURIComponent(locator.meetingLink);
+  }
+  if ('meetingId' in locator) {
+    return (
+      '?meetingId=' + encodeURIComponent(locator.meetingId) + (locator.passcode ? '&passcode=' + locator.passcode : '')
+    );
+  }
+  if ('roomId' in locator) {
+    return '?roomId=' + encodeURIComponent(locator.roomId);
+  }
+  if ('participantIds' in locator) {
+    return '';
+  }
+  return '?groupId=' + encodeURIComponent(locator.groupId);
 };
 
 export default App;

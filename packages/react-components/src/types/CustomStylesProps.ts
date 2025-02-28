@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { IStyle } from '@fluentui/react';
 
@@ -8,7 +8,7 @@ import { IStyle } from '@fluentui/react';
  *
  * @public
  */
-export interface BaseCustomStylesProps {
+export interface BaseCustomStyles {
   /** Styles for the root container. */
   root?: IStyle;
 }

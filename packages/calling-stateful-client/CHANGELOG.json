@@ -2,6 +2,1500 @@
   "name": "@internal/calling-stateful-client",
   "entries": [
     {
+      "date": "Mon, 24 Feb 2025 23:41:48 GMT",
+      "version": "1.25.0-beta.1",
+      "tag": "@internal/calling-stateful-client_v1.25.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.25.0-beta.1",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 10 Feb 2025 18:17:46 GMT",
+      "version": "1.24.0",
+      "tag": "@internal/calling-stateful-client_v1.24.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.24.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 03 Feb 2025 22:02:27 GMT",
+      "version": "1.24.0-beta.1",
+      "tag": "@internal/calling-stateful-client_v1.24.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.24.0-beta.1",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 13 Jan 2025 19:28:47 GMT",
+      "version": "1.23.0",
+      "tag": "@internal/calling-stateful-client_v1.23.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.23.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 16 Dec 2024 19:44:16 GMT",
+      "version": "1.22.0",
+      "tag": "@internal/calling-stateful-client_v1.22.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.22.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 02 Dec 2024 20:49:02 GMT",
+      "version": "1.22.0-beta.1",
+      "tag": "@internal/calling-stateful-client_v1.22.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.22.0-beta.1",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 12 Nov 2024 17:20:49 GMT",
+      "version": "1.21.0",
+      "tag": "@internal/calling-stateful-client_v1.21.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.21.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 28 Oct 2024 22:53:28 GMT",
+      "version": "1.21.0-beta.1",
+      "tag": "@internal/calling-stateful-client_v1.21.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.21.0-beta.1",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 15 Oct 2024 20:24:25 GMT",
+      "version": "1.20.0",
+      "tag": "@internal/calling-stateful-client_v1.20.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.20.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 01 Oct 2024 17:03:47 GMT",
+      "version": "1.20.0-beta.1",
+      "tag": "@internal/calling-stateful-client_v1.20.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.20.0-beta.1",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 12 Sep 2024 18:13:19 GMT",
+      "version": "1.19.0",
+      "tag": "@internal/calling-stateful-client_v1.19.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.19.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Fri, 06 Sep 2024 23:30:32 GMT",
+      "version": "1.19.0-beta.3",
+      "tag": "@internal/calling-stateful-client_v1.19.0-beta.3",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.19.0-beta.3",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 26 Aug 2024 18:25:59 GMT",
+      "version": "1.19.0-beta.2",
+      "tag": "@internal/calling-stateful-client_v1.19.0-beta.2",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.19.0-beta.2",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 06 Aug 2024 19:45:33 GMT",
+      "tag": "@internal/calling-stateful-client_v1.19.0-beta.1",
+      "version": "1.19.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.19.0-beta.1",
+            "commit": "2a0be9b93dff44ba6cac2e5837a91e87dffe0f8e"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 15 Jul 2024 18:16:40 GMT",
+      "tag": "@internal/calling-stateful-client_v1.18.0",
+      "version": "1.18.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.18.0",
+            "commit": "1961bc1b7b27ee99b97c8999898f951aa0dce051"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 17 Jun 2024 16:27:16 GMT",
+      "tag": "@internal/calling-stateful-client_v1.18.0-beta.1",
+      "version": "1.18.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.18.0-beta.1",
+            "commit": "426b6a0ff8c54594e1fe935d7a2678023563c9dc"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 04 Jun 2024 05:01:43 GMT",
+      "tag": "@internal/calling-stateful-client_v1.17.0",
+      "version": "1.17.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.17.0",
+            "commit": "7bfef8e8091613024bbf0e1056f811814da1bffd"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 21 May 2024 20:14:29 GMT",
+      "tag": "@internal/calling-stateful-client_v1.17.0-beta.1",
+      "version": "1.17.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.17.0-beta.1",
+            "commit": "507d5767cfd985df9eb209c1da548cc820ad6234"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 06 May 2024 20:38:28 GMT",
+      "tag": "@internal/calling-stateful-client_v1.16.0",
+      "version": "1.16.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.16.0",
+            "commit": "fa4fffe670e4d79487fa1fad35c54ae5eaced76f"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 23 Apr 2024 17:54:37 GMT",
+      "tag": "@internal/calling-stateful-client_v1.16.0-beta.1",
+      "version": "1.16.0-beta.1",
+      "comments": {
+        "minor": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.16.0-beta.1",
+            "commit": "04a79e96b9d8be86b08060c3c9ba56ae8a46bbb1"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 08 Apr 2024 20:34:42 GMT",
+      "tag": "@internal/calling-stateful-client_v1.15.0",
+      "version": "1.15.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.15.0",
+            "commit": "a5d118183ecd1e7ea767a85561ff170cf11f653b"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 26 Mar 2024 17:38:32 GMT",
+      "tag": "@internal/calling-stateful-client_v1.15.0-beta.1",
+      "version": "1.15.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.15.0-beta.1",
+            "commit": "0f6019132a8bd408e1f324bc8265313e26b7f3e1"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 14 Mar 2024 03:50:54 GMT",
+      "tag": "@internal/calling-stateful-client_v1.14.0",
+      "version": "1.14.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.14.0",
+            "commit": "15f04ffe4016c17b215365c2f0cf9c3d1ede7d56"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 26 Feb 2024 16:19:20 GMT",
+      "tag": "@internal/calling-stateful-client_v1.14.0-beta.1",
+      "version": "1.14.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.14.0-beta.1",
+            "commit": "bf04cd93b96b0f0a3494b5b35321c649ee1c0947"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 12 Feb 2024 18:52:34 GMT",
+      "tag": "@internal/calling-stateful-client_v1.13.0",
+      "version": "1.13.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.13.0",
+            "commit": "68e9662fe9f7058606a939f9daa2b8815118c606"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 30 Jan 2024 19:19:27 GMT",
+      "tag": "@internal/calling-stateful-client_v1.13.0-beta.1",
+      "version": "1.13.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.13.0-beta.1",
+            "commit": "cee24a3f10fc4c1225b22426d1176981e823c52b"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 16 Jan 2024 22:14:22 GMT",
+      "tag": "@internal/calling-stateful-client_v1.12.0",
+      "version": "1.12.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.12.0",
+            "commit": "8eb30577e1bc62659981dffa3ad4abd071a8dd27"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 11 Dec 2023 21:24:55 GMT",
+      "tag": "@internal/calling-stateful-client_v1.11.0",
+      "version": "1.11.0",
+      "comments": {
+        "minor": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.11.0",
+            "commit": "ddd0c5a59aac460adede273cf909b3afcff3a069"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 20 Nov 2023 21:42:11 GMT",
+      "tag": "@internal/calling-stateful-client_v1.11.0-beta.1",
+      "version": "1.11.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.11.0-beta.1",
+            "commit": "f69ea58c879c9b22ec281c40945a87c164901c3c"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 06 Nov 2023 16:44:18 GMT",
+      "tag": "@internal/calling-stateful-client_v1.10.0",
+      "version": "1.10.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.10.0",
+            "commit": "30dd18b4bf71161804364cdbc818e150b0111bfd"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 23 Oct 2023 18:27:30 GMT",
+      "tag": "@internal/calling-stateful-client_v1.10.0-beta.1",
+      "version": "1.10.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.10.0-beta.1",
+            "commit": "9dfd0f71047e3d57f4b4c240bf6cc3f2aae9719f"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Fri, 06 Oct 2023 19:59:52 GMT",
+      "tag": "@internal/calling-stateful-client_v1.9.0",
+      "version": "1.9.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.9.0",
+            "commit": "0b3524e16f4fbfa97e5c4d86a39897337807c5f6"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 04 Oct 2023 17:17:19 GMT",
+      "tag": "@internal/calling-stateful-client_v1.9.0-beta.1",
+      "version": "1.9.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.9.0-beta.1",
+            "commit": "5a2aac2cf5d21402f3ab2735381baa9f5c98b167"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 07 Sep 2023 02:42:37 GMT",
+      "tag": "@internal/calling-stateful-client_v1.8.0",
+      "version": "1.8.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.8.0",
+            "commit": "7342e639f5bab695f9ac1b7fe67e74c1fe73bcde"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 28 Aug 2023 22:18:09 GMT",
+      "tag": "@internal/calling-stateful-client_v1.8.0-beta.1",
+      "version": "1.8.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.8.0-beta.1",
+            "commit": "7cbfc7206c14ac0fe95813b579399c7d6673ce4f"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 14 Aug 2023 18:28:42 GMT",
+      "tag": "@internal/calling-stateful-client_v1.7.0",
+      "version": "1.7.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.7.0",
+            "commit": "2e2916d59cca7d82e98f016276587353d3316597"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 24 Jul 2023 17:34:40 GMT",
+      "tag": "@internal/calling-stateful-client_v1.7.0-beta.2",
+      "version": "1.7.0-beta.2",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.7.0-beta.2",
+            "commit": "ff8ff1cd681697cf9b165ac25f7195b9bf679d30"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 27 Jun 2023 22:07:29 GMT",
+      "tag": "@internal/calling-stateful-client_v1.7.0-beta.1",
+      "version": "1.7.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.7.0-beta.1",
+            "commit": "326a2d173cfbb8e87da3563bc1e9135b18a6b9c5"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 12 Jun 2023 19:04:44 GMT",
+      "tag": "@internal/calling-stateful-client_v1.6.0",
+      "version": "1.6.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.6.0",
+            "commit": "a63d7c2e204d09ce02209ef22565d045bf28934d"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 23 May 2023 21:43:17 GMT",
+      "tag": "@internal/calling-stateful-client_v1.5.1-beta.5",
+      "version": "1.5.1-beta.5",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.5.1-beta.5",
+            "commit": "7a6e42c011b091d165bf02f09348ed5bab6dba47"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 24 Apr 2023 15:39:40 GMT",
+      "tag": "@internal/calling-stateful-client_v1.5.1-beta.3",
+      "version": "1.5.1-beta.3",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.5.1-beta.3",
+            "commit": "0c6463eadb465ca4b61abf49bf10acb16ab38109"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 28 Mar 2023 16:00:38 GMT",
+      "tag": "@internal/calling-stateful-client_v1.5.1-beta.2",
+      "version": "1.5.1-beta.2",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.5.1-beta.2",
+            "commit": "44af12af1d875a92c4fe787ef35979d608a18d0f"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 01 Feb 2023 17:57:07 GMT",
+      "tag": "@internal/calling-stateful-client_v1.5.1-beta.1",
+      "version": "1.5.1-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.5.1-beta.1",
+            "commit": "12057529397c7967ace40835895dd12c759d7285"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 04 Jan 2023 23:56:41 GMT",
+      "tag": "@internal/calling-stateful-client_v1.5.0",
+      "version": "1.5.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "8cb67542c822c72db69c77e223747d55fe5b4d54",
+            "comment": "Allow a range of communication services dependency packages"
+          },
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "713f8fffeaf64b3f2ed08ccd86f0b473f5c376d3",
+            "comment": "Filter out camera devices with blank name when declarative device manager is used."
+          },
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "5c061a95044751fd8e0f4618cd02a0e63d3027dd",
+            "comment": "Remove DeclarativeCallAgent from stable API"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.5.0",
+            "commit": "080bf87c8847f154b37cda856978bc00aa4fe5df"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "jinan@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "c2045bf3c9c4464c57bdff774f130756af8ebe28",
+            "comment": "Add teams identity support to binding layer"
+          },
+          {
+            "author": "94866715+dmceachernmsft@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "a867bc56b414cc2e87bcfbd4139f10c2f9a962a1",
+            "comment": "Bump `@azure/communication-calling` beta dependency to 1.9.1-beta.1"
+          },
+          {
+            "author": "miguelgamis@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "6d2b3839dbdd03864de1921dcb541cd610e331f6",
+            "comment": "Add rooms role into calling stateful client"
+          },
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "fbfe38ebecbb97f70b8ac17a99da7ae29fd94a29",
+            "comment": "Only export DeclarativeCallAgent in beta build"
+          },
+          {
+            "author": "94866715+dmceachernmsft@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "5e9aa8e455df220373fdfc07059e21116b89cda1",
+            "comment": "Introduce getEnvironmentInfo API from calling to stateful-client."
+          },
+          {
+            "author": "jinan@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "c4fb6aa86817aa302b84094898fc029108d42b32",
+            "comment": "Add TeamsCall and TeamsCallAgent to StatefulClient"
+          }
+        ],
+        "none": [
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "c8e8d74de3f7804e0187538d696bbfe7a37e0248",
+            "comment": "Bumped"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 15 Nov 2022 21:12:22 GMT",
+      "tag": "@internal/calling-stateful-client_v1.4.1-beta.1",
+      "version": "1.4.1-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "8cb67542c822c72db69c77e223747d55fe5b4d54",
+            "comment": "Allow a range of communication services dependency packages"
+          },
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "713f8fffeaf64b3f2ed08ccd86f0b473f5c376d3",
+            "comment": "Filter out camera devices with blank name when declarative device manager is used."
+          },
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "5c061a95044751fd8e0f4618cd02a0e63d3027dd",
+            "comment": "Remove DeclarativeCallAgent from stable API"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.4.1-beta.1",
+            "commit": "4c9756eb717a363c2d533804fcba8d1caf3cfb40"
+          }
+        ],
+        "none": [
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "c8e8d74de3f7804e0187538d696bbfe7a37e0248",
+            "comment": "Bumped"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "miguelgamis@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "6d2b3839dbdd03864de1921dcb541cd610e331f6",
+            "comment": "Add rooms role into calling stateful client"
+          },
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "fbfe38ebecbb97f70b8ac17a99da7ae29fd94a29",
+            "comment": "Only export DeclarativeCallAgent in beta build"
+          },
+          {
+            "author": "jinan@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "c4fb6aa86817aa302b84094898fc029108d42b32",
+            "comment": "Add TeamsCall and TeamsCallAgent to StatefulClient"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Fri, 21 Oct 2022 23:02:10 GMT",
+      "tag": "@internal/calling-stateful-client_v1.4.0",
+      "version": "1.4.0",
+      "comments": {
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "7d276116ce0b5aab82b1adc3e24b32709b0db47c",
+            "comment": "Bump package version after hotfix release"
+          },
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "8c0f848a7d5a2b49df5c8d3843bc9e63d8d6345d",
+            "comment": "Add unit test for DeclarativeCallAgent.incomingCalls "
+          },
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "f42faa2a9830ad1a7bcabba08d9aafcd49632e8b",
+            "comment": "Bumped"
+          }
+        ],
+        "patch": [
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "e7a04f1d8859eb0b3a4bfb04ace0a9d129c82a7a",
+            "comment": "Add event logs for disposing local video streams"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.4.0",
+            "commit": "6e9b927acf587b957b60434f6ccc8265277d2434"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "miguelgamis@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "ad1972e132bbd1d66b1e4d59c80c4c1b869f3bae",
+            "comment": "bump calling beta to 1.6.0-beta.1"
+          },
+          {
+            "author": "miguelgamis@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "05c00dee4f3d99d2583b3edb24ac932b2196c8f5",
+            "comment": "Bumped calling SDK beta version to 1.8.0-beta.1"
+          },
+          {
+            "author": "94866715+dmceachernmsft@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "9f34246aa4b2576bd57c52a97190596f8c1ca097",
+            "comment": "Introduce AlternateCallerId from the Calling SDK to the Calling stateful client."
+          },
+          {
+            "author": "94866715+dmceachernmsft@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "023ca9f8bfca85c016661f5ec7cba0c3c76f4474",
+            "comment": "Introduce the alternativeCallerId property from the Calling SDK to the stateful Client and CallContext."
+          },
+          {
+            "author": "edwardlee@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "c27f11267d57741b1d6cc4fa529555c6e7ede7eb",
+            "comment": "Bump calling beta to 1.6.1 beta.1"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 05 Oct 2022 18:13:54 GMT",
+      "tag": "@internal/calling-stateful-client_v1.3.2-beta.1",
+      "version": "1.3.2-beta.1",
+      "comments": {
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "7d276116ce0b5aab82b1adc3e24b32709b0db47c",
+            "comment": "Bump package version after hotfix release"
+          },
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "8c0f848a7d5a2b49df5c8d3843bc9e63d8d6345d",
+            "comment": "Add unit test for DeclarativeCallAgent.incomingCalls "
+          },
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "f42faa2a9830ad1a7bcabba08d9aafcd49632e8b",
+            "comment": "Bumped"
+          }
+        ],
+        "patch": [
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "e7a04f1d8859eb0b3a4bfb04ace0a9d129c82a7a",
+            "comment": "Add event logs for disposing local video streams"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.3.2-beta.1",
+            "commit": "14adcdc3a3699659701ab1a81c80f1418e384170"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "miguelgamis@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "ad1972e132bbd1d66b1e4d59c80c4c1b869f3bae",
+            "comment": "bump calling beta to 1.6.0-beta.1"
+          },
+          {
+            "author": "miguelgamis@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "05c00dee4f3d99d2583b3edb24ac932b2196c8f5",
+            "comment": "Bumped calling SDK beta version to 1.8.0-beta.1"
+          },
+          {
+            "author": "94866715+dmceachernmsft@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "9f34246aa4b2576bd57c52a97190596f8c1ca097",
+            "comment": "Introduce AlternateCallerId from the Calling SDK to the Calling stateful client."
+          },
+          {
+            "author": "94866715+dmceachernmsft@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "023ca9f8bfca85c016661f5ec7cba0c3c76f4474",
+            "comment": "Introduce the alternativeCallerId property from the Calling SDK to the stateful Client and CallContext."
+          },
+          {
+            "author": "edwardlee@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "c27f11267d57741b1d6cc4fa529555c6e7ede7eb",
+            "comment": "Bump calling beta to 1.6.1 beta.1"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 29 Jun 2022 17:31:07 GMT",
+      "tag": "@internal/calling-stateful-client_v1.3.1-beta.1",
+      "version": "1.3.1-beta.1",
+      "comments": {
+        "none": [
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "ad6decf11884d8904622209a60e6b8163a5c99ef",
+            "comment": "Bumped"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "48a7b22debd05a09e621bdbbcb94f0209ab65c02",
+            "comment": "Add incomingCalls array to declarative call agent"
+          }
+        ],
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.3.1-beta.1",
+            "commit": "ca7646cfad4f55c21d80355235d29b35ca2c40c1"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 13 Jun 2022 18:29:30 GMT",
+      "tag": "@internal/calling-stateful-client_v1.3.0",
+      "version": "1.3.0",
+      "comments": {
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "b96cb050b49ad1057142f33b8f169d0b064f612a",
+            "comment": "Log StatefulCallClient state changes when verbose logging is enabled"
+          },
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "4d202fa62dc3f90002ccec181f0f2509286e773f",
+            "comment": "Reorganize generated API file paths"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "6af9d22c8c15c36f2d44401cd18b499e3138269f",
+            "comment": "Use rushx to enable error report for rush build"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "1e7d62b64428b47269acd258087bee3e65423396",
+            "comment": "Use structure event for better parse"
+          },
+          {
+            "author": "carolinecao@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "5f0c4c7145ed08da3ce79f36aa003b5646bb75b8",
+            "comment": "bump package versions for release"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "chwhilar@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "a562fc1d3e7aa7dc1b1df2fe6d487ecfd6d2c406",
+            "comment": "Support `isReceiving` flag for video streams"
+          },
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "934ba677f4ae65954fc63f2be529e5a4adc35371",
+            "comment": "Updating @azure/communication-chat to 1.2.0"
+          },
+          {
+            "author": "94866715+dmceachernmsft@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "a69748335ed262a76e575f0c6bfc85f64202e417",
+            "comment": "Update Calling declarative to handle new PSTN functions"
+          },
+          {
+            "author": "79475487+mgamis-msft@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "bc91818a4ce729d3d86fdc462c9941a3e4d104e1",
+            "comment": "updating beta @azure/communication-calling to 1.5.4-beta.1"
+          }
+        ],
+        "patch": [
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "aa382cee7eac5cd5cc5de26b8f8b6a316e22cab4",
+            "comment": "Return the renderer and view created when statefulCallClient.createView is called"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "6174e00345d91e8e08668a95648b048a3f56af5d",
+            "comment": "- Add callIdHistory to context + internal context - Update all visit to callId using latestCallId - Encapsule the access to internalMap directly to ensure no leaks"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "38ad6c71576e7a8b24b7097241e8c35a789e4490",
+            "comment": "Update the right call.id into state"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.3.0",
+            "commit": "de87d04e8d99bc266b4d44bdea7608a78a52008e"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 19 Apr 2022 20:46:15 GMT",
+      "tag": "@internal/calling-stateful-client_v1.2.2-beta.1",
+      "version": "1.2.2-beta.1",
+      "comments": {
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "9f89b36eecd7c7bba9edbb66f1b495056124871c",
+            "comment": "Setup package versions after prerelease"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "fa9f3484b9a76ee3438d9371088efcc41f085829",
+            "comment": "Add version to azure log(telemetry)"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "4c5abf8919f86780cb6969187620402bc5911e8b",
+            "comment": "Add telemetry for rendering problems"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "763bfb6933e29401dbc5a5229ed12eff7d7ac055",
+            "comment": "Log the function called from stateful client"
+          }
+        ],
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.2.2-beta.1",
+            "commit": "124893bcd653ceab6c1fd7461e14ee978c8a7ac9"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Fri, 11 Mar 2022 19:20:03 GMT",
+      "tag": "@internal/calling-stateful-client_v1.2.0",
+      "version": "1.2.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "a8454e2d0a360defafc04b7ec7820cb260e9f77a",
+            "comment": "Bump @azure/communication-calling to 1.4.3"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.2.0",
+            "commit": "8840a94fa6175db937f697b1c6a6a64cc2fb743f"
+          }
+        ],
+        "none": [
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "97c1d1ad3fddaed8156846ac18f4c077025ce878",
+            "comment": "Fix eslint warnings. Update builds to fail on eslint warnings."
+          },
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "c72abb80d4795c84259a9c658c208b9dfa9083dc",
+            "comment": "Update azure/communication-calling dependency version to match the rest of the repo"
+          },
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "90510f339a17d66eed782cd58c3faadefac15967",
+            "comment": "Bump package version to 1.1.1-beta.1"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "edwardlee@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "fed7eafe04f692c5210d8702dfe47f3067fc4df1",
+            "comment": "Upgrading calling to 1.4.3-beta.1"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 01 Mar 2022 16:42:56 GMT",
+      "tag": "@internal/calling-stateful-client_v1.1.1-beta.1",
+      "version": "1.1.1-beta.1",
+      "comments": {
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "b96cb050b49ad1057142f33b8f169d0b064f612a",
+            "comment": "Log StatefulCallClient state changes when verbose logging is enabled"
+          },
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "9a9948616fa6d37a13a56518fb8827778765937d",
+            "comment": "Use per-feature conditional compilation directives"
+          },
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "87979c60be946d0e1f9dc5bc732cff6cdfc91b70",
+            "comment": "Include all files in stable flavor build"
+          },
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "d2d53d1842efd37b3ed6286ebcce983efeea79cb",
+            "comment": "Bump package version to 1.0.1"
+          },
+          {
+            "author": "94866715+dmceachernmsft@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "75b3b7e3db16e0c0d533246b08212bbe0a441279",
+            "comment": "update the acs-common dependancy per dependabot"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "8061151ddd7b6b13e387b8c591d9fc11cc2c43fe",
+            "comment": "Follow the import trace from every index.ts and not to compile non-exported files"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "79329532+alkwa-msft@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "a87694951dd50fe4c355aba3e7915f9c59a53b94",
+            "comment": "upgrading calling to 1.4.2-beta.1"
+          }
+        ],
+        "patch": [
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "e6821eb7ed2e90d5dd41198b3a6de5bb05b41e7f",
+            "comment": "Fix exception thrown when trying to log stringified state when azure logger is set to verbose"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.1.1-beta.1",
+            "commit": "ad59ff742c9fad2fceb1b819cb259c1ee8f29e62"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 24 Jan 2022 23:18:54 GMT",
+      "tag": "@internal/calling-stateful-client_v1.0.1",
+      "version": "1.0.1",
+      "comments": {
+        "none": [
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "630f03cc58eb8b730fc3fccbea46e6e59c5c1c8d",
+            "comment": "Bump package version to 1.0.1"
+          },
+          {
+            "author": "jinan@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "4ab44b83d81e23dbace1e80173ba8fae9e04c0a3",
+            "comment": "Add flavor switch and build variant to the repo"
+          },
+          {
+            "author": "jinan@microsoft.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "883659f7c75d212aa9f1493f40c995e91d01d3f9",
+            "comment": "Remove dependencies of tscc for conditional build"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "e8ca86750c4548dd2796638eae88f6188017d39b",
+            "comment": "- Add a separate folder for stable api review - Add `build:all` script for easy api generating"
+          }
+        ],
+        "patch": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "f9e922fd4ff9e2c5f3da8807b71c18560fe869a0",
+            "comment": "Move @azure/communication-calling to peer dependency"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.0.1",
+            "commit": "192c0fc9ba6a08e1877402d565545e3b2aa9d1ae"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 04 Jan 2022 22:57:09 GMT",
+      "tag": "@internal/calling-stateful-client_v1.0.1",
+      "version": "1.0.1",
+      "comments": {
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "37423747ed57559ac4a1280244a4e765e4838899",
+            "comment": "Conditional build of stable flavor"
+          },
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/calling-stateful-client",
+            "commit": "f9cdec1a3af3a0093790ae40a44c6a44906afbab",
+            "comment": "Create release branch"
+          }
+        ],
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/calling-stateful-client",
+            "comment": "Bump @internal/acs-ui-common to v1.0.1",
+            "commit": "8adade9eda05f6344554be0384e1da977283cee6"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 06 Dec 2021 19:41:59 GMT",
+      "tag": "@internal/calling-stateful-client_v1.0.0",
+      "version": "1.0.0",
+      "comments": {
+        "none": [
+          {
+            "comment": "Bump package version to 1.0.0-beta.8",
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "commit": "6edef280ec539406a390c3bb19efa9f306730116",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Add eslint rule to force brackets for if, else, switch",
+            "author": "anjulgarg@live.com",
+            "commit": "694b8b7148a105add029c3b39c965600b6e45ac3",
+            "package": "@internal/calling-stateful-client"
+          }
+        ],
+        "prerelease": [
+          {
+            "comment": "Remove spammy console log when rendering video",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "f77f20518ca28186103c9778a2149c6b377cf01e",
+            "package": "@internal/calling-stateful-client"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 17 Nov 2021 22:21:27 GMT",
+      "tag": "@internal/calling-stateful-client_v1.0.0-beta.8",
+      "version": "1.0.0-beta.8",
+      "comments": {
+        "prerelease": [
+          {
+            "comment": "Bump headless calling SDK to 1.3.1-beta.1",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "a0790e82c1b27c4e5daa31d5134e6a3930789131",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Update according to azure review",
+            "author": "jinan@microsoft.com",
+            "commit": "6708f87c37794a4411c7a1eb2586fa996aeb7757",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Remove call transfer feature",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "693bb11e7c57bcd04ad87a6bb4c18fb252151ebb",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Add diagnostics hint and expose diagnostics API",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "8bc918f5d693cd0a38b58dfa6e8793e0652d9553",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Fix manual conversions of userID",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "81e2d46cedeb9aa982315deecf4cf4603167cb8a",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Mark StatefulCallClient `diagnostics` property as public and `transfer` property as beta",
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "commit": "e6ea81c96401ba5c6c03005c2f77125f29d3a919",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Generalize state.userId type",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "ed1887cb95ae95dcd9043f979dd15a393c654cde",
+            "package": "@internal/calling-stateful-client"
+          }
+        ],
+        "none": [
+          {
+            "comment": "Bump package version to 1.0.0-beta.7",
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "commit": "5a5507a2034f691a887cb8875281319874d6ed65",
+            "package": "@internal/calling-stateful-client"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 27 Oct 2021 19:40:46 GMT",
+      "tag": "@internal/calling-stateful-client_v1.0.0-beta.7",
+      "version": "1.0.0-beta.7",
+      "comments": {
+        "prerelease": [
+          {
+            "comment": "Use objects for call history in state",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "da6d448333e8dd1fbb9f2eb08a3ecd2b3e482bde",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Replace CommunicationUserKind with CommunicationUserIdentifier in constructor",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "00728707d25910c9fb7b030aca112828541492ac",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "bump calling sdk to 1.2.3-beta.1",
+            "author": "miguelgamis@microsoft.com",
+            "commit": "5b6f038700dc756a80946aac2aefc0f580cd82e7",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Api changes according to reviews from ARB",
+            "author": "jinan@microsoft.com",
+            "commit": "8908e99a94cbd5e22ee6afcdb7f9caafc5c4c25b",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Fix browser camera indicator still showing in use after turning it off",
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "commit": "aa001a001bba36180909fd653f7cb114a5477a0e",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Update message type",
+            "author": "jinan@microsoft.com",
+            "commit": "b563d672084416e4555fca408d1dce33978f54e1",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Rename `Error.inner` to `Error.innerError`",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "adab866a9c328d8bd01af921334967555099e77f",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "updating calling to use 1.2.2-beta.1",
+            "author": "miguelgamis@microsoft.com",
+            "commit": "dbca58a3e5bf2d7ec873f81078b093ce87bd6cde",
+            "package": "@internal/calling-stateful-client"
+          }
+        ],
+        "none": [
+          {
+            "comment": "Bump package version to 1.0.0-beta.6",
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "commit": "fb99740af680a42e5d0b42a5475ad2efa9bd7fb8",
+            "package": "@internal/calling-stateful-client"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 28 Sep 2021 19:19:18 GMT",
+      "tag": "@internal/calling-stateful-client_v1.0.0-beta.6",
+      "version": "1.0.0-beta.6",
+      "comments": {
+        "none": [
+          {
+            "comment": "Bump package version to 1.0.0-beta.5",
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "commit": "cb54e992d9740dac94d2b8526f9066f365242c4a",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Clean old files before build",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "696a74a572f10b9305a64e78b17de4e38c88c657",
+            "package": "@internal/calling-stateful-client"
+          }
+        ],
+        "prerelease": [
+          {
+            "comment": "Drop state modification API",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "8993b24c40472659ab96ddbc05f8bd69f64ad01f",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Stop clearing errors from calling stateful client",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "f45b8daed711cd0db72d53d868f83f331874d826",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Document all public API and hide leaked exports",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "e6a412b28c67f7525b68fcd15432fe96294641e2",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Fix feature types to conform to naming convention",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "b0a551e15381f7ac54f3800c3041ba6179490830",
+            "package": "@internal/calling-stateful-client"
+          },
+          {
+            "comment": "Centralize beachball config",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "f5d9cbd40f6ea0c19315a8e81642145961ba3f56",
+            "package": "@internal/calling-stateful-client"
+          }
+        ]
+      }
+    },
+    {
       "date": "Mon, 13 Sep 2021 21:02:16 GMT",
       "tag": "@internal/calling-stateful-client_v1.0.0-beta.5",
       "version": "1.0.0-beta.5",

@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 module.exports = {
   env: {
@@ -27,7 +27,8 @@ module.exports = {
     ],
     '@typescript-eslint/no-explicit-any': 'off',
     eqeqeq: 'warn',
-    'header/header': ['error', 'line', ' Copyright (c) Microsoft Corporation.\n Licensed under the MIT license.'],
+    '@typescript-eslint/no-non-null-assertion': 'error',
+    'header/header': ['error', 'line', ' Copyright (c) Microsoft Corporation.\n Licensed under the MIT License.'],
     '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^_' }],
     'no-restricted-imports': [
       'error',
@@ -63,7 +64,8 @@ module.exports = {
           'VariableDeclaration'
         ]
       }
-    ]
+    ],
+    curly: 'error'
   },
   root: true,
   settings: {

@@ -1,14 +1,12 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import {
   Call,
   CallAgent,
-  CallApiFeature,
   CallClient,
-  CallFeatureFactoryType,
   DeviceManager,
-  DiagnosticsCallFeature,
+  UserFacingDiagnosticsFeature,
   IncomingCall,
   LatestMediaDiagnostics,
   LatestNetworkDiagnostics,
@@ -18,22 +16,32 @@ import {
   RemoteParticipant,
   RemoteVideoStream,
   TranscriptionCallFeature,
-  Transfer,
-  TransferCallFeature,
-  TransferRequestedEvent,
-  TransferToParticipant,
-  TransferToParticipantOptions
+  CallFeatureFactory,
+  CallFeature
 } from '@azure/communication-calling';
+import { RaiseHandCallFeature, RaisedHandListener, RaisedHand } from '@azure/communication-calling';
+import {
+  MediaAccessCallFeature,
+  MediaAccessChangedListener,
+  MediaAccess,
+  MeetingMediaAccessChangedListener,
+  MeetingMediaAccess
+} from '@azure/communication-calling';
+import { CollectionUpdatedEvent, RecordingInfo } from '@azure/communication-calling';
+
+import { VideoEffectsFeature } from '@azure/communication-calling';
 import { CommunicationTokenCredential } from '@azure/communication-common';
 import { AccessToken } from '@azure/core-auth';
 
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import { CallClientState } from './CallClientState';
 import { CallContext } from './CallContext';
 import { InternalCallContext } from './InternalCallContext';
 import { createStatefulCallClientWithDeps, StatefulCallClient } from './StatefulCallClient';
+/* @conditional-compile-remove(calling-beta-sdk) */
+import { RemoteParticipantDiagnosticsData } from '@azure/communication-calling';
 
-let backupFreezeFunction;
+let backupFreezeFunction: typeof Object.freeze;
 
 /**
  * @private
@@ -41,7 +49,7 @@ let backupFreezeFunction;
 export function mockoutObjectFreeze(): void {
   beforeEach(() => {
     backupFreezeFunction = Object.freeze;
-    Object.freeze = function (obj) {
+    Object.freeze = function <T>(obj: T): T {
       return obj;
     };
   });
@@ -56,7 +64,7 @@ export function mockoutObjectFreeze(): void {
  */
 export interface MockEmitter {
   emitter: EventEmitter;
-  emit(event: any, data?: any);
+  emit(eventName: string | symbol, ...args: any[]): boolean;
 }
 
 /**
@@ -93,32 +101,153 @@ export const stubCommunicationTokenCredential = (): CommunicationTokenCredential
  * @private
  */
 export class MockRecordingCallFeatureImpl implements RecordingCallFeature {
+  consentToBeingRecordedAndTranscribed(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  public isConsentRequired = false;
   public name = 'Recording';
   public isRecordingActive = false;
+  public recordings: RecordingInfo[] = [];
   public emitter = new EventEmitter();
-  on(event: 'isRecordingActiveChanged', listener: PropertyChangedEvent): void {
+  public isTeamsConsentRequired = false;
+  public grantTeamsConsent(): Promise<void> {
+    return Promise.resolve();
+  }
+  on(event: 'isRecordingActiveChanged', listener: PropertyChangedEvent): void;
+  on(event: 'recordingsUpdated', listener: CollectionUpdatedEvent<RecordingInfo>): void;
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  on(event: any, listener: any): void {
     this.emitter.on(event, listener);
   }
-  off(event: 'isRecordingActiveChanged', listener: PropertyChangedEvent): void {
-    this.emitter.off(event, listener);
+  off(event: 'isRecordingActiveChanged', listener: PropertyChangedEvent): void;
+  off(event: 'recordingsUpdated', listener: CollectionUpdatedEvent<RecordingInfo>): void;
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  off(event: any, listener: any): void {
+    this.emitter.on(event, listener);
+  }
+  dispose(): void {
+    /* No state to clean up */
   }
 }
 
 /**
  * @private
  */
-export class MockTransferCallFeatureImpl implements TransferCallFeature {
-  public name = 'Transfer';
-  public emitter = new EventEmitter();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  transfer(target: TransferToParticipant, transferOptions?: TransferToParticipantOptions): Transfer {
+export class MockRaiseHandCallFeatureImpl implements RaiseHandCallFeature {
+  private raisedHands: RaisedHand[] = [];
+
+  // add a local user to the raised hands list
+  raiseHand(): Promise<void> {
+    const raisedHands = [{ identifier: { communicationUserId: 'localUserMRI' }, order: 1 } as RaisedHand];
+    this.raisedHands = raisedHands;
+    this.emitter.emit('raisedHandEvent');
+    return Promise.resolve();
+  }
+
+  //remove a local user from the raised hands list
+  lowerHand(): Promise<void> {
+    this.raisedHands = [];
+    this.emitter.emit('loweredHandEvent');
+    return Promise.resolve();
+  }
+
+  lowerHands(): Promise<void> {
     throw new Error('Method not implemented.');
   }
-  on(event: 'transferRequested', listener: TransferRequestedEvent): void {
+
+  //remove all users from the raised hands list
+  lowerAllHands(): Promise<void> {
+    this.raisedHands = [];
+    this.emitter.emit('loweredHandEvent');
+    return Promise.resolve();
+  }
+  getRaisedHands(): RaisedHand[] {
+    return this.raisedHands;
+  }
+  public name = 'RaiseHand';
+  public emitter = new EventEmitter();
+  on(event: 'raisedHandEvent', listener: RaisedHandListener): void;
+  on(event: 'loweredHandEvent', listener: RaisedHandListener): void;
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  on(event: any, listener: any): void {
     this.emitter.on(event, listener);
   }
-  off(event: 'transferRequested', listener: TransferRequestedEvent): void {
+  off(event: 'raisedHandEvent', listener: RaisedHandListener): void;
+  off(event: 'loweredHandEvent', listener: RaisedHandListener): void;
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  off(event: any, listener: any): void {
+    this.emitter.on(event, listener);
+  }
+  dispose(): void {
+    /* No state to clean up */
+  }
+}
+/**
+ * @private
+ */
+export class MockMediaAccessCallFeatureImpl implements MediaAccessCallFeature {
+  private mediaAccesses: MediaAccess[] = [];
+  public name = 'MediaAccess';
+  public emitter = new EventEmitter();
+
+  constructor() {
+    this.mediaAccesses = [];
+  }
+
+  permitAudio(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  forbidAudio(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  permitVideo(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  forbidVideo(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  permitOthersAudio(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  forbidOthersAudio(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  permitOthersVideo(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  forbidOthersVideo(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  getAllOthersMediaAccess(): MediaAccess[] {
+    return this.mediaAccesses;
+  }
+
+  getMeetingMediaAccess(): MeetingMediaAccess {
+    return { isAudioPermitted: true, isVideoPermitted: true };
+  }
+
+  on(event: 'mediaAccessChanged', listener: MediaAccessChangedListener): void;
+  on(event: 'meetingMediaAccessChanged', listener: MeetingMediaAccessChangedListener): void;
+  on(event: string, listener: (...args: any[]) => void): void {
+    this.emitter.on(event, listener);
+  }
+
+  off(event: 'mediaAccessChanged', listener: MediaAccessChangedListener): void;
+  off(event: 'meetingMediaAccessChanged', listener: MeetingMediaAccessChangedListener): void;
+  off(event: string, listener: (...args: any[]) => void): void {
     this.emitter.off(event, listener);
+  }
+
+  dispose(): void {
+    /* No state to clean up */
   }
 }
 
@@ -126,22 +255,38 @@ export class MockTransferCallFeatureImpl implements TransferCallFeature {
  * @private
  */
 export class MockTranscriptionCallFeatureImpl implements TranscriptionCallFeature {
+  consentForTranscription(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
   public name = 'Transcription';
   public isTranscriptionActive = false;
   public emitter = new EventEmitter();
+  public isConsentRequired = false;
+  public isTeamsConsentRequired = false;
+  public grantTeamsConsent(): Promise<void> {
+    return Promise.resolve();
+  }
+  public consentToBeingRecordedAndTranscribed(): Promise<void> {
+    this.isTranscriptionActive = true;
+    this.emitter.emit('isTranscriptionActiveChanged', this.isTranscriptionActive);
+    return Promise.resolve();
+  }
   on(event: 'isTranscriptionActiveChanged', listener: PropertyChangedEvent): void {
     this.emitter.on(event, listener);
   }
   off(event: 'isTranscriptionActiveChanged', listener: PropertyChangedEvent): void {
     this.emitter.off(event, listener);
   }
+  dispose(): void {
+    /* No state to clean up */
+  }
 }
 
 /**
  * @private
  */
-export class StubDiagnosticsCallFeatureImpl implements DiagnosticsCallFeature {
-  public name = 'Diagnosticss';
+export class StubDiagnosticsCallFeatureImpl implements UserFacingDiagnosticsFeature {
+  public name = 'Diagnostics';
   public media = {
     getLatest(): LatestMediaDiagnostics {
       return {};
@@ -156,6 +301,21 @@ export class StubDiagnosticsCallFeatureImpl implements DiagnosticsCallFeature {
   public network = {
     getLatest(): LatestNetworkDiagnostics {
       return {};
+    },
+    on(): void {
+      /* Stub to appease types */
+    },
+    off(): void {
+      /* Stub to appease types */
+    }
+  };
+  dispose(): void {
+    /* No state to clean up */
+  }
+  /* @conditional-compile-remove(calling-beta-sdk) */
+  public remote = {
+    getLatest(): RemoteParticipantDiagnosticsData {
+      return { diagnostics: [] };
     },
     on(): void {
       /* Stub to appease types */
@@ -188,7 +348,7 @@ export function addMockEmitter(object: any): any {
  * @private
  */
 export interface MockCall extends Mutable<Call>, MockEmitter {
-  testHelperPushRemoteParticipant(participant: RemoteParticipant);
+  testHelperPushRemoteParticipant(participant: RemoteParticipant): void;
   testHelperPopRemoteParticipant(): RemoteParticipant;
   testHelperPushLocalVideoStream(stream: LocalVideoStream): void;
   testHelperPopLocalVideoStream(): LocalVideoStream;
@@ -200,9 +360,14 @@ export interface MockCall extends Mutable<Call>, MockEmitter {
 export function createMockCall(mockCallId = 'defaultCallID'): MockCall {
   return addMockEmitter({
     id: mockCallId,
+
+    kind: 'Call',
+    info: {
+      groupId: 'testGroupId'
+    },
     remoteParticipants: [] as RemoteParticipant[],
     localVideoStreams: [] as ReadonlyArray<LocalVideoStream>,
-    api: createMockApiFeatures(new Map()),
+    feature: createMockApiFeatures(new Map()),
 
     testHelperPushRemoteParticipant(participant: RemoteParticipant): void {
       this.remoteParticipants.push(participant);
@@ -232,7 +397,7 @@ export function createMockCall(mockCallId = 'defaultCallID'): MockCall {
  * @private
  */
 export interface MockRemoteParticipant extends Mutable<RemoteParticipant> {
-  emit(event: string, data?: any);
+  emit(eventName: string | symbol, ...args: any[]): boolean;
   testHelperPushVideoStream(stream: RemoteVideoStream): void;
   testHelperPopVideoStream(): RemoteVideoStream;
 }
@@ -268,6 +433,28 @@ export function createMockIncomingCall(mockCallId: string): MockIncomingCall {
   return addMockEmitter(mockIncomingCall);
 }
 
+const createMockVideoEffectsAPI = (): VideoEffectsFeature =>
+  addMockEmitter({
+    activeEffects: ['MockVideoEffect'],
+    startEffects: () => Promise.resolve(),
+    stopEffects: () => Promise.resolve(),
+    dispose: () => Promise.resolve()
+  });
+
+/** @private */
+export const createMockLocalVideoStream = (): LocalVideoStream =>
+  ({
+    source: {
+      id: 'mockVideoDeviceSourceId',
+      name: 'mockVideoDeviceSourceName',
+      deviceType: 'Unknown'
+    },
+    mediaStreamType: 'Video',
+    switchSource: Promise.resolve,
+
+    feature: () => createMockVideoEffectsAPI()
+  }) as unknown as LocalVideoStream;
+
 /**
  * @private
  */
@@ -292,47 +479,25 @@ export function createMockRemoteScreenshareStream(id = 42): MockRemoteVideoStrea
  * reused on repeated calls.
  */
 export function createMockApiFeatures(
-  cache: Map<CallFeatureFactoryType<any>, CallApiFeature>
-): <FeatureT extends CallApiFeature>(cls: CallFeatureFactoryType<FeatureT>) => FeatureT {
-  return <FeatureT extends CallApiFeature>(cls: CallFeatureFactoryType<FeatureT>): FeatureT => {
-    const feature = cache.get(cls);
-    if (feature) {
-      return feature as FeatureT;
-    } else {
-      // Default one if none provided
-      const generic = addMockEmitter({
-        name: 'Default',
-        isRecordingActive: false,
-        isTranscriptionActive: false,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        transfer(target: TransferToParticipant, transferOptions?: TransferToParticipantOptions): Transfer {
-          return addMockEmitter({ state: 'None' });
-        },
-        media: {
-          getLatest(): LatestMediaDiagnostics {
-            return {};
-          },
-          on(): void {
-            /* Stub to appease types */
-          },
-          off(): void {
-            /* Stub to appease types */
-          }
-        },
-        network: {
-          getLatest(): LatestNetworkDiagnostics {
-            return {};
-          },
-          on(): void {
-            /* Stub to appease types */
-          },
-          off(): void {
-            /* Stub to appease types */
-          }
-        }
-      });
-      return generic;
+  cache: Map<CallFeatureFactory<any>, CallFeature>
+): <FeatureT extends CallFeature>(cls: CallFeatureFactory<FeatureT>) => FeatureT {
+  return <FeatureT extends CallFeature>(cls: CallFeatureFactory<FeatureT>): FeatureT => {
+    for (const [key, feature] of cache.entries()) {
+      if (cls && key && key.callApiCtor === cls.callApiCtor) {
+        return feature as FeatureT;
+      }
     }
+
+    // Default one if none provided
+    const generic = addMockEmitter({
+      ...new StubDiagnosticsCallFeatureImpl(),
+      name: 'Default',
+      isRecordingActive: false,
+      isTranscriptionActive: false,
+      getAllOthersMediaAccess: () => [],
+      getMeetingMediaAccess: () => ({ isAudioPermitted: true, isVideoPermitted: true })
+    });
+    return generic;
   };
 }
 
@@ -379,7 +544,21 @@ export const createMockCallClient = (callAgent?: CallAgent, deviceManager?: Devi
         throw new Error('callAgent not set');
       }
       return Promise.resolve(callAgent);
-    }
+    },
+    feature: () => ({
+      getEnvironmentInfo: () =>
+        Promise.resolve({
+          environment: {
+            platform: 'mockPlatform',
+            browser: 'mockBrowser',
+            browserVersion: 'mockBrowserVersion'
+          },
+          isSupportedPlatform: true,
+          isSupportedBrowser: true,
+          isSupportedBrowserVersion: true,
+          isSupportedEnvironment: true
+        })
+    })
   } as unknown as CallClient;
 };
 
@@ -401,6 +580,8 @@ export const createMockCallAgent = (displayName = 'defaultDisplayName'): MockCal
   return addMockEmitter({
     calls: [] as Call[],
     displayName: displayName,
+
+    kind: 'CallAgent',
 
     testHelperPushCall(call: Call): void {
       this.calls.push(call);

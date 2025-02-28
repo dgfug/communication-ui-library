@@ -1,0 +1,89 @@
+name: Update API files
+
+on:
+  workflow_dispatch:
+
+# cancel workflow when a newer version of the workflow is triggered on the same github ref
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: read-all
+
+jobs:
+  update_composite_snapshot:
+    name: Update all API files
+    runs-on: ${{ vars.RUNS_ON }}
+    strategy:
+      matrix:
+        include:
+          - flavor: 'beta'
+          - flavor: 'stable'
+    steps:
+      # Checkout repo
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Use a machine account when checking out. This is to workaround the issue were GitHub
+          # actions, when using the default account, cannot trigger other actions.
+          # This machine account is only for this PAT, pwd was created and thrown away
+          # If any update needed, create a new account, add access to the repo and generate a new PAT
+          token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
+      # Setup bot information for pushing new changes
+      # Here we use the id from the github actions bot: https://api.github.com/users/better-informatics%5Bbot%5D
+      - name: Setup bot git information
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+      # If run from a PR, checkout PR branch and merge in latest changes from main branch
+      - name: Checkout PR branch and merge main
+        id: checkout-pr-branch
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Merge main into PR branch
+        if: ${{ steps.checkout-pr-branch.outcome == 'success' }}
+        run: git merge origin/main
+      # Ensure node version is great enough
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      # Try get node_modules from cache
+      - name: Restore node_modules from cache
+        uses: actions/cache@v4
+        with:
+          path: common/temp/pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('common/config/rush/pnpm-lock.yaml') }}
+      # Install dependencies
+      - name: Install rush
+        run: npm install -g @microsoft/rush@$(jq -r '.rushVersion' "rush.json")
+      - name: Install dependencies
+        run: rush install --max-install-attempts 3
+      # Switch flavor when necessary
+      - name: Switch flavor for stable build
+        if: ${{ matrix.flavor == 'stable' }}
+        run: rush switch-flavor:stable
+      - name: Build NPM Package
+        run: rush build -t @azure/communication-react
+        id: buildapifiles
+      - name: Check for API file changes
+        # If API files changed, they cause the build step to "fail" due to warnings
+        if: ${{ always() && steps.buildapifiles.outcome == 'failure' }}
+        id: changescheck
+        # Check if files have changed
+        # More information see: https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
+        run: |
+          if [[ -z $(git status packages -s) ]]
+          then
+            echo "hasChanged=false" >> $GITHUB_OUTPUT
+          else
+            echo "hasChanged=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Commit new snapshots
+        if: ${{ always() && steps.changescheck.outputs.hasChanged == 'true' }}
+        run: |
+          git add packages/**/*.api.md
+          git commit -m 'Update ${{ matrix.flavor }} API files'
+          git push

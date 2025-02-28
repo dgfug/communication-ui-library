@@ -1,19 +1,18 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import {
   CallAgent,
-  CallApiFeature,
-  CallFeatureFactoryType,
   DeviceManager,
-  DiagnosticsCallFeature,
+  UserFacingDiagnosticsFeature,
   Features,
-  LocalVideoStream,
   RecordingCallFeature,
   TranscriptionCallFeature,
-  TransferCallFeature,
-  VideoStreamRendererView
+  VideoStreamRendererView,
+  CallFeatureFactory,
+  CallFeature
 } from '@azure/communication-calling';
+import { CommunicationUserKind } from '@azure/communication-common';
 import { toFlatCommunicationIdentifier } from '@internal/acs-ui-common';
 import { CallError } from './CallClientState';
 import { CallContext } from './CallContext';
@@ -25,6 +24,7 @@ import {
   createMockCall,
   createMockCallAgent,
   createMockCallClient,
+  createMockLocalVideoStream,
   createMockRemoteParticipant,
   createMockRemoteScreenshareStream,
   createMockRemoteVideoStream,
@@ -36,7 +36,6 @@ import {
   MockRemoteParticipant,
   MockRemoteVideoStream,
   MockTranscriptionCallFeatureImpl,
-  MockTransferCallFeatureImpl,
   StateChangeListener,
   stubCommunicationTokenCredential,
   StubDiagnosticsCallFeatureImpl,
@@ -56,17 +55,14 @@ jest.mock('@azure/communication-calling', () => {
       };
     }),
     Features: {
-      get Recording(): CallFeatureFactoryType<RecordingCallFeature> {
-        return MockRecordingCallFeatureImpl;
+      get Recording(): CallFeatureFactory<RecordingCallFeature> {
+        return { callApiCtor: MockRecordingCallFeatureImpl };
       },
-      get Transfer(): CallFeatureFactoryType<TransferCallFeature> {
-        return MockTransferCallFeatureImpl;
+      get Transcription(): CallFeatureFactory<TranscriptionCallFeature> {
+        return { callApiCtor: MockTranscriptionCallFeatureImpl };
       },
-      get Transcription(): CallFeatureFactoryType<TranscriptionCallFeature> {
-        return MockTranscriptionCallFeatureImpl;
-      },
-      get Diagnostics(): CallFeatureFactoryType<DiagnosticsCallFeature> {
-        return StubDiagnosticsCallFeatureImpl;
+      get Diagnostics(): CallFeatureFactory<UserFacingDiagnosticsFeature> {
+        return { callApiCtor: StubDiagnosticsCallFeatureImpl };
       }
     }
   };
@@ -74,12 +70,13 @@ jest.mock('@azure/communication-calling', () => {
 
 describe('Stateful call client', () => {
   test('should allow developer to specify userId and provide access to it in state', async () => {
+    const userId: CommunicationUserKind = { kind: 'communicationUser', communicationUserId: 'someUser' };
     const client = createStatefulCallClientWithDeps(
       createMockCallClient(),
-      new CallContext({ kind: 'communicationUser', communicationUserId: 'someUser' }),
+      new CallContext(userId),
       new InternalCallContext()
     );
-    expect(client.getState().userId.communicationUserId).toBe('someUser');
+    expect(client.getState().userId).toEqual(userId);
   });
 
   test('should update callAgent state and have displayName when callAgent is created', async () => {
@@ -102,14 +99,14 @@ describe('Stateful call client', () => {
       const listener = new StateChangeListener(client);
       agent.testHelperPushCall(createMockCall());
       expect(await waitWithBreakCondition(() => Object.keys(client.getState().calls).length === 1)).toBe(true);
-      expect(await waitWithBreakCondition(() => client.getState().callsEnded.length === 0)).toBe(true);
-      expect(listener.onChangeCalledCount).toBe(1);
+      expect(await waitWithBreakCondition(() => Object.keys(client.getState().callsEnded).length === 0)).toBe(true);
+      expect(listener.onChangeCalledCount).toBe(2);
     }
     {
       const listener = new StateChangeListener(client);
       agent.testHelperPopCall();
       expect(await waitWithBreakCondition(() => Object.keys(client.getState().calls).length === 0)).toBe(true);
-      expect(await waitWithBreakCondition(() => client.getState().callsEnded.length === 1)).toBe(true);
+      expect(await waitWithBreakCondition(() => Object.keys(client.getState().callsEnded).length === 1)).toBe(true);
       expect(listener.onChangeCalledCount).toBe(1);
     }
   });
@@ -156,8 +153,7 @@ describe('Stateful call client', () => {
           () => Object.keys(client.getState().calls[callId]?.remoteParticipants ?? {}).length !== 0
         )
       ).toBe(true);
-      // FIXME: There should be only one event triggered here.
-      expect(listener.onChangeCalledCount).toBe(2);
+      expect(listener.onChangeCalledCount).toBe(1);
     }
     {
       expect(Object.keys(client.getState().calls[callId]?.remoteParticipantsEnded ?? {}).length).toBe(0);
@@ -169,7 +165,6 @@ describe('Stateful call client', () => {
         )
       ).toBe(true);
       expect(Object.keys(client.getState().calls[callId]?.remoteParticipantsEnded ?? {}).length).toBe(1);
-      // FIXME: There should be only one event triggered here.
       expect(listener.onChangeCalledCount).toBe(2);
     }
   });
@@ -230,7 +225,7 @@ describe('Stateful call client', () => {
 
     {
       const listener = new StateChangeListener(client);
-      call.testHelperPushLocalVideoStream({} as LocalVideoStream);
+      call.testHelperPushLocalVideoStream(createMockLocalVideoStream());
       expect(await waitWithBreakCondition(() => client.getState().calls[callId]?.localVideoStreams.length !== 0)).toBe(
         true
       );
@@ -242,8 +237,7 @@ describe('Stateful call client', () => {
       expect(await waitWithBreakCondition(() => client.getState().calls[callId]?.localVideoStreams.length === 0)).toBe(
         true
       );
-      // FIXME: Should generate only one event.
-      expect(listener.onChangeCalledCount).toBe(2);
+      expect(listener.onChangeCalledCount).toBe(1);
     }
   });
 
@@ -287,25 +281,31 @@ describe('Stateful call client', () => {
               .length === 0
         )
       ).toBe(true);
-      // FIXME: This should generate only one event.
-      expect(listener.onChangeCalledCount).toBe(2);
+      expect(listener.onChangeCalledCount).toBe(1);
     }
   });
 
   test('should update local video stream with createView and disposeView', async () => {
     const { client, callId } = await prepareCallWithLocalVideoStream();
 
-    const localVideoStream = client.getState().calls[callId]?.localVideoStreams[0];
-    expect(localVideoStream).toBeDefined();
+    const intiallocalVideoStream = client.getState().calls[callId]?.localVideoStreams[0];
+    if (!intiallocalVideoStream) {
+      throw new Error('Local video stream is not defined');
+    }
 
-    await client.createView(callId, undefined, localVideoStream);
+    await client.createView(callId, undefined, intiallocalVideoStream);
     expect(
-      await waitWithBreakCondition(() => client.getState().calls[callId]?.localVideoStreams[0].view !== undefined)
+      await waitWithBreakCondition(() => client.getState().calls[callId]?.localVideoStreams[0]?.view !== undefined)
     ).toBe(true);
 
-    client.disposeView(callId, undefined, localVideoStream);
+    const updatedLocalVideoStream = client.getState().calls[callId]?.localVideoStreams[0];
+    if (!updatedLocalVideoStream) {
+      throw new Error('Local video stream is not defined');
+    }
+
+    client.disposeView(callId, undefined, updatedLocalVideoStream);
     expect(
-      await waitWithBreakCondition(() => client.getState().calls[callId]?.localVideoStreams[0].view === undefined)
+      await waitWithBreakCondition(() => client.getState().calls[callId]?.localVideoStreams[0]?.view === undefined)
     ).toBe(true);
   });
 
@@ -315,7 +315,10 @@ describe('Stateful call client', () => {
 
     const remoteVideoStream =
       client.getState().calls[callId]?.remoteParticipants[participantKey]?.videoStreams[streamId];
-    expect(remoteVideoStream).toBeDefined();
+
+    if (!remoteVideoStream) {
+      throw new Error('Local video stream is not defined');
+    }
 
     await client.createView(callId, participant.identifier, remoteVideoStream);
     expect(
@@ -341,17 +344,17 @@ describe('Stateful call client', () => {
     const participantKey = toFlatCommunicationIdentifier(participant.identifier);
 
     // Add a local video stream as well.
-    call.testHelperPushLocalVideoStream({} as LocalVideoStream);
+    call.testHelperPushLocalVideoStream(createMockLocalVideoStream());
     expect(await waitWithBreakCondition(() => client.getState().calls[callId]?.localVideoStreams.length !== 0)).toBe(
       true
     );
 
     agent.testHelperPopCall();
 
+    const localVideoStream = client.getState().calls[callId]?.localVideoStreams[0];
+
     // Expect all views to be removed.
-    expect(
-      await waitWithBreakCondition(() => client.getState().calls[callId]?.localVideoStreams[0].view === undefined)
-    ).toBe(true);
+    expect(await waitWithBreakCondition(() => localVideoStream?.view === undefined)).toBe(true);
     expect(
       await waitWithBreakCondition(
         () =>
@@ -504,7 +507,9 @@ describe('Stateful call client', () => {
     const { client, callId } = await prepareCallWithFeatures(
       createMockApiFeatures(new Map([[Features.Recording, recording]]))
     );
-    expect(await waitWithBreakCondition(() => client.getState().calls[callId]?.recording.isRecordingActive)).toBe(true);
+    expect(await waitWithBreakCondition(() => !!client.getState().calls[callId]?.recording.isRecordingActive)).toBe(
+      true
+    );
 
     recording.isRecordingActive = false;
     recording.emitter.emit('isRecordingActiveChanged');
@@ -519,7 +524,7 @@ describe('Stateful call client', () => {
       createMockApiFeatures(new Map([[Features.Transcription, transcription]]))
     );
     expect(
-      await waitWithBreakCondition(() => client.getState().calls[callId]?.transcription.isTranscriptionActive)
+      await waitWithBreakCondition(() => !!client.getState().calls[callId]?.transcription.isTranscriptionActive)
     ).toBe(true);
 
     transcription.isTranscriptionActive = false;
@@ -529,48 +534,32 @@ describe('Stateful call client', () => {
     ).toBe(true);
   });
 
-  test('should detect transfer requests in call', async () => {
-    const transfer = addMockEmitter({ name: 'Default' });
-    const { client, callId } = await prepareCallWithFeatures(
-      createMockApiFeatures(new Map([[Features.Transfer, transfer]]))
-    );
-
-    transfer.emit('transferRequested', { targetParticipant: { communicationUserId: 'a', kind: 'communicationUser' } });
-    expect(client.getState().calls[callId]?.transfer.receivedTransferRequests.length).toBe(1);
-  });
-
   test('should not update state for an ended call', async () => {
     const recording = addMockEmitter({ name: 'Default', isRecordingActive: true });
     const transcription = addMockEmitter({ name: 'Default', isTranscriptionActive: true });
-    const transfer = addMockEmitter({ name: 'Default' });
     const { client, agent, callId } = await prepareCallWithFeatures(
       createMockApiFeatures(
         new Map<any, any>([
           [Features.Recording, recording],
-          [Features.Transcription, transcription],
-          [Features.Transfer, transfer]
+          [Features.Transcription, transcription]
         ])
       )
     );
     expect(client.getState().calls[callId]?.recording.isRecordingActive).toBe(true);
     expect(client.getState().calls[callId]?.transcription.isTranscriptionActive).toBe(true);
-    expect(client.getState().calls[callId]?.transfer.receivedTransferRequests.length).toBe(0);
 
     agent.testHelperPopCall();
-    expect(await waitWithBreakCondition(() => client.getState().callsEnded.length === 1)).toBe(true);
-    const callEnded = client.getState().callsEnded[0];
+    expect(await waitWithBreakCondition(() => Object.keys(client.getState().callsEnded).length === 1)).toBe(true);
+    const callEnded = client.getState().callsEnded[callId];
 
     // Once the call ends, expect that call state is no longer updated.
     recording.isRecordingActive = false;
     recording.emitter.emit('isRecordingActiveChanged');
-    expect(callEnded.recording.isRecordingActive).toBe(true);
+    expect(callEnded?.recording.isRecordingActive).toBe(true);
 
     transcription.isTranscriptionActive = false;
     transcription.emitter.emit('isTranscriptionActiveChanged');
-    expect(callEnded.transcription.isTranscriptionActive).toBe(true);
-
-    transfer.emit('transferRequested', { targetParticipant: { communicationUserId: 'a', kind: 'communicationUser' } });
-    expect(callEnded.transfer.receivedTransferRequests.length).toBe(0);
+    expect(callEnded?.transcription.isTranscriptionActive).toBe(true);
   });
 });
 
@@ -587,7 +576,7 @@ describe('errors should be reported correctly from StatefulCallClient when', () 
     await expect(client.createCallAgent(stubCommunicationTokenCredential())).rejects.toThrow(
       new CallError('CallClient.createCallAgent', new Error('injected error'))
     );
-    expect(listener.onChangeCalledCount).toBe(1);
+    expect(listener.onChangeCalledCount).toBe(2);
     expect(client.getState().latestErrors['CallClient.createCallAgent']).toBeDefined();
   });
 
@@ -603,7 +592,7 @@ describe('errors should be reported correctly from StatefulCallClient when', () 
     await expect(client.getDeviceManager()).rejects.toThrow(
       new CallError('CallClient.getDeviceManager', new Error('injected error'))
     );
-    expect(listener.onChangeCalledCount).toBe(1);
+    expect(listener.onChangeCalledCount).toBe(2);
     expect(client.getState().latestErrors['CallClient.getDeviceManager']).toBeDefined();
   });
 });
@@ -619,7 +608,10 @@ describe('errors should be reported correctly from Call when', () => {
     };
 
     const call = agent.calls[0];
-    expect(call).toBeDefined();
+
+    if (!call) {
+      throw new Error('Call is not defined');
+    }
 
     {
       const listener = new StateChangeListener(client);
@@ -645,11 +637,13 @@ describe('errors should be reported correctly from Call when', () => {
     };
 
     const call = agent.calls[0];
-    expect(call).toBeDefined();
+    if (!call) {
+      throw new Error('Call is not defined');
+    }
 
     {
       const listener = new StateChangeListener(client);
-      await expect(call.startVideo({} as LocalVideoStream)).rejects.toThrow(
+      await expect(call.startVideo(createMockLocalVideoStream())).rejects.toThrow(
         new CallError('Call.startVideo', new Error('startVideo: injected error'))
       );
       expect(listener.onChangeCalledCount).toBe(1);
@@ -657,7 +651,7 @@ describe('errors should be reported correctly from Call when', () => {
     }
     {
       const listener = new StateChangeListener(client);
-      await expect(call.stopVideo({} as LocalVideoStream)).rejects.toThrow(
+      await expect(call.stopVideo(createMockLocalVideoStream())).rejects.toThrow(
         new CallError('Call.stopVideo', new Error('stopVideo: injected error'))
       );
       expect(listener.onChangeCalledCount).toBe(1);
@@ -675,7 +669,9 @@ describe('errors should be reported correctly from Call when', () => {
     };
 
     const call = agent.calls[0];
-    expect(call).toBeDefined();
+    if (!call) {
+      throw new Error('Call is not defined');
+    }
 
     {
       const listener = new StateChangeListener(client);
@@ -693,6 +689,15 @@ describe('errors should be reported correctly from Call when', () => {
       expect(listener.onChangeCalledCount).toBe(1);
       expect(client.getState().latestErrors['Call.stopScreenSharing']).toBeDefined();
     }
+  });
+
+  test('Conference call is undefined in acs to acs calls', async () => {
+    const conference = addMockEmitter({ name: 'Conference' });
+
+    const { client, callId } = await prepareCallWithFeatures(
+      createMockApiFeatures(new Map([[Features.TeamsMeetingAudioConferencing, conference]]))
+    );
+    expect(client.getState().calls[callId]?.meetingConference?.conferencePhones).toStrictEqual([]);
   });
 });
 
@@ -726,7 +731,7 @@ const prepareCall = async (): Promise<PreparedCall> => {
 const prepareCallWithLocalVideoStream = async (): Promise<PreparedCall> => {
   const prepared = await prepareCall();
   const { client, callId, call } = prepared;
-  call.testHelperPushLocalVideoStream({} as LocalVideoStream);
+  call.testHelperPushLocalVideoStream(createMockLocalVideoStream());
   expect(await waitWithBreakCondition(() => client.getState().calls[callId]?.localVideoStreams.length !== 0)).toBe(
     true
   );
@@ -777,7 +782,7 @@ const prepareCallWithRemoteVideoStream = async (): Promise<PreparedCallWithRemot
 };
 
 const prepareCallWithFeatures = async (
-  api: <TFeature extends CallApiFeature>(cls: CallFeatureFactoryType<TFeature>) => TFeature
+  feature: <TFeature extends CallFeature>(cls: CallFeatureFactory<TFeature>) => TFeature
 ): Promise<PreparedCall> => {
   const agent = createMockCallAgent();
   const client = createStatefulCallClientWithAgent(agent);
@@ -786,7 +791,7 @@ const prepareCallWithFeatures = async (
 
   const callId = 'preparedCallId';
   const call = createMockCall(callId);
-  call.api = api;
+  call.feature = feature;
   agent.testHelperPushCall(call);
   expect(await waitWithBreakCondition(() => Object.keys(client.getState().calls).length === 1)).toBe(true);
   return {

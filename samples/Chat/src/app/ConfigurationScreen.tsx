@@ -1,13 +1,20 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { CAT, FOX, KOALA, MONKEY, MOUSE, OCTOPUS } from './utils/utils';
-import { FocusZone, FocusZoneDirection, PrimaryButton, Spinner, Stack } from '@fluentui/react';
+import { useTheme } from '@azure/communication-react';
+import { FocusZone, FocusZoneDirection, PrimaryButton, Spinner, Stack, Text } from '@fluentui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { buttonStyle, chatIconStyle, mainContainerStyle } from './styles/ConfigurationScreen.styles';
+import {
+  buttonStyle,
+  buttonWithIconStyles,
+  chatIconStyle,
+  mainContainerStyle
+} from './styles/ConfigurationScreen.styles';
 import {
   avatarListContainerStackTokens,
   avatarListContainerStyle,
+  headerStyle,
   labelFontStyle,
   largeAvatarContainerStyle,
   largeAvatarStyle,
@@ -19,20 +26,24 @@ import {
   rightInputContainerStackTokens,
   rightInputContainerStyle,
   smallAvatarContainerStyle,
-  smallAvatarStyle,
-  startChatButtonTextStyle
+  smallAvatarStyle
 } from './styles/ConfigurationScreen.styles';
 
 import { Chat20Filled } from '@fluentui/react-icons';
 import { DisplayNameField } from './DisplayNameField';
 import { sendEmojiRequest } from './utils/setEmoji';
 import { getToken } from './utils/getToken';
-import { getThreadId } from './utils/getThreadId';
+import {
+  getExistingDisplayNameFromURL,
+  getExistingEndpointURLFromURL,
+  getExistingThreadIdFromURL,
+  getExistingUserIdFromURL
+} from './utils/getParametersFromURL';
 import { joinThread } from './utils/joinThread';
 import { getEndpointUrl } from './utils/getEndpointUrl';
-import { checkThreadValid } from './utils/checkThreadValid';
-
-export const MAXIMUM_LENGTH_OF_NAME = 10;
+import { refreshToken } from './utils/refreshToken';
+/* @conditional-compile-remove(rich-text-editor-composite-support) */
+import { RichTextEditorToggle } from './RichTextEditorToggle';
 
 // These props are set by the caller of ConfigurationScreen in the JSX and not found in context
 export interface ConfigurationScreenProps {
@@ -42,6 +53,8 @@ export interface ConfigurationScreenProps {
   setDisplayName(displayName: string): void;
   setThreadId(threadId: string): void;
   setEndpointUrl(endpointUrl: string): void;
+  /* @conditional-compile-remove(rich-text-editor-composite-support) */
+  setIsRichTextEditorEnabled(isEnabled: boolean): void;
 }
 
 // ConfigurationScreen states
@@ -49,6 +62,16 @@ const CONFIGURATIONSCREEN_SHOWING_SPINNER_LOADING = 1;
 const CONFIGURATIONSCREEN_SHOWING_JOIN_CHAT = 2;
 const CONFIGURATIONSCREEN_SHOWING_INVALID_THREAD = 3;
 const CONFIGURATIONSCREEN_SHOWING_SPINNER_INITIALIZE_CHAT = 4;
+
+const AVATAR_LABEL = 'Avatar';
+const ERROR_TEXT_THREAD_INVALID = 'Thread Id is not valid, please revisit home page to create a new thread';
+const ERROR_TEXT_THREAD_NOT_RECORDED = 'Thread id is not recorded in server';
+const ERROR_TEXT_THREAD_NULL = 'Thread id is null';
+const INITIALIZE_CHAT_SPINNER_LABEL = 'Initializing chat client...';
+const JOIN_BUTTON_TEXT = 'Join chat';
+const LOADING_SPINNER_LABEL = 'Loading...';
+const NAME_DEFAULT = 'Name';
+const PROFILE_LABEL = 'Your profile';
 
 /**
  * There are four states of ConfigurationScreen.
@@ -61,27 +84,25 @@ const CONFIGURATIONSCREEN_SHOWING_SPINNER_INITIALIZE_CHAT = 4;
  */
 export default (props: ConfigurationScreenProps): JSX.Element => {
   const avatarsList = [CAT, MOUSE, KOALA, OCTOPUS, MONKEY, FOX];
-  const loadingSpinnerLabel = 'Loading...';
-  const initializeChatSpinnerLabel = 'Initializing chat client...';
   const [name, setName] = useState('');
   const [emptyWarning, setEmptyWarning] = useState(false);
-  const [isNameLengthExceedLimit, setNameLengthExceedLimit] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(CAT);
   const [configurationScreenState, setConfigurationScreenState] = useState<number>(
     CONFIGURATIONSCREEN_SHOWING_SPINNER_LOADING
   );
   const [disableJoinChatButton, setDisableJoinChatButton] = useState<boolean>(false);
+  const theme = useTheme();
   const { joinChatHandler, setToken, setUserId, setDisplayName, setThreadId, setEndpointUrl } = props;
 
   // Used when new user is being registered.
   const setupAndJoinChatThreadWithNewUser = useCallback(() => {
     const internalSetupAndJoinChatThread = async (): Promise<void> => {
-      const threadId = getThreadId();
+      const threadId = getExistingThreadIdFromURL();
       const token = await getToken();
       const endpointUrl = await getEndpointUrl();
 
       if (!threadId) {
-        throw new Error('Thread id is null');
+        throw new Error(ERROR_TEXT_THREAD_NULL);
       }
 
       setToken(token.token);
@@ -90,11 +111,11 @@ export default (props: ConfigurationScreenProps): JSX.Element => {
       setThreadId(threadId);
       setEndpointUrl(endpointUrl);
 
-      await sendEmojiRequest(selectedAvatar);
+      await sendEmojiRequest(token.identity, selectedAvatar);
 
       const result = await joinThread(threadId, token.identity, name);
       if (!result) {
-        alert("You can't be added at this moment. Please wait at least 60 seconds to try again.");
+        setConfigurationScreenState(CONFIGURATIONSCREEN_SHOWING_INVALID_THREAD);
         setDisableJoinChatButton(false);
         return;
       }
@@ -105,34 +126,64 @@ export default (props: ConfigurationScreenProps): JSX.Element => {
     internalSetupAndJoinChatThread();
   }, [name, joinChatHandler, selectedAvatar, setDisplayName, setEndpointUrl, setThreadId, setToken, setUserId]);
 
+  const joinChatThreadWithExistingUser = useCallback(
+    (token: string, userId: string, displayName: string, threadId: string, endpointUrl: string) => {
+      setToken(token);
+      setUserId(userId);
+      setDisplayName(displayName);
+      setThreadId(threadId);
+      setEndpointUrl(endpointUrl);
+
+      setEmptyWarning(false);
+      setConfigurationScreenState(CONFIGURATIONSCREEN_SHOWING_SPINNER_INITIALIZE_CHAT);
+      joinChatHandler();
+    },
+    [joinChatHandler, setDisplayName, setEndpointUrl, setThreadId, setToken, setUserId]
+  );
+
   useEffect(() => {
     if (configurationScreenState === CONFIGURATIONSCREEN_SHOWING_SPINNER_LOADING) {
       const setScreenState = async (): Promise<void> => {
         try {
-          const threadId = getThreadId();
-          if (!(await checkThreadValid(threadId))) {
-            throw new Error('Thread id is not recorded in server');
+          const threadId = getExistingThreadIdFromURL();
+          if (!threadId) {
+            throw new Error(ERROR_TEXT_THREAD_NOT_RECORDED);
           }
         } catch (error) {
           setConfigurationScreenState(CONFIGURATIONSCREEN_SHOWING_INVALID_THREAD);
           return;
         }
+        // Check if we have all the required parameters supplied as query search params.
+        const threadId = getExistingThreadIdFromURL();
+        const userId = getExistingUserIdFromURL();
+        const displayName = getExistingDisplayNameFromURL();
+        const endpointUrl = getExistingEndpointURLFromURL();
+
+        if (userId && displayName && threadId && endpointUrl) {
+          const token = await refreshToken(userId);
+          joinChatThreadWithExistingUser(token, userId, displayName, threadId, endpointUrl);
+          return;
+        }
+
+        // Else show the join chat screen where a user enters there display name and the other args are collected from the server
         setConfigurationScreenState(CONFIGURATIONSCREEN_SHOWING_JOIN_CHAT);
       };
       setScreenState();
     }
-  }, [configurationScreenState]);
+  }, [configurationScreenState, joinChatThreadWithExistingUser]);
+
+  const smallAvatarContainerClassName = useCallback(
+    (avatar: string) => {
+      return smallAvatarContainerStyle(avatar, selectedAvatar, theme);
+    },
+    [selectedAvatar, theme]
+  );
 
   const validateName = (): void => {
     if (!name) {
       setEmptyWarning(true);
-      setNameLengthExceedLimit(false);
-    } else if (name.length > MAXIMUM_LENGTH_OF_NAME) {
-      setEmptyWarning(false);
-      setNameLengthExceedLimit(true);
     } else {
       setEmptyWarning(false);
-      setNameLengthExceedLimit(false);
       setDisableJoinChatButton(true);
       setConfigurationScreenState(CONFIGURATIONSCREEN_SHOWING_SPINNER_INITIALIZE_CHAT);
       setupAndJoinChatThreadWithNewUser();
@@ -147,6 +198,12 @@ export default (props: ConfigurationScreenProps): JSX.Element => {
     return <Spinner label={spinnerLabel} ariaLive="assertive" labelPosition="top" />;
   };
 
+  const richTextEditorToggle = (): JSX.Element => {
+    /* @conditional-compile-remove(rich-text-editor-composite-support) */
+    return <RichTextEditorToggle setRichTextEditorIsEnabled={props.setIsRichTextEditorEnabled} />;
+    return <></>;
+  };
+
   const displayJoinChatArea = (): JSX.Element => {
     return (
       <Stack
@@ -157,27 +214,37 @@ export default (props: ConfigurationScreenProps): JSX.Element => {
         tokens={responsiveLayoutStackTokens}
         className={responsiveLayoutStyle}
       >
-        <Stack className={leftPreviewContainerStyle} tokens={leftPreviewContainerStackTokens}>
+        <Stack horizontalAlign="center" tokens={leftPreviewContainerStackTokens} className={leftPreviewContainerStyle}>
+          <Text role={'heading'} aria-level={1} className={headerStyle}>
+            {PROFILE_LABEL}
+          </Text>
           <div className={largeAvatarContainerStyle(selectedAvatar)}>
-            <div className={largeAvatarStyle}>{selectedAvatar}</div>
+            <div aria-label={`${selectedAvatar} avatar selected`} aria-live="polite" className={largeAvatarStyle}>
+              <div aria-hidden="true">{selectedAvatar}</div>
+            </div>
           </div>
-          <div aria-label="Display name" className={namePreviewStyle(name !== '')}>
-            {name !== '' ? name : 'Name'}
-          </div>
+          <Text className={namePreviewStyle(name !== '')}>{name !== '' ? name : NAME_DEFAULT}</Text>
         </Stack>
         <Stack className={rightInputContainerStyle} tokens={rightInputContainerStackTokens}>
-          <div className={labelFontStyle}>Avatar</div>
+          <Text id={'avatar-list-label'} className={labelFontStyle}>
+            {AVATAR_LABEL}
+          </Text>
           <FocusZone direction={FocusZoneDirection.horizontal}>
-            <Stack role="list" horizontal className={avatarListContainerStyle} tokens={avatarListContainerStackTokens}>
+            <Stack
+              horizontal
+              className={avatarListContainerStyle}
+              tokens={avatarListContainerStackTokens}
+              role="list"
+              aria-labelledby={'avatar-list-label'}
+            >
               {avatarsList.map((avatar, index) => (
                 <div
                   role="listitem"
                   id={avatar}
                   key={index}
-                  tabIndex={0}
                   data-is-focusable={true}
-                  className={smallAvatarContainerStyle(avatar, selectedAvatar)}
-                  onFocus={() => onAvatarChange(avatar)}
+                  className={smallAvatarContainerClassName(avatar)}
+                  onClick={() => onAvatarChange(avatar)}
                 >
                   <div className={smallAvatarStyle}>{avatar}</div>
                 </div>
@@ -187,15 +254,18 @@ export default (props: ConfigurationScreenProps): JSX.Element => {
           <DisplayNameField
             setName={setName}
             setEmptyWarning={setEmptyWarning}
-            setNameLengthExceedLimit={setNameLengthExceedLimit}
             validateName={validateName}
             isEmpty={emptyWarning}
-            isNameLengthExceedLimit={isNameLengthExceedLimit}
           />
-          <PrimaryButton disabled={disableJoinChatButton} className={buttonStyle} onClick={validateName}>
-            <Chat20Filled className={chatIconStyle} primaryFill="currentColor" />
-            <div className={startChatButtonTextStyle}>Join chat</div>
-          </PrimaryButton>
+          {richTextEditorToggle()}
+          <PrimaryButton
+            disabled={disableJoinChatButton}
+            className={buttonStyle}
+            styles={buttonWithIconStyles}
+            text={JOIN_BUTTON_TEXT}
+            onClick={validateName}
+            onRenderIcon={() => <Chat20Filled className={chatIconStyle} />}
+          />
         </Stack>
       </Stack>
     );
@@ -204,7 +274,7 @@ export default (props: ConfigurationScreenProps): JSX.Element => {
   const displayInvalidThreadError = (): JSX.Element => {
     return (
       <div>
-        <p>Thread Id is not valid, please revisit home page to create a new thread</p>
+        <p>{ERROR_TEXT_THREAD_INVALID}</p>
       </div>
     );
   };
@@ -218,13 +288,13 @@ export default (props: ConfigurationScreenProps): JSX.Element => {
   };
 
   if (configurationScreenState === CONFIGURATIONSCREEN_SHOWING_SPINNER_LOADING) {
-    return displaySpinner(loadingSpinnerLabel);
+    return displaySpinner(LOADING_SPINNER_LABEL);
   } else if (configurationScreenState === CONFIGURATIONSCREEN_SHOWING_JOIN_CHAT) {
     return displayWithStack(displayJoinChatArea());
   } else if (configurationScreenState === CONFIGURATIONSCREEN_SHOWING_INVALID_THREAD) {
     return displayWithStack(displayInvalidThreadError());
   } else if (configurationScreenState === CONFIGURATIONSCREEN_SHOWING_SPINNER_INITIALIZE_CHAT) {
-    return displaySpinner(initializeChatSpinnerLabel);
+    return displaySpinner(INITIALIZE_CHAT_SPINNER_LABEL);
   } else {
     throw new Error('configuration screen state ' + configurationScreenState.toString() + ' is invalid');
   }

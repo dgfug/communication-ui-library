@@ -1,14 +1,17 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { CallAgent } from '@azure/communication-calling';
+
+import { TeamsCallAgent } from '@azure/communication-calling';
+import { _isACSCallAgent } from '@internal/calling-stateful-client';
 import React, { createContext, useContext } from 'react';
 
 /**
  * @private
  */
 export type CallAgentContextType = {
-  callAgent: CallAgent | undefined;
+  callAgent: CallAgent | TeamsCallAgent | undefined;
 };
 
 /**
@@ -23,7 +26,7 @@ export const CallAgentContext = createContext<CallAgentContextType | undefined>(
  */
 export interface CallAgentProviderProps {
   children: React.ReactNode;
-  callAgent?: CallAgent;
+  callAgent?: CallAgent | TeamsCallAgent;
 }
 
 const CallAgentProviderBase = (props: CallAgentProviderProps): JSX.Element => {
@@ -53,4 +56,26 @@ export const CallAgentProvider = (props: CallAgentProviderProps): JSX.Element =>
  *
  * @public
  */
-export const useCallAgent = (): CallAgent | undefined => useContext(CallAgentContext)?.callAgent;
+export const useCallAgent = (): CallAgent | undefined => {
+  const callAgent = useContext(CallAgentContext)?.callAgent;
+  if (callAgent && !_isACSCallAgent(callAgent)) {
+    throw new Error('TeamsCallAgent object was provided, try useTeamsCall() instead');
+  }
+  return callAgent;
+};
+
+/**
+ * Hook to obtain {@link @azure/communication-calling#TeamsCallAgent} from the provider.
+ *
+ * Useful when implementing a custom component that utilizes the providers
+ * exported from this library.
+ *
+ * @public
+ */
+export const useTeamsCallAgent = (): undefined | TeamsCallAgent => {
+  const callAgent = useContext(CallAgentContext)?.callAgent;
+  if (callAgent && _isACSCallAgent(callAgent)) {
+    throw new Error('Regular CallAgent object was provided, try useCall() instead');
+  }
+  return callAgent;
+};

@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { DefaultButton, Stack } from '@fluentui/react';
+import { DefaultButton, Stack, Text } from '@fluentui/react';
 import {
   bottomStackFooterStyle,
   buttonStyle,
+  buttonWithIconStyles,
   buttonsStackTokens,
   endChatContainerStyle,
   endChatTitleStyle,
@@ -15,11 +16,11 @@ import {
 import React from 'react';
 
 export interface ErrorEndCallProps {
+  title: string;
   homeHandler(): void;
 }
 
 export const ErrorScreen = (props: ErrorEndCallProps): JSX.Element => {
-  const leftCall = 'Oops! You are no longer a participant for the chat thread.';
   const goHomePage = 'Go to homepage';
 
   return (
@@ -32,13 +33,16 @@ export const ErrorScreen = (props: ErrorEndCallProps): JSX.Element => {
       className={endChatContainerStyle}
     >
       <Stack tokens={upperStackTokens}>
-        <div tabIndex={0} className={endChatTitleStyle}>
-          {leftCall}
-        </div>
+        <Text role={'heading'} aria-level={1} className={endChatTitleStyle}>
+          {props.title}
+        </Text>
         <Stack horizontal tokens={buttonsStackTokens}>
-          <DefaultButton className={buttonStyle} onClick={props.homeHandler}>
-            {goHomePage}
-          </DefaultButton>
+          <DefaultButton
+            className={buttonStyle}
+            styles={buttonWithIconStyles}
+            text={goHomePage}
+            onClick={props.homeHandler}
+          />
         </Stack>
         <div className={bottomStackFooterStyle}>
           <a href="https://github.com/Azure/Communication/issues">Give Feedback</a>

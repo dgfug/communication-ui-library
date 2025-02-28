@@ -14,7 +14,7 @@ Additional documentation for this sample can be found on [Microsoft Docs](https:
 ## Prerequisites
 
 - [Visual Studio Code (Stable Build)](https://code.visualstudio.com/Download)
-- [Node.js (12.18.4 and above)](https://nodejs.org/en/download/)
+- [Node.js (16.19.0 and above)](https://nodejs.org/en/download/)
 - Create an Azure account with an active subscription. For details, see [Create an account for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F).
 - Create an Azure Communication Services resource. For details, see [Create an Azure Communication Resource](https://docs.microsoft.com/azure/communication-services/quickstarts/create-communication-resource). You'll need to record your resource **connection string** for this quickstart.
 
@@ -28,6 +28,9 @@ Additional documentation for this sample can be found on [Microsoft Docs](https:
 
 1. Get the `Connection String` from the Azure portal. For more information on connection strings, see [Create an Azure Communication Resources](https://docs.microsoft.com/azure/communication-services/quickstarts/create-communication-resource)
 1. Once you get the `Connection String`, add the connection string to the **samples/Server/appsetting.json** file. Input your connection string in the variable: `ResourceConnectionString`.
+1. Once you get the `Endpoint`, add the endpoint string to the **samples/Server/appsetting.json** file. Input your connection string in the variable: `EndpointUrl`.
+1. Get the `identity` from the Azure portal. Click on `Identities & User Access Tokens` in Azure portal. Generate a user with `Chat` scope.
+1. Once you get the `identity` string, add the identity string to the **samples/Server/appsetting.json** file. Input your identity string in the variable: `AdminUserId`. This is the server user to add new users to the chat thread.
 
 ## Local run
 

@@ -1,174 +1,95 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { DominantSpeakersInfo } from '@azure/communication-calling';
-import { memoizeFnAll, toFlatCommunicationIdentifier } from '@internal/acs-ui-common';
-import { RemoteParticipantState, RemoteVideoStreamState } from '@internal/calling-stateful-client';
-import { VideoGalleryRemoteParticipant, VideoGalleryStream } from '@internal/react-components';
+import { toFlatCommunicationIdentifier } from '@internal/acs-ui-common';
+import { CallClientState, RemoteParticipantState } from '@internal/calling-stateful-client';
+import { VideoGalleryRemoteParticipant, VideoGalleryLocalParticipant } from '@internal/react-components';
+/* @conditional-compile-remove(together-mode) */
+import {
+  VideoGalleryTogetherModeStreams,
+  VideoGalleryTogetherModeParticipantPosition
+} from '@internal/react-components';
 import { createSelector } from 'reselect';
 import {
+  CallingBaseSelectorProps,
   getDisplayName,
   getDominantSpeakers,
   getIdentifier,
   getIsMuted,
   getIsScreenSharingOn,
   getLocalVideoStreams,
-  getRemoteParticipants,
+  getRole,
   getScreenShareRemoteParticipant
 } from './baseSelectors';
-
-const convertRemoteVideoStreamToVideoGalleryStream = (stream: RemoteVideoStreamState): VideoGalleryStream => {
-  return {
-    id: stream.id,
-    isAvailable: stream.isAvailable,
-    isMirrored: stream.view?.isMirrored,
-    renderElement: stream.view?.target
-  };
-};
-
-const convertRemoteParticipantToVideoGalleryRemoteParticipant = (
-  userId: string,
-  isMuted: boolean,
-  isSpeaking: boolean,
-  videoStreams: { [key: number]: RemoteVideoStreamState },
-  displayName?: string
-): VideoGalleryRemoteParticipant => {
-  const rawVideoStreamsArray = Object.values(videoStreams);
-  let videoStream: VideoGalleryStream | undefined = undefined;
-  let screenShareStream: VideoGalleryStream | undefined = undefined;
-
-  if (rawVideoStreamsArray[0]) {
-    if (rawVideoStreamsArray[0].mediaStreamType === 'Video') {
-      videoStream = convertRemoteVideoStreamToVideoGalleryStream(rawVideoStreamsArray[0]);
-    } else {
-      screenShareStream = convertRemoteVideoStreamToVideoGalleryStream(rawVideoStreamsArray[0]);
-    }
-  }
-
-  if (rawVideoStreamsArray[1]) {
-    if (rawVideoStreamsArray[1].mediaStreamType === 'ScreenSharing') {
-      screenShareStream = convertRemoteVideoStreamToVideoGalleryStream(rawVideoStreamsArray[1]);
-    } else {
-      videoStream = convertRemoteVideoStreamToVideoGalleryStream(rawVideoStreamsArray[1]);
-    }
-  }
-
-  return {
-    userId,
-    displayName,
-    isMuted,
-    isSpeaking,
-    videoStream,
-    screenShareStream,
-    isScreenSharingOn: screenShareStream !== undefined && screenShareStream.isAvailable
-  };
-};
-
-const memoizedAllConvertRemoteParticipant = memoizeFnAll(
-  (
-    userId: string,
-    isMuted: boolean,
-    isSpeaking: boolean,
-    videoStreams: { [key: number]: RemoteVideoStreamState },
-    displayName?: string
-  ): VideoGalleryRemoteParticipant => {
-    return convertRemoteParticipantToVideoGalleryRemoteParticipant(
-      userId,
-      isMuted,
-      isSpeaking,
-      videoStreams,
-      displayName
-    );
-  }
-);
-
-const videoGalleryRemoteParticipantsMemo = (
-  remoteParticipants:
-    | {
-        [keys: string]: RemoteParticipantState;
-      }
-    | undefined
-): VideoGalleryRemoteParticipant[] => {
-  if (!remoteParticipants) return [];
-  return memoizedAllConvertRemoteParticipant((memoizedFn) => {
-    return Object.values(remoteParticipants).map((participant: RemoteParticipantState) => {
-      return memoizedFn(
-        toFlatCommunicationIdentifier(participant.identifier),
-        participant.isMuted,
-        participant.isSpeaking,
-        participant.videoStreams,
-        participant.displayName
-      );
-    });
-  });
-};
-
-const dominantSpeakersWithFlatId = (dominantSpeakers?: DominantSpeakersInfo): undefined | string[] => {
-  return dominantSpeakers?.speakersList.map(toFlatCommunicationIdentifier);
-};
+/* @conditional-compile-remove(together-mode) */
+import { getTogetherModeCallFeature } from './baseSelectors';
+import { isHideAttendeeNamesEnabled } from './baseSelectors';
+import { getOptimalVideoCount } from './baseSelectors';
+import { _updateUserDisplayNames } from './utils/callUtils';
+import { checkIsSpeaking } from './utils/SelectorUtils';
+import {
+  _videoGalleryRemoteParticipantsMemo,
+  _dominantSpeakersWithFlatId,
+  convertRemoteParticipantToVideoGalleryRemoteParticipant,
+  memoizeLocalParticipant,
+  /* @conditional-compile-remove(together-mode) */ memoizeTogetherModeStreams
+} from './utils/videoGalleryUtils';
+import { memoizeSpotlightedParticipantIds } from './utils/videoGalleryUtils';
+import { getLocalParticipantRaisedHand } from './baseSelectors';
+import { getLocalParticipantReactionState } from './baseSelectors';
+import { memoizedConvertToVideoTileReaction } from './utils/participantListSelectorUtils';
+import { getRemoteParticipantsExcludingConsumers } from './getRemoteParticipantsExcludingConsumers';
+import { getSpotlightCallFeature, getCapabilities } from './baseSelectors';
 
 /**
- * Sorts remote participants on the basis of their video status (on/off) and dominant speaker rank.
- * 1. Video participants should always render before non-video participants.
- * 2. Video Tiles should be further sorted based on their ordering in dominant speakers list.
- */
-const sortedRemoteParticipants = (
-  participants?: VideoGalleryRemoteParticipant[],
-  dominantSpeakers?: Record<string, number>
-): VideoGalleryRemoteParticipant[] => {
-  if (!participants) return [];
-
-  const participantsWithVideo: VideoGalleryRemoteParticipant[] = [];
-  const participantsWithoutVideo: VideoGalleryRemoteParticipant[] = [];
-
-  participants.forEach((p) => {
-    if (p.videoStream?.renderElement?.childElementCount) {
-      participantsWithVideo.push(p);
-    } else {
-      participantsWithoutVideo.push(p);
-    }
-  });
-
-  // If dominantSpeakers are available, we sort the video tiles basis on dominant speakers.
-  if (dominantSpeakers) {
-    participantsWithVideo.sort((a, b) => {
-      const idxA = dominantSpeakers[a.userId];
-      const idxB = dominantSpeakers[b.userId];
-      if (idxA === undefined && idxB === undefined) return 0; // Both a and b don't exist in dominant speakers.
-      if (idxA === undefined && idxB >= 0) return 1; // b exists in dominant speakers.
-      if (idxB === undefined && idxA >= 0) return -1; // a exists in dominant speakers.
-      return idxA - idxB;
-    });
-
-    participantsWithoutVideo.sort((a, b) => {
-      const idxA = dominantSpeakers[a.userId];
-      const idxB = dominantSpeakers[b.userId];
-      if (idxA === undefined && idxB === undefined) return 0; // Both a and b don't exist in dominant speakers.
-      if (idxA === undefined && idxB >= 0) return 1; // b exists in dominant speakers.
-      if (idxB === undefined && idxA >= 0) return -1; // a exists in dominant speakers.
-      return idxA - idxB;
-    });
-  }
-
-  const allSpeakers = participantsWithVideo.concat(participantsWithoutVideo);
-  return allSpeakers;
-};
-
-/**
- * Selects data that drives {@link VideoGallery} component.
+ * Selector type for {@link VideoGallery} component.
  *
  * @public
  */
-export const videoGallerySelector = createSelector(
+export type VideoGallerySelector = (
+  state: CallClientState,
+  props: CallingBaseSelectorProps
+) => {
+  screenShareParticipant?: VideoGalleryRemoteParticipant;
+  localParticipant: VideoGalleryLocalParticipant;
+  remoteParticipants: VideoGalleryRemoteParticipant[];
+  dominantSpeakers?: string[];
+  optimalVideoCount?: number;
+  spotlightedParticipants?: string[];
+  maxParticipantsToSpotlight?: number;
+  /* @conditional-compile-remove(together-mode) */
+  isTogetherModeActive?: boolean;
+  /* @conditional-compile-remove(together-mode) */
+  startTogetherModeEnabled?: boolean;
+  /* @conditional-compile-remove(together-mode) */
+  togetherModeStreams?: VideoGalleryTogetherModeStreams;
+  /* @conditional-compile-remove(together-mode) */
+  togetherModeSeatingCoordinates?: VideoGalleryTogetherModeParticipantPosition;
+};
+
+/**
+ * Provides data attributes to {@link VideoGallery} component.
+ * @public
+ */
+export const videoGallerySelector: VideoGallerySelector = createSelector(
   [
     getScreenShareRemoteParticipant,
-    getRemoteParticipants,
+    getRemoteParticipantsExcludingConsumers,
     getLocalVideoStreams,
     getIsMuted,
     getIsScreenSharingOn,
     getDisplayName,
     getIdentifier,
-    getDominantSpeakers
+    getDominantSpeakers,
+    getOptimalVideoCount,
+    getRole,
+    getLocalParticipantRaisedHand,
+    isHideAttendeeNamesEnabled,
+    getLocalParticipantReactionState,
+    getSpotlightCallFeature,
+    getCapabilities,
+    /* @conditional-compile-remove(together-mode) */
+    getTogetherModeCallFeature
   ],
   (
     screenShareRemoteParticipantId,
@@ -178,43 +99,77 @@ export const videoGallerySelector = createSelector(
     isScreenSharingOn,
     displayName: string | undefined,
     identifier: string,
-    dominantSpeakers
+    dominantSpeakers,
+    optimalVideoCount,
+    role,
+    raisedHand,
+    isHideAttendeeNamesEnabled,
+    localParticipantReaction,
+    spotlightCallFeature,
+    capabilities,
+    /* @conditional-compile-remove(together-mode) */
+    togetherModeCallFeature
   ) => {
     const screenShareRemoteParticipant =
       screenShareRemoteParticipantId && remoteParticipants
         ? remoteParticipants[screenShareRemoteParticipantId]
         : undefined;
     const localVideoStream = localVideoStreams?.find((i) => i.mediaStreamType === 'Video');
-
-    const dominantSpeakerIds = dominantSpeakersWithFlatId(dominantSpeakers);
+    const localScreenSharingStream = localVideoStreams?.find((i) => i.mediaStreamType === 'ScreenSharing');
+    const dominantSpeakerIds = _dominantSpeakersWithFlatId(dominantSpeakers);
     const dominantSpeakersMap: Record<string, number> = {};
     dominantSpeakerIds?.forEach((speaker, idx) => (dominantSpeakersMap[speaker] = idx));
-
+    const noRemoteParticipants: RemoteParticipantState[] = [];
+    const localParticipantReactionState = memoizedConvertToVideoTileReaction(localParticipantReaction);
+    const spotlightedParticipantIds = memoizeSpotlightedParticipantIds(spotlightCallFeature?.spotlightedParticipants);
     return {
       screenShareParticipant: screenShareRemoteParticipant
         ? convertRemoteParticipantToVideoGalleryRemoteParticipant(
             toFlatCommunicationIdentifier(screenShareRemoteParticipant.identifier),
             screenShareRemoteParticipant.isMuted,
-            screenShareRemoteParticipant.isSpeaking,
+            checkIsSpeaking(screenShareRemoteParticipant),
             screenShareRemoteParticipant.videoStreams,
-            screenShareRemoteParticipant.displayName
+            screenShareRemoteParticipant.state,
+            screenShareRemoteParticipant.displayName,
+            screenShareRemoteParticipant.raisedHand,
+            screenShareRemoteParticipant.contentSharingStream,
+            undefined,
+            screenShareRemoteParticipant.spotlight,
+            undefined,
+            screenShareRemoteParticipant.mediaAccess,
+            role
           )
         : undefined,
-      localParticipant: {
-        userId: identifier,
-        displayName: displayName ?? '',
-        isMuted: isMuted,
-        isScreenSharingOn: isScreenSharingOn,
-        videoStream: {
-          isAvailable: !!localVideoStream,
-          isMirrored: localVideoStream?.view?.isMirrored,
-          renderElement: localVideoStream?.view?.target
-        }
-      },
-      remoteParticipants: sortedRemoteParticipants(
-        videoGalleryRemoteParticipantsMemo(remoteParticipants),
-        dominantSpeakersMap
-      )
+      localParticipant: memoizeLocalParticipant(
+        identifier,
+        displayName,
+        isMuted,
+        isScreenSharingOn,
+        localVideoStream,
+        localScreenSharingStream,
+        role,
+        raisedHand,
+        localParticipantReactionState,
+        spotlightCallFeature?.localParticipantSpotlight,
+        capabilities
+      ),
+      remoteParticipants: _videoGalleryRemoteParticipantsMemo(
+        _updateUserDisplayNames(remoteParticipants ? Object.values(remoteParticipants) : noRemoteParticipants),
+        isHideAttendeeNamesEnabled,
+        role
+      ),
+      dominantSpeakers: dominantSpeakerIds,
+      maxRemoteVideoStreams: optimalVideoCount,
+      spotlightedParticipants: spotlightedParticipantIds,
+      maxParticipantsToSpotlight: spotlightCallFeature?.maxParticipantsToSpotlight,
+      /* @conditional-compile-remove(together-mode) */
+      togetherModeStreams: memoizeTogetherModeStreams(togetherModeCallFeature?.streams),
+      /* @conditional-compile-remove(together-mode) */
+      togetherModeSeatingCoordinates: togetherModeCallFeature?.seatingPositions,
+      /* @conditional-compile-remove(together-mode) */
+      isTogetherModeActive: togetherModeCallFeature?.isActive,
+      /* @conditional-compile-remove(together-mode) */
+      startTogetherModeEnabled: capabilities?.startTogetherMode.isPresent
     };
   }
 );

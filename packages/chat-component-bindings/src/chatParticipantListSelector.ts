@@ -1,28 +1,46 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { getUserId, getDisplayName, getParticipants } from './baseSelectors';
+import { getUserId, getDisplayName, getParticipants, ChatBaseSelectorProps } from './baseSelectors';
 import * as reselect from 'reselect';
 import { toFlatCommunicationIdentifier } from '@internal/acs-ui-common';
 import { ChatParticipant } from '@azure/communication-chat';
-import { CommunicationParticipant } from '@internal/react-components';
+import { ParticipantListParticipant } from '@internal/react-components';
+import { ChatClientState } from '@internal/chat-stateful-client';
+import { getIdentifierKind } from '@azure/communication-common';
 
 const convertChatParticipantsToCommunicationParticipants = (
   chatParticipants: ChatParticipant[]
-): CommunicationParticipant[] => {
+): ParticipantListParticipant[] => {
   return chatParticipants.map((participant: ChatParticipant) => {
     return {
       userId: toFlatCommunicationIdentifier(participant.id),
-      displayName: participant.displayName
+      displayName: participant.displayName,
+      // ACS users can not remove Teams users.
+      // Removing phone numbers or unknown types of users is undefined.
+      isRemovable: getIdentifierKind(participant.id).kind === 'communicationUser'
     };
   });
 };
 
 /**
- * get the index of moderator to help updating its display name if they are the local user or removing them from list of participants otherwise
+ * get the moderator to help updating its display name if they are the local user or removing them from list of participants otherwise
  */
-const moderatorIndex = (participants: CommunicationParticipant[]): number => {
-  return participants.map((p) => p.displayName).indexOf(undefined);
+const getModerator = (participants: ParticipantListParticipant[]): ParticipantListParticipant | undefined => {
+  return participants.find((p) => p.displayName === undefined);
+};
+
+/**
+ * Selector type for {@link ParticipantList} component.
+ *
+ * @public
+ */
+export type ChatParticipantListSelector = (
+  state: ChatClientState,
+  props: ChatBaseSelectorProps
+) => {
+  myUserId: string;
+  participants: ParticipantListParticipant[];
 };
 
 /**
@@ -30,21 +48,17 @@ const moderatorIndex = (participants: CommunicationParticipant[]): number => {
  *
  * @public
  */
-export const chatParticipantListSelector = reselect.createSelector(
+export const chatParticipantListSelector: ChatParticipantListSelector = reselect.createSelector(
   [getUserId, getParticipants, getDisplayName],
   (userId, chatParticipants: { [key: string]: ChatParticipant }, displayName) => {
     let participants = convertChatParticipantsToCommunicationParticipants(Object.values(chatParticipants));
-    if (0 !== participants.length) {
-      const moderatorIdx = moderatorIndex(participants);
 
-      if (-1 !== moderatorIdx) {
-        const userIndex = participants.map((p) => p.userId).indexOf(userId);
-        if (moderatorIdx === userIndex) {
-          participants[moderatorIdx].displayName = displayName;
-        } else {
-          participants = participants.filter((p) => p.displayName);
-        }
-      }
+    // Update the moderator display name if they are the local user, otherwise remove them from list of participants
+    const moderator = getModerator(participants);
+    if (moderator?.userId === userId) {
+      moderator.displayName = displayName;
+    } else {
+      participants = participants.filter((p) => p.displayName);
     }
 
     return {

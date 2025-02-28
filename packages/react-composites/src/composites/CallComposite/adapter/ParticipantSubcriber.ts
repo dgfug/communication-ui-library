@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
+
 import { RemoteParticipant, RemoteVideoStream } from '@azure/communication-calling';
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 
 /**
  * @private

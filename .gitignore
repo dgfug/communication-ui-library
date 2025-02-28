@@ -35,6 +35,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+.vscode/
 
 # Optional npm cache directory
 .npm
@@ -91,6 +92,30 @@ dist/
 build/
 temp/
 docGen/
+preprocessed/
+preprocess-dist/
 
 # Release outputs
 release/
+
+# Failed test results
+test-results/
+
+# All CHANGELOGs in this repository are named one of
+# CHANGELOG.beta.md or CHANGELOG.stable.md, depending on the type of release
+# that the CHANGELOG refers to.
+# Ignore the default name used by beachball, allowing just the top-level
+# ./CHANGELOG.md as the entry point.
+*/**/CHANGELOG.md
+# Used by tooling to stash away change files for stable build
+change-stable/
+
+apis/
+
+# To avoid accidental checkin of connection string secrets
+samples/Server/appsettings.json
+
+samples/Server/sample-dist/
+samples/Calling/sample-dist/
+samples/CallWithChat/sample-dist/
+samples/Chat/sample-dist/

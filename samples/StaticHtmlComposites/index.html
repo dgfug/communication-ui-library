@@ -2,59 +2,35 @@
 
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Basic example for CallComposite and ChatComposite</title>
+
+  <!-- Ensure that fonts have loaded before tests are run -->
+  <link rel="preload" href="./fonts/segoeui-regular.woff2" as="font" crossorigin="anonymous" />
+  <link rel="preload" href="./fonts/segoeui-semibold.woff2" as="font" crossorigin="anonymous" />
+  <link rel="preload" href="./fonts/segoeui-bold.woff2" as="font" crossorigin="anonymous" />
+  <link rel="stylesheet" href="index.css" />
 </head>
 
 <body>
   <!-- height need to be set for composite to fit the layout -->
-  <div id="video-call-container" style="height: 60vh"></div>
-  <div id="chat-container" style="height: 40vh"></div>
-  <!-- replace with https://github.com/Azure/communication-ui-library/releases/latest/download/chatComposite.js for development and prototyping -->
-  <script src="./chatComposite.js"></script>
-  <!-- replace with https://github.com/Azure/communication-ui-library/releases/latest/download/callComposite.js for development and prototyping -->
-  <script src="./callComposite.js"></script>
-  <script src="./service.js"></script>
-  <script type="module">
-    const testParams = service.loadConfigFromUrlQuery();
-    const { user, token } = testParams.token
-      ? { token: testParams.token, user: { communicationUserId: testParams.userId } }
-      : { ...(await service.createUserWithToken()) };
-    const groupId = await service.createGUID();
-    // Call composite sample code starts here
-    const displayName = testParams.displayName ?? 'Bob';
-
-    const callAdapter = await callComposite.loadCallComposite(
-      {
-        groupId, // Provide any GUID to join a group
-        displayName: displayName,
-        userId: user,
-        token: token
-      },
-      document.getElementById('video-call-container')
-    );
-
-    const threadId = testParams.threadId ?? (await service.createChatThread());
-    testParams.threadId ?? (await service.addChatUser(threadId, user, displayName));
-    const endpointUrl = testParams.endpointUrl ?? (await service.getEndpointUrl());
-
-    // Chat composite sample code starts here
-    const chatAdapter = await chatComposite.loadChatComposite(
-      {
-        displayName: displayName,
-        threadId: threadId,
-        endpointUrl: endpointUrl,
-        userId: user,
-        token: token
-      },
-      document.getElementById('chat-container'),
-      { visualElements: { showParticipantPane: true, showTopic: false } }
-    );
-
-    await chatAdapter.sendMessage('Hello to you! 👋');
-
-    window.onbeforeunload = () => {
-      callAdapter.dispose();
-      chatAdapter.dispose();
-    };
-  </script>
+  <div class="container">
+    <span class="bold-header">Javascript UI Composite Gallery</span>
+    <div class="video-call-container">
+      Try out the Call Composite
+      <a href="/callComposite.html">http://localhost:3000/callComposite.html</a>
+    </div>
+    <div class="video-call-outbound-container">
+      Try out the Call Composite
+      <a href="/outboundCallComposite.html">http://localhost:3000/outboundCallComposite.html</a>
+    </div>
+    <div class="chat-container">
+      Try out the Chat Composite
+      <a href="/chatComposite.html">http://localhost:3000/chatComposite.html</a>
+    </div>
+    <div class="callWithChat-container">
+      Try out the CallWithChat Composite
+      <a href="/callWithChatComposite.html">http://localhost:3000/callWithChatComposite.html</a>
+    </div>
+  </div>
 </body>

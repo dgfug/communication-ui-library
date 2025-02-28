@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { ChatClient, ChatMessageReadReceipt, ChatMessageType } from '@azure/communication-chat';
 import {
@@ -13,7 +13,8 @@ import {
   ParticipantsRemovedEvent,
   ReadReceiptReceivedEvent,
   TypingIndicatorReceivedEvent
-} from '@azure/communication-signaling';
+} from '@azure/communication-chat';
+import { toFlatCommunicationIdentifier } from '@internal/acs-ui-common';
 import { ChatContext } from './ChatContext';
 import { convertChatMessage } from './convertChatMessage';
 import { ChatMessageWithStatus } from './types/ChatMessageWithStatus';
@@ -41,25 +42,42 @@ export class EventSubscriber {
     return convertChatMessage({
       id: event.id,
       version: event.version,
-      content: { message: event.message },
+      content: {
+        message: event.message,
+        attachments: event.attachments
+      },
       type: this.convertEventType(event.type),
       sender: event.sender,
       senderDisplayName: event.senderDisplayName,
       sequenceId: '', // Note: there is a bug in chatMessageReceived event that it is missing sequenceId
       createdOn: new Date(event.createdOn),
-      editedOn: 'editedOn' in event ? event.editedOn : undefined
+      editedOn: 'editedOn' in event ? event.editedOn : undefined,
+      metadata: event.metadata,
+      /* @conditional-compile-remove(data-loss-prevention) */
+      policyViolation: 'policyViolation' in event ? event.policyViolation : undefined
     });
   };
 
   // convert event type to chatMessage type, only possible type is 'html' and 'text' in chat event
   private convertEventType = (type: string): ChatMessageType => {
     const lowerCaseType = type.toLowerCase();
-    if (lowerCaseType === 'richtext/html' || lowerCaseType === 'html') return 'html';
-    else return 'text';
+    if (lowerCaseType === 'richtext/html' || lowerCaseType === 'html') {
+      return 'html';
+    } else {
+      return 'text';
+    }
   };
 
   private onChatMessageReceived = (event: ChatMessageReceivedEvent): void => {
+    // Today we are avoiding how to render these messages. In the future we can
+    // remove this condition and handle this message appropriately.
+    const messageEventType = event.type.toLowerCase();
+    if (messageEventType !== 'text' && messageEventType !== 'richtext/html' && messageEventType !== 'html') {
+      return;
+    }
+
     const newMessage = this.convertEventToChatMessage(event);
+
     // Because of bug in chatMessageReceived event, if we already have that particular message in context, we want to
     // make sure to not overwrite the sequenceId when calling setChatMessage.
     const existingMessage = this.chatContext.getState().threads[event.threadId]?.chatMessages[event.id];
@@ -93,7 +111,8 @@ export class EventSubscriber {
     this.fetchLastParticipantMessage(event.threadId, 'participantAdded');
   };
 
-  // This is a hot fix that no participant message is received for onChatMessageReceived event, which should be handled by JS SDK
+  // This is a temporary fix that no participant message is received for onChatMessageReceived event, which should be handled by JS SDK.
+  // Without the temporary fix, there are missing 'participant joined' and 'participant left' system messages in the chat thread.
   private fetchLastParticipantMessage = async (
     threadId: string,
     actionType: 'participantAdded' | 'participantRemoved'
@@ -112,7 +131,14 @@ export class EventSubscriber {
       return participant.id;
     });
     this.chatContext.deleteParticipants(event.threadId, participantIds);
-    this.fetchLastParticipantMessage(event.threadId, 'participantRemoved');
+
+    // If the current user is removed from the thread, do not fetch the last participant message
+    // as they no longer have access to the thread.
+    const currentUserId = toFlatCommunicationIdentifier(this.chatContext.getState().userId);
+    const wasCurrentUserRemoved = participantIds.find((id) => toFlatCommunicationIdentifier(id) === currentUserId);
+    if (!wasCurrentUserRemoved) {
+      this.fetchLastParticipantMessage(event.threadId, 'participantRemoved');
+    }
   };
 
   private onReadReceiptReceived = (event: ReadReceiptReceivedEvent): void => {

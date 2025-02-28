@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { PartialTheme } from '@fluentui/react';
+import { createTheme, PartialTheme } from '@fluentui/react';
 
 /**
- * Custom Fluent theme pallete used by calling related components in this library.
+ * Custom Fluent theme palette used by calling related components in this library.
  *
  * @public
  */
@@ -13,6 +13,9 @@ export interface CallingTheme {
     callRed: string;
     callRedDark: string;
     callRedDarker: string;
+    iconWhite: string;
+    raiseHandGold: string;
+    videoTileLabelBackgroundLight: string;
   };
 }
 
@@ -44,21 +47,23 @@ export const lightTheme: PartialTheme & CallingTheme = {
     neutralPrimary: '#323130',
     neutralDark: '#201f1e',
     black: '#000000',
-    white: '#ffffff'
+    white: '#ffffff',
+    whiteTranslucent40: 'rgba(255, 255, 255, 0.4)'
   },
   callingPalette: {
-    callRed: '#c4314b',
-    callRedDark: '#a42e43',
-    callRedDarker: '#8b2c3d'
+    callRed: '#a42e43',
+    callRedDark: '#8b2c3d',
+    callRedDarker: '#772a38',
+    iconWhite: '#ffffff',
+    raiseHandGold: '#eaa300',
+    videoTileLabelBackgroundLight: 'rgba(255,255,255,0.8)'
+  },
+  semanticColors: {
+    errorText: '#a80000'
   }
 };
 
-/**
- * Preset dark theme for components exported from this library.
- *
- * @public
- */
-export const darkTheme: PartialTheme & CallingTheme = {
+const partialDarkTheme: PartialTheme = {
   palette: {
     themePrimary: '#2899f5',
     themeLighterAlt: '#02060a',
@@ -81,11 +86,44 @@ export const darkTheme: PartialTheme & CallingTheme = {
     neutralPrimary: '#ffffff',
     neutralDark: '#f4f4f4',
     black: '#f8f8f8',
-    white: '#252423'
+    white: '#252423',
+    whiteTranslucent40: 'rgba(0, 0, 0, 0.4)'
   },
+  semanticColors: {
+    errorText: '#f1707b'
+  }
+};
+
+/**
+ * Preset dark theme for components exported from this library.
+ *
+ * @public
+ */
+export const darkTheme: PartialTheme & CallingTheme = {
+  ...createTheme({
+    ...partialDarkTheme,
+    isInverted: true
+  }),
   callingPalette: {
-    callRed: '#a42e43',
-    callRedDark: '#8b2c3d',
-    callRedDarker: '#772a38'
+    callRed: '#c4314b',
+    callRedDark: '#a42e43',
+    callRedDarker: '#8b2c3d',
+    iconWhite: '#ffffff',
+    raiseHandGold: '#eaa300',
+    videoTileLabelBackgroundLight: 'rgba(37,36,35,0.8)'
+  }
+};
+
+/* @conditional-compile-remove(image-overlay-theme) */
+/**
+ * Preset dark theme for the ImageOverlay component.
+ *
+ * @public
+ */
+export const imageOverlayTheme: PartialTheme = {
+  palette: darkTheme.palette,
+  semanticColors: {
+    ...darkTheme.semanticColors,
+    bodyBackground: 'rgba(0, 0, 0, 0.85)'
   }
 };

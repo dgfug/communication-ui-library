@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import {
   IPersonaStyleProps,
@@ -8,6 +8,7 @@ import {
   PersonaPresence,
   PersonaSize
 } from '@fluentui/react';
+import { ParticipantState } from '.';
 
 /**
  * Options that can be injected into the `onRender` function for customizing an
@@ -32,6 +33,13 @@ export type CustomAvatarOptions = {
   styles?: IStyleFunctionOrObject<IPersonaStyleProps, IPersonaStyles>;
   /** Display name to be used in Persona  */
   text?: string;
+  /** State for the participant to be displayed in the defaultPlaceHolder */
+  participantState?: ParticipantState;
+  /**
+   * If true, show the special coin for unknown persona.
+   * It has '?' in place of initials, with static font and background colors
+   */
+  showUnknownPersonaCoin?: boolean;
 };
 
 /**
@@ -50,4 +58,4 @@ export type OnRenderAvatarCallback = (
    * Pass the `options` to the `onRender` component for default rendering.
    */
   defaultOnRender?: (props: CustomAvatarOptions) => JSX.Element
-) => JSX.Element;
+) => JSX.Element | undefined;

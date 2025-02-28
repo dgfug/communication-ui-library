@@ -1,10 +1,26 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import * as express from 'express';
 import { userIdToUserConfigMap } from '../lib/chat/userIdToUserConfigMap';
 
 const router = express.Router();
+
+/**
+ * route: /userConfig/[userId]
+ *
+ * purpose: To register the user with the emoji to the thread.
+ *
+ * @param threadId: id of the thread to which user needs to be registered
+ * @param userId: id of the user
+ * @param emoji: emoji selected by the user
+ *
+ * @remarks
+ * post call is used for registering the user to the thread and update the
+ * user config with the selected emoji and get call returns userconfig of
+ * all registered users.
+ *
+ */
 
 router.post('/:userId', async function (req, res, next) {
   const userConfig = req.body;

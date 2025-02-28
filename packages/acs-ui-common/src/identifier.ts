@@ -1,11 +1,14 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import {
   CommunicationIdentifier,
+  createIdentifierFromRawId,
+  getIdentifierRawId,
   isCommunicationUserIdentifier,
   isMicrosoftTeamsUserIdentifier,
-  isPhoneNumberIdentifier
+  isPhoneNumberIdentifier,
+  isUnknownIdentifier
 } from '@azure/communication-common';
 
 /**
@@ -18,17 +21,8 @@ import {
  *
  * @public
  */
-export const toFlatCommunicationIdentifier = (id: CommunicationIdentifier): string => {
-  if (isCommunicationUserIdentifier(id)) {
-    return id.communicationUserId;
-  }
-  if (isMicrosoftTeamsUserIdentifier(id)) {
-    return id.microsoftTeamsUserId;
-  }
-  if (isPhoneNumberIdentifier(id)) {
-    return id.phoneNumber;
-  }
-  return id.id;
+export const toFlatCommunicationIdentifier = (identifier: CommunicationIdentifier): string => {
+  return getIdentifierRawId(identifier);
 };
 
 /**
@@ -37,7 +31,47 @@ export const toFlatCommunicationIdentifier = (id: CommunicationIdentifier): stri
  * @public
  */
 export const fromFlatCommunicationIdentifier = (id: string): CommunicationIdentifier => {
-  // This implementation is currently a hack that only works with ACS identifiers.
-  // TODO: Make `toFlatCommunicationIdentifier` not be lossy so this can reverse the process.
-  return { communicationUserId: id };
+  // if the id passed is a phone number we need to build the rawId to pass in
+  const rawId = id.indexOf('+') === 0 ? '4:' + id : id;
+  return createIdentifierFromRawId(rawId);
+};
+
+/**
+ * Returns a CommunicationIdentifier.
+ * @internal
+ */
+export const _toCommunicationIdentifier = (id: string | CommunicationIdentifier): CommunicationIdentifier => {
+  if (typeof id === 'string') {
+    return fromFlatCommunicationIdentifier(id);
+  }
+  return id;
+};
+
+/**
+ * Check if an object is identifier.
+ *
+ * @internal
+ */
+export const _isValidIdentifier = (identifier: CommunicationIdentifier): boolean => {
+  return (
+    isCommunicationUserIdentifier(identifier) ||
+    isPhoneNumberIdentifier(identifier) ||
+    isMicrosoftTeamsUserIdentifier(identifier) ||
+    isUnknownIdentifier(identifier)
+  );
+};
+
+/**
+ * Check if given identifier is a Microsoft Teams user.
+ *
+ * @internal
+ * @param rawId - The rawId of the identifier.
+ * @returns True if the identifier is a Microsoft Teams user. False otherwise.
+ */
+export const _isIdentityMicrosoftTeamsUser = (rawId?: string): boolean => {
+  if (!rawId) {
+    return false;
+  }
+  const identifier = _toCommunicationIdentifier(rawId);
+  return isMicrosoftTeamsUserIdentifier(identifier);
 };

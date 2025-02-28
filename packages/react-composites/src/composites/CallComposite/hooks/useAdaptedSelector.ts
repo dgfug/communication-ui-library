@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -8,9 +8,15 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import memoizeOne from 'memoize-one';
 import { useAdapter } from '../adapter/CallAdapterProvider';
 import { CallAdapterState } from '../adapter/CallAdapter';
-import { CallErrors, CallState, CallClientState, DeviceManagerState } from '@internal/calling-stateful-client';
-import { CommunicationUserKind } from '@azure/communication-common';
-
+import {
+  CallErrors,
+  CallState,
+  CallClientState,
+  DeviceManagerState,
+  CallNotifications
+} from '@internal/calling-stateful-client';
+import { CommunicationIdentifierKind } from '@azure/communication-common';
+import { EnvironmentInfo } from '@azure/communication-calling';
 /**
  * @private
  */
@@ -77,20 +83,26 @@ export const useSelectorWithAdaptation = <
 
 const memoizeState = memoizeOne(
   (
-    userId: CommunicationUserKind,
+    userId: CommunicationIdentifierKind,
     deviceManager: DeviceManagerState,
     calls: { [key: string]: CallState },
     latestErrors: CallErrors,
-    displayName?: string
+    latestNotifications?: CallNotifications,
+    displayName?: string,
+    alternateCallerId?: string,
+    environmentInfo?: EnvironmentInfo
   ): CallClientState => ({
     userId,
     incomingCalls: {},
-    incomingCallsEnded: [],
-    callsEnded: [],
+    incomingCallsEnded: {},
+    callsEnded: {},
     deviceManager,
     callAgent: { displayName },
     calls,
-    latestErrors
+    latestErrors,
+    latestNotifications: latestNotifications ?? ({} as CallNotifications),
+    alternateCallerId,
+    environmentInfo
   })
 );
 
@@ -115,6 +127,10 @@ const adaptCompositeState = (compositeState: CallAdapterState): CallClientState 
     // just displaying them in some UI surface) will continue to work for these operations. Handling of
     // specific operations (e.g., acting on errors related to permission issues) will ignore these operations.
     compositeState.latestErrors as CallErrors,
-    compositeState.displayName
+    undefined ||
+      /* @conditional-compile-remove(breakout-rooms) */ (compositeState.latestNotifications as CallNotifications),
+    compositeState.displayName,
+    compositeState.alternateCallerId,
+    compositeState.environmentInfo
   );
 };

@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React from 'react';
-import { DefaultButton, PrimaryButton, Stack } from '@fluentui/react';
+import { DefaultButton, PrimaryButton, Stack, Text } from '@fluentui/react';
 import { Video20Filled } from '@fluentui/react-icons';
 import {
   endCallContainerStyle,
   endCallTitleStyle,
   buttonStyle,
+  buttonWithIconStyles,
   mainStackTokens,
   buttonsStackTokens,
   upperStackTokens,
@@ -16,14 +17,13 @@ import {
 } from '../styles/EndCall.styles';
 
 export interface CallErrorProps {
+  title: string;
+  reason: string;
   rejoinHandler(): void;
   homeHandler(): void;
-  title?: string;
-  reason?: string;
 }
 
 export const CallError = (props: CallErrorProps): JSX.Element => {
-  const title = props.title ?? 'Error joining the Call';
   const goHomePage = 'Go to Homepage';
   const rejoinCall = 'Retry Call';
 
@@ -37,29 +37,25 @@ export const CallError = (props: CallErrorProps): JSX.Element => {
       className={endCallContainerStyle}
     >
       <Stack tokens={upperStackTokens}>
-        <div className={endCallTitleStyle}>{title}</div>
+        <Text role={'heading'} aria-level={1} className={endCallTitleStyle}>
+          {props.title}
+        </Text>
         <Stack horizontal tokens={buttonsStackTokens}>
-          <PrimaryButton className={buttonStyle} onClick={props.rejoinHandler}>
-            <Video20Filled className={videoCameraIconStyle} primaryFill="currentColor" />
-            {rejoinCall}
-          </PrimaryButton>
-          <DefaultButton className={buttonStyle} onClick={props.homeHandler}>
-            {goHomePage}
-          </DefaultButton>
+          <PrimaryButton
+            className={buttonStyle}
+            styles={buttonWithIconStyles}
+            text={rejoinCall}
+            onClick={props.rejoinHandler}
+            onRenderIcon={() => <Video20Filled className={videoCameraIconStyle} primaryFill="currentColor" />}
+          />
+          <DefaultButton
+            className={buttonStyle}
+            styles={buttonWithIconStyles}
+            text={goHomePage}
+            onClick={props.homeHandler}
+          />
         </Stack>
-        <div className={bottomStackFooterStyle}>
-          {props.reason ? (
-            props.reason
-          ) : (
-            <>
-              Common reasons for this error:
-              <ul>
-                <li>Incorrect Teams Meeting URL</li>
-                <li>Incorrect Group Call ID</li>
-              </ul>
-            </>
-          )}
-        </div>
+        <div className={bottomStackFooterStyle}>{props.reason}</div>
       </Stack>
     </Stack>
   );

@@ -1,10 +1,7 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { getTheme, IStyle, IButtonStyles, IContextualMenuStyles, concatStyleSets } from '@fluentui/react';
-
-const theme = getTheme();
-const palette = theme.palette;
+import { IStyle, IButtonStyles, IContextualMenuStyles, IContextualMenuItemStyles } from '@fluentui/react';
 
 interface IControlBarStyles {
   horizontal: IStyle;
@@ -28,7 +25,8 @@ export const controlBarStyles: IControlBarStyles = {
   },
   vertical: {
     flexFlow: 'column nowrap',
-    maxWidth: '3.5rem'
+    width: 'fit-content',
+    maxWidth: '8rem'
   },
   dockedTop: {
     flexFlow: 'row nowrap',
@@ -69,8 +67,6 @@ export const controlBarStyles: IControlBarStyles = {
   floatingTop: {
     flexFlow: 'row nowrap',
     justifyContent: 'center',
-    boxShadow: theme.effects.elevation16,
-    borderRadius: theme.effects.roundedCorner6,
     overflow: 'hidden',
     position: 'absolute',
     top: '1rem',
@@ -82,8 +78,6 @@ export const controlBarStyles: IControlBarStyles = {
   floatingBottom: {
     flexFlow: 'row nowrap',
     justifyContent: 'center',
-    boxShadow: theme.effects.elevation16,
-    borderRadius: theme.effects.roundedCorner6,
     overflow: 'hidden',
     position: 'absolute',
     bottom: '1rem',
@@ -95,8 +89,6 @@ export const controlBarStyles: IControlBarStyles = {
   floatingLeft: {
     flexFlow: 'column nowrap',
     justifyContent: 'center',
-    boxShadow: theme.effects.elevation16,
-    borderRadius: theme.effects.roundedCorner6,
     overflow: 'hidden',
     position: 'absolute',
     top: '50%',
@@ -107,8 +99,6 @@ export const controlBarStyles: IControlBarStyles = {
   floatingRight: {
     flexFlow: 'column nowrap',
     justifyContent: 'center',
-    boxShadow: theme.effects.elevation16,
-    borderRadius: theme.effects.roundedCorner6,
     overflow: 'hidden',
     position: 'absolute',
     top: '50%',
@@ -128,44 +118,30 @@ export const controlButtonStyles: IButtonStyles = {
     borderRadius: 0,
     minHeight: '3.5rem',
     minWidth: '3.5rem',
+    width: '100%',
+    maxWidth: '8rem',
     svg: {
       verticalAlign: 'text-top'
     }
   },
+  splitButtonMenuButton: {
+    border: 'none'
+  },
   flexContainer: {
-    flexFlow: 'column',
-    display: 'contents'
-  }
-};
-
-/**
- * @private
- */
-export const controlButtonLabelStyles: IStyle = {
-  fontSize: '0.625rem',
-  lineHeight: '1rem',
-  cursor: 'pointer',
-  display: 'block',
-  margin: '0rem 0.25rem'
-};
-
-/**
- * @private
- */
-export const endCallControlButtonStyles: IButtonStyles = concatStyleSets(controlButtonStyles, {
-  root: {
-    color: palette.white
-  },
-  rootHovered: {
-    color: palette.white
-  },
-  rootPressed: {
-    color: palette.white
+    display: 'unset'
   },
   label: {
-    color: palette.white
+    fontSize: '0.625rem',
+    fontWeight: '400',
+    lineHeight: '1rem',
+    cursor: 'pointer',
+    display: 'block',
+    margin: '0rem 0.25rem',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap'
   }
-});
+};
 
 /**
  * making it Partial as IContextualMenuStyles has all its props non-optional and we only need title to be defined here.
@@ -182,8 +158,15 @@ export const participantsButtonMenuPropsStyle: Partial<IContextualMenuStyles> = 
 };
 
 /**
+ * Default styles for button flyout items
+ *
  * @private
  */
-export const defaultParticipantListContainerStyle: IStyle = {
-  maxHeight: '20rem'
+export const buttonFlyoutItemStyles: IContextualMenuItemStyles = {
+  icon: {
+    lineHeight: 0
+  },
+  checkmarkIcon: {
+    lineHeight: 0
+  }
 };

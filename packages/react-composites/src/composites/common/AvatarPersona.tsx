@@ -1,8 +1,9 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { IPersonaProps, Persona, PersonaInitialsColor } from '@fluentui/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { mergeStyles } from '@fluentui/react';
 
 /**
  * Custom data attributes for displaying avatar for a user.
@@ -33,6 +34,11 @@ export type AvatarPersonaData = {
    * @defaultvalue `white`
    */
   initialsTextColor?: string;
+  /**
+   * If true, show the special coin for unknown persona.
+   * It has '?' in place of initials, with static font and background colors
+   */
+  showUnknownPersonaCoin?: boolean;
 };
 
 /**
@@ -54,6 +60,11 @@ export interface AvatarPersonaProps extends IPersonaProps {
    * A function that returns a Promise that resolves to the data to be displayed.
    */
   dataProvider?: AvatarPersonaDataCallback;
+  /**
+   * Allow to show colored border around persona coin, but isActive is what shows it.
+   */
+
+  allowActiveBorder?: boolean;
 }
 
 /**
@@ -64,26 +75,60 @@ export interface AvatarPersonaProps extends IPersonaProps {
  * @private
  */
 export const AvatarPersona = (props: AvatarPersonaProps): JSX.Element => {
-  const { userId, dataProvider } = props;
-  const [data, setData] = React.useState<AvatarPersonaData | undefined>();
+  const { userId, dataProvider, text, imageUrl, imageInitials, initialsColor, initialsTextColor, showOverflowTooltip } =
+    props;
+
+  const [data, setData] = useState<AvatarPersonaData | undefined>();
 
   useEffect(() => {
     (async () => {
       if (dataProvider && userId) {
-        const data = await dataProvider(userId);
-        setData(data);
+        const newData = await dataProvider(userId);
+        if (avatarDeepDifferenceCheck(data, newData)) {
+          setData(newData);
+        }
       }
     })();
-  }, [dataProvider, userId]);
+  }, [data, dataProvider, userId]);
+
+  let activePersona = '';
+
+  if (props.allowActiveBorder) {
+    // Display a border for raised handed participants in participant list
+    activePersona = mergeStyles({
+      border: 'solid 2px',
+      borderColor: 'transparent',
+      borderRadius: '50%',
+      padding: '2px',
+      boxSizing: 'content-box',
+      margin: '-4px'
+    });
+
+    mergeStyles(activePersona, props.styles);
+  }
 
   return (
     <Persona
       {...props}
-      text={data?.text ?? props.text}
-      imageUrl={data?.imageUrl ?? props.imageUrl}
-      imageInitials={data?.imageInitials ?? props.imageInitials}
-      initialsColor={data?.initialsColor ?? props.initialsColor}
-      initialsTextColor={data?.initialsTextColor ?? props.initialsTextColor ?? 'white'}
+      className={activePersona}
+      text={data?.text ?? text}
+      imageUrl={data?.imageUrl ?? imageUrl}
+      imageInitials={data?.imageInitials ?? imageInitials}
+      initialsColor={data?.initialsColor ?? initialsColor}
+      initialsTextColor={data?.initialsTextColor ?? initialsTextColor ?? 'white'}
+      // default disable tooltip unless specified
+      showOverflowTooltip={showOverflowTooltip ?? false}
+      showUnknownPersonaCoin={data?.showUnknownPersonaCoin ?? props.showUnknownPersonaCoin ?? false}
     />
+  );
+};
+
+const avatarDeepDifferenceCheck = (currentData?: AvatarPersonaData, newData?: AvatarPersonaData): boolean => {
+  return (
+    currentData?.text !== newData?.text ||
+    currentData?.imageUrl !== newData?.imageUrl ||
+    currentData?.initialsColor !== newData?.initialsColor ||
+    currentData?.imageInitials !== newData?.imageInitials ||
+    currentData?.initialsTextColor !== newData?.initialsTextColor
   );
 };

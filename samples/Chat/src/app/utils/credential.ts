@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { AzureCommunicationTokenCredential, CommunicationTokenRefreshOptions } from '@azure/communication-common';
-import { AbortSignalLike } from '@azure/core-http';
+import { AbortSignalLike } from '@azure/abort-controller';
 
 const postRefreshTokenParameters = {
   method: 'POST'
@@ -22,7 +22,7 @@ export const createAutoRefreshingCredential = (userId: string, token: string): A
 
 const refreshTokenAsync = (userIdentity: string): ((abortSignal?: AbortSignalLike) => Promise<string>) => {
   return async (): Promise<string> => {
-    const response = await fetch(`/refreshToken/${userIdentity}`, postRefreshTokenParameters);
+    const response = await fetch(`refreshToken/${userIdentity}`, postRefreshTokenParameters);
     if (response.ok) {
       return (await response.json()).token;
     } else {

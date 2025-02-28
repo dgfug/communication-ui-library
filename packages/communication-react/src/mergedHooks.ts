@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 import {
   CallingHandlers,
   getCallingSelector,
@@ -61,38 +61,41 @@ export const useSelector = <ParamT extends Selector | undefined>(
  *
  * @public
  */
-export type ChatReturnProps<Component extends (props: any) => JSX.Element> = GetChatSelector<Component> extends (
-  state: ChatClientState,
-  props: any
-) => any
-  ? ReturnType<GetChatSelector<Component>> & Common<ChatHandlers, Parameters<Component>[0]>
-  : never;
+export type ChatReturnProps<Component extends (props: any) => JSX.Element> =
+  GetChatSelector<Component> extends (state: ChatClientState, props: any) => any
+    ? ReturnType<GetChatSelector<Component>> & Common<ChatHandlers, Parameters<Component>[0]>
+    : never;
 
 /**
  * Helper type for {@link usePropsFor}.
  *
  * @public
  */
-export type CallingReturnProps<Component extends (props: any) => JSX.Element> = GetCallingSelector<Component> extends (
-  state: CallClientState,
-  props: any
-) => any
-  ? ReturnType<GetCallingSelector<Component>> & Common<CallingHandlers, Parameters<Component>[0]>
-  : never;
+export type CallingReturnProps<Component extends (props: any) => JSX.Element> =
+  GetCallingSelector<Component> extends (state: CallClientState, props: any) => any
+    ? ReturnType<GetCallingSelector<Component>> & Common<CallingHandlers, Parameters<Component>[0]>
+    : never;
 
 /**
  * Helper type for {@link usePropsFor}.
  *
  * @public
  */
-export type ComponentProps<Component extends (props: any) => JSX.Element> = ChatReturnProps<Component> extends never
-  ? CallingReturnProps<Component> extends never
-    ? undefined
-    : CallingReturnProps<Component>
-  : ChatReturnProps<Component>;
+export type ComponentProps<Component extends (props: any) => JSX.Element> =
+  ChatReturnProps<Component> extends never
+    ? CallingReturnProps<Component> extends never
+      ? undefined
+      : CallingReturnProps<Component>
+    : ChatReturnProps<Component>;
 
 /**
- * Primary hook to get all hooks necessary for a React Component from this library..
+ * Primary hook to get all hooks necessary for a React Component from this library.
+ *
+ * To call this hook, the component requires to be wrapped under these providers:
+ *
+ * 1. For chat components: {@link ChatClientProvider} and {@link ChatThreadClientProvider}.
+ *
+ * 2. For calling components: {@link CallClientProvider}, {@link CallAgentProvider} and {@link CallAgentProvider}.
  *
  * Most straightforward usage of a components looks like:
  *
@@ -134,5 +137,9 @@ export const usePropsFor = <Component extends (props: any) => JSX.Element>(
     return { ...callProps, ...callingHandlers } as any;
   }
 
-  throw "Can't find corresponding selector for this component. Please check the supported components from Azure Communication UI Feature Component List.";
+  if (!chatSelector && !callingSelector) {
+    throw "Can't find corresponding selector for this component. Please check the supported components from Azure Communication UI Feature Component List.";
+  } else {
+    throw 'Could not find props for this component, ensure the component is wrapped by appropriate providers.';
+  }
 };

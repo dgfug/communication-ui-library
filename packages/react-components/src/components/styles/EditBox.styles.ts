@@ -1,22 +1,25 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { mergeStyles } from '@fluentui/react';
+import { IStyle, mergeStyles } from '@fluentui/react';
+import { editorTextBoxButtonStyle } from './SendBox.styles';
 
 /**
  * @private
  */
 export const editBoxStyle = mergeStyles({
   marginTop: '0.0875rem',
-  marginBottom: '0.0875rem',
-  paddingRight: '3.25rem'
+  marginBottom: '0.0875rem'
 });
 
 /**
  * @private
  */
 export const editingButtonStyle = mergeStyles({
-  margin: 'auto .3rem'
+  margin: '0',
+  width: '2.125rem',
+  height: '2.125rem',
+  padding: '0.375rem 0 0 0'
 });
 
 /**
@@ -28,13 +31,26 @@ export const inputBoxIcon = mergeStyles({
     stroke: 'currentColor'
   }
 });
+/**
+ * @private
+ */
+export const richTextEditBoxActionButtonIcon = mergeStyles(editorTextBoxButtonStyle, {
+  '&:hover svg': {
+    stroke: 'currentColor'
+  }
+});
+
+/**
+ * @private
+ */
+export const editBoxWidthStyles: IStyle = {
+  minWidth: '6.25rem',
+  maxWidth: '100%'
+};
 
 /**
  * @private
  */
 export const editBoxStyleSet = {
-  root: {
-    width: '100%',
-    marginLeft: '6.25rem'
-  }
+  root: editBoxWidthStyles
 };

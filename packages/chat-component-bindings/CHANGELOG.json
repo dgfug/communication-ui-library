@@ -2,6 +2,1934 @@
   "name": "@internal/chat-component-bindings",
   "entries": [
     {
+      "date": "Mon, 24 Feb 2025 23:41:48 GMT",
+      "version": "1.25.0-beta.1",
+      "tag": "@internal/chat-component-bindings_v1.25.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.25.0-beta.1",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.25.0-beta.1",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.25.0-beta.1",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 10 Feb 2025 18:17:46 GMT",
+      "version": "1.24.0",
+      "tag": "@internal/chat-component-bindings_v1.24.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.24.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.24.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.24.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 03 Feb 2025 22:02:27 GMT",
+      "version": "1.24.0-beta.1",
+      "tag": "@internal/chat-component-bindings_v1.24.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.24.0-beta.1",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.24.0-beta.1",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.24.0-beta.1",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 13 Jan 2025 19:28:47 GMT",
+      "version": "1.23.0",
+      "tag": "@internal/chat-component-bindings_v1.23.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.23.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.23.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.23.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 16 Dec 2024 19:44:16 GMT",
+      "version": "1.22.0",
+      "tag": "@internal/chat-component-bindings_v1.22.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.22.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.22.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.22.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 02 Dec 2024 20:49:02 GMT",
+      "version": "1.22.0-beta.1",
+      "tag": "@internal/chat-component-bindings_v1.22.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.22.0-beta.1",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.22.0-beta.1",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.22.0-beta.1",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 12 Nov 2024 17:20:49 GMT",
+      "version": "1.21.0",
+      "tag": "@internal/chat-component-bindings_v1.21.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.21.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.21.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.21.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 28 Oct 2024 22:53:28 GMT",
+      "version": "1.21.0-beta.1",
+      "tag": "@internal/chat-component-bindings_v1.21.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.21.0-beta.1",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.21.0-beta.1",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.21.0-beta.1",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 15 Oct 2024 20:24:25 GMT",
+      "version": "1.20.0",
+      "tag": "@internal/chat-component-bindings_v1.20.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.20.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.20.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.20.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 01 Oct 2024 17:03:47 GMT",
+      "version": "1.20.0-beta.1",
+      "tag": "@internal/chat-component-bindings_v1.20.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.20.0-beta.1",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.20.0-beta.1",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.20.0-beta.1",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 12 Sep 2024 18:13:19 GMT",
+      "version": "1.19.0",
+      "tag": "@internal/chat-component-bindings_v1.19.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.19.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.19.0",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.19.0",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Fri, 06 Sep 2024 23:30:32 GMT",
+      "version": "1.19.0-beta.3",
+      "tag": "@internal/chat-component-bindings_v1.19.0-beta.3",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.19.0-beta.3",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.19.0-beta.3",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.19.0-beta.3",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 26 Aug 2024 18:25:59 GMT",
+      "version": "1.19.0-beta.2",
+      "tag": "@internal/chat-component-bindings_v1.19.0-beta.2",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.19.0-beta.2",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.19.0-beta.2",
+            "commit": "not available"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.19.0-beta.2",
+            "commit": "not available"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 06 Aug 2024 19:45:33 GMT",
+      "tag": "@internal/chat-component-bindings_v1.19.0-beta.1",
+      "version": "1.19.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.19.0-beta.1",
+            "commit": "2a0be9b93dff44ba6cac2e5837a91e87dffe0f8e"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.19.0-beta.1",
+            "commit": "2a0be9b93dff44ba6cac2e5837a91e87dffe0f8e"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.19.0-beta.1",
+            "commit": "2a0be9b93dff44ba6cac2e5837a91e87dffe0f8e"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 15 Jul 2024 18:16:40 GMT",
+      "tag": "@internal/chat-component-bindings_v1.18.0",
+      "version": "1.18.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.18.0",
+            "commit": "1961bc1b7b27ee99b97c8999898f951aa0dce051"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.18.0",
+            "commit": "1961bc1b7b27ee99b97c8999898f951aa0dce051"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.18.0",
+            "commit": "1961bc1b7b27ee99b97c8999898f951aa0dce051"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 17 Jun 2024 16:27:16 GMT",
+      "tag": "@internal/chat-component-bindings_v1.18.0-beta.1",
+      "version": "1.18.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.18.0-beta.1",
+            "commit": "426b6a0ff8c54594e1fe935d7a2678023563c9dc"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.18.0-beta.1",
+            "commit": "426b6a0ff8c54594e1fe935d7a2678023563c9dc"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.18.0-beta.1",
+            "commit": "426b6a0ff8c54594e1fe935d7a2678023563c9dc"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 04 Jun 2024 05:01:43 GMT",
+      "tag": "@internal/chat-component-bindings_v1.17.0",
+      "version": "1.17.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.17.0",
+            "commit": "7bfef8e8091613024bbf0e1056f811814da1bffd"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.17.0",
+            "commit": "7bfef8e8091613024bbf0e1056f811814da1bffd"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.17.0",
+            "commit": "7bfef8e8091613024bbf0e1056f811814da1bffd"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 21 May 2024 20:14:29 GMT",
+      "tag": "@internal/chat-component-bindings_v1.17.0-beta.1",
+      "version": "1.17.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.17.0-beta.1",
+            "commit": "507d5767cfd985df9eb209c1da548cc820ad6234"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.17.0-beta.1",
+            "commit": "507d5767cfd985df9eb209c1da548cc820ad6234"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.17.0-beta.1",
+            "commit": "507d5767cfd985df9eb209c1da548cc820ad6234"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 06 May 2024 20:38:28 GMT",
+      "tag": "@internal/chat-component-bindings_v1.16.0",
+      "version": "1.16.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.16.0",
+            "commit": "fa4fffe670e4d79487fa1fad35c54ae5eaced76f"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.16.0",
+            "commit": "fa4fffe670e4d79487fa1fad35c54ae5eaced76f"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.16.0",
+            "commit": "fa4fffe670e4d79487fa1fad35c54ae5eaced76f"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 23 Apr 2024 17:54:37 GMT",
+      "tag": "@internal/chat-component-bindings_v1.16.0-beta.1",
+      "version": "1.16.0-beta.1",
+      "comments": {
+        "minor": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.16.0-beta.1",
+            "commit": "04a79e96b9d8be86b08060c3c9ba56ae8a46bbb1"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.16.0-beta.1",
+            "commit": "04a79e96b9d8be86b08060c3c9ba56ae8a46bbb1"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.16.0-beta.1",
+            "commit": "04a79e96b9d8be86b08060c3c9ba56ae8a46bbb1"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 08 Apr 2024 20:34:42 GMT",
+      "tag": "@internal/chat-component-bindings_v1.15.0",
+      "version": "1.15.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.15.0",
+            "commit": "a5d118183ecd1e7ea767a85561ff170cf11f653b"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.15.0",
+            "commit": "a5d118183ecd1e7ea767a85561ff170cf11f653b"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.15.0",
+            "commit": "a5d118183ecd1e7ea767a85561ff170cf11f653b"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 26 Mar 2024 17:38:32 GMT",
+      "tag": "@internal/chat-component-bindings_v1.15.0-beta.1",
+      "version": "1.15.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.15.0-beta.1",
+            "commit": "0f6019132a8bd408e1f324bc8265313e26b7f3e1"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.15.0-beta.1",
+            "commit": "0f6019132a8bd408e1f324bc8265313e26b7f3e1"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.15.0-beta.1",
+            "commit": "0f6019132a8bd408e1f324bc8265313e26b7f3e1"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 14 Mar 2024 03:50:54 GMT",
+      "tag": "@internal/chat-component-bindings_v1.14.0",
+      "version": "1.14.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.14.0",
+            "commit": "15f04ffe4016c17b215365c2f0cf9c3d1ede7d56"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.14.0",
+            "commit": "15f04ffe4016c17b215365c2f0cf9c3d1ede7d56"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.14.0",
+            "commit": "15f04ffe4016c17b215365c2f0cf9c3d1ede7d56"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 26 Feb 2024 16:19:20 GMT",
+      "tag": "@internal/chat-component-bindings_v1.14.0-beta.1",
+      "version": "1.14.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.14.0-beta.1",
+            "commit": "bf04cd93b96b0f0a3494b5b35321c649ee1c0947"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.14.0-beta.1",
+            "commit": "bf04cd93b96b0f0a3494b5b35321c649ee1c0947"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.14.0-beta.1",
+            "commit": "bf04cd93b96b0f0a3494b5b35321c649ee1c0947"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 12 Feb 2024 18:52:34 GMT",
+      "tag": "@internal/chat-component-bindings_v1.13.0",
+      "version": "1.13.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.13.0",
+            "commit": "68e9662fe9f7058606a939f9daa2b8815118c606"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.13.0",
+            "commit": "68e9662fe9f7058606a939f9daa2b8815118c606"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.13.0",
+            "commit": "68e9662fe9f7058606a939f9daa2b8815118c606"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 30 Jan 2024 19:19:27 GMT",
+      "tag": "@internal/chat-component-bindings_v1.13.0-beta.1",
+      "version": "1.13.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.13.0-beta.1",
+            "commit": "cee24a3f10fc4c1225b22426d1176981e823c52b"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.13.0-beta.1",
+            "commit": "cee24a3f10fc4c1225b22426d1176981e823c52b"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.13.0-beta.1",
+            "commit": "cee24a3f10fc4c1225b22426d1176981e823c52b"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 16 Jan 2024 22:14:22 GMT",
+      "tag": "@internal/chat-component-bindings_v1.12.0",
+      "version": "1.12.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.12.0",
+            "commit": "8eb30577e1bc62659981dffa3ad4abd071a8dd27"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.12.0",
+            "commit": "8eb30577e1bc62659981dffa3ad4abd071a8dd27"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.12.0",
+            "commit": "8eb30577e1bc62659981dffa3ad4abd071a8dd27"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 11 Dec 2023 21:24:55 GMT",
+      "tag": "@internal/chat-component-bindings_v1.11.0",
+      "version": "1.11.0",
+      "comments": {
+        "minor": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.11.0",
+            "commit": "ddd0c5a59aac460adede273cf909b3afcff3a069"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.11.0",
+            "commit": "ddd0c5a59aac460adede273cf909b3afcff3a069"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.11.0",
+            "commit": "ddd0c5a59aac460adede273cf909b3afcff3a069"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 20 Nov 2023 21:42:11 GMT",
+      "tag": "@internal/chat-component-bindings_v1.11.0-beta.1",
+      "version": "1.11.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.11.0-beta.1",
+            "commit": "f69ea58c879c9b22ec281c40945a87c164901c3c"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.11.0-beta.1",
+            "commit": "f69ea58c879c9b22ec281c40945a87c164901c3c"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.11.0-beta.1",
+            "commit": "f69ea58c879c9b22ec281c40945a87c164901c3c"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 06 Nov 2023 16:44:18 GMT",
+      "tag": "@internal/chat-component-bindings_v1.10.0",
+      "version": "1.10.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.10.0",
+            "commit": "30dd18b4bf71161804364cdbc818e150b0111bfd"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.10.0",
+            "commit": "30dd18b4bf71161804364cdbc818e150b0111bfd"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.10.0",
+            "commit": "30dd18b4bf71161804364cdbc818e150b0111bfd"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 23 Oct 2023 18:27:30 GMT",
+      "tag": "@internal/chat-component-bindings_v1.10.0-beta.1",
+      "version": "1.10.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.10.0-beta.1",
+            "commit": "9dfd0f71047e3d57f4b4c240bf6cc3f2aae9719f"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.10.0-beta.1",
+            "commit": "9dfd0f71047e3d57f4b4c240bf6cc3f2aae9719f"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.10.0-beta.1",
+            "commit": "9dfd0f71047e3d57f4b4c240bf6cc3f2aae9719f"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Fri, 06 Oct 2023 19:59:52 GMT",
+      "tag": "@internal/chat-component-bindings_v1.9.0",
+      "version": "1.9.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.9.0",
+            "commit": "0b3524e16f4fbfa97e5c4d86a39897337807c5f6"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.9.0",
+            "commit": "0b3524e16f4fbfa97e5c4d86a39897337807c5f6"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.9.0",
+            "commit": "0b3524e16f4fbfa97e5c4d86a39897337807c5f6"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 04 Oct 2023 17:17:19 GMT",
+      "tag": "@internal/chat-component-bindings_v1.9.0-beta.1",
+      "version": "1.9.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.9.0-beta.1",
+            "commit": "5a2aac2cf5d21402f3ab2735381baa9f5c98b167"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.9.0-beta.1",
+            "commit": "5a2aac2cf5d21402f3ab2735381baa9f5c98b167"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.9.0-beta.1",
+            "commit": "5a2aac2cf5d21402f3ab2735381baa9f5c98b167"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Thu, 07 Sep 2023 02:42:37 GMT",
+      "tag": "@internal/chat-component-bindings_v1.8.0",
+      "version": "1.8.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.8.0",
+            "commit": "7342e639f5bab695f9ac1b7fe67e74c1fe73bcde"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.8.0",
+            "commit": "7342e639f5bab695f9ac1b7fe67e74c1fe73bcde"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.8.0",
+            "commit": "7342e639f5bab695f9ac1b7fe67e74c1fe73bcde"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 28 Aug 2023 22:18:09 GMT",
+      "tag": "@internal/chat-component-bindings_v1.8.0-beta.1",
+      "version": "1.8.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.8.0-beta.1",
+            "commit": "7cbfc7206c14ac0fe95813b579399c7d6673ce4f"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.8.0-beta.1",
+            "commit": "7cbfc7206c14ac0fe95813b579399c7d6673ce4f"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.8.0-beta.1",
+            "commit": "7cbfc7206c14ac0fe95813b579399c7d6673ce4f"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 14 Aug 2023 18:28:42 GMT",
+      "tag": "@internal/chat-component-bindings_v1.7.0",
+      "version": "1.7.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.7.0",
+            "commit": "2e2916d59cca7d82e98f016276587353d3316597"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.7.0",
+            "commit": "2e2916d59cca7d82e98f016276587353d3316597"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.7.0",
+            "commit": "2e2916d59cca7d82e98f016276587353d3316597"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 24 Jul 2023 17:34:40 GMT",
+      "tag": "@internal/chat-component-bindings_v1.7.0-beta.2",
+      "version": "1.7.0-beta.2",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.7.0-beta.2",
+            "commit": "ff8ff1cd681697cf9b165ac25f7195b9bf679d30"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.7.0-beta.2",
+            "commit": "ff8ff1cd681697cf9b165ac25f7195b9bf679d30"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.7.0-beta.2",
+            "commit": "ff8ff1cd681697cf9b165ac25f7195b9bf679d30"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 27 Jun 2023 22:07:29 GMT",
+      "tag": "@internal/chat-component-bindings_v1.7.0-beta.1",
+      "version": "1.7.0-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.7.0-beta.1",
+            "commit": "326a2d173cfbb8e87da3563bc1e9135b18a6b9c5"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.7.0-beta.1",
+            "commit": "326a2d173cfbb8e87da3563bc1e9135b18a6b9c5"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.7.0-beta.1",
+            "commit": "326a2d173cfbb8e87da3563bc1e9135b18a6b9c5"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 12 Jun 2023 19:04:44 GMT",
+      "tag": "@internal/chat-component-bindings_v1.6.0",
+      "version": "1.6.0",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.6.0",
+            "commit": "a63d7c2e204d09ce02209ef22565d045bf28934d"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.6.0",
+            "commit": "a63d7c2e204d09ce02209ef22565d045bf28934d"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.6.0",
+            "commit": "a63d7c2e204d09ce02209ef22565d045bf28934d"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 23 May 2023 21:43:17 GMT",
+      "tag": "@internal/chat-component-bindings_v1.5.1-beta.5",
+      "version": "1.5.1-beta.5",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.5.1-beta.5",
+            "commit": "7a6e42c011b091d165bf02f09348ed5bab6dba47"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.5.1-beta.5",
+            "commit": "7a6e42c011b091d165bf02f09348ed5bab6dba47"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.5.1-beta.5",
+            "commit": "7a6e42c011b091d165bf02f09348ed5bab6dba47"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 24 Apr 2023 15:39:40 GMT",
+      "tag": "@internal/chat-component-bindings_v1.5.1-beta.3",
+      "version": "1.5.1-beta.3",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.5.1-beta.3",
+            "commit": "0c6463eadb465ca4b61abf49bf10acb16ab38109"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.5.1-beta.3",
+            "commit": "0c6463eadb465ca4b61abf49bf10acb16ab38109"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.5.1-beta.3",
+            "commit": "0c6463eadb465ca4b61abf49bf10acb16ab38109"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 28 Mar 2023 16:00:38 GMT",
+      "tag": "@internal/chat-component-bindings_v1.5.1-beta.2",
+      "version": "1.5.1-beta.2",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.5.1-beta.2",
+            "commit": "44af12af1d875a92c4fe787ef35979d608a18d0f"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.5.1-beta.2",
+            "commit": "44af12af1d875a92c4fe787ef35979d608a18d0f"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.5.1-beta.2",
+            "commit": "44af12af1d875a92c4fe787ef35979d608a18d0f"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 01 Feb 2023 17:57:07 GMT",
+      "tag": "@internal/chat-component-bindings_v1.5.1-beta.1",
+      "version": "1.5.1-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.5.1-beta.1",
+            "commit": "12057529397c7967ace40835895dd12c759d7285"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.5.1-beta.1",
+            "commit": "12057529397c7967ace40835895dd12c759d7285"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.5.1-beta.1",
+            "commit": "12057529397c7967ace40835895dd12c759d7285"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 04 Jan 2023 23:56:42 GMT",
+      "tag": "@internal/chat-component-bindings_v1.5.0",
+      "version": "1.5.0",
+      "comments": {
+        "none": [
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "c8e8d74de3f7804e0187538d696bbfe7a37e0248",
+            "comment": "Bumped"
+          }
+        ],
+        "patch": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "8cb67542c822c72db69c77e223747d55fe5b4d54",
+            "comment": "Allow a range of communication services dependency packages"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.5.0",
+            "commit": "080bf87c8847f154b37cda856978bc00aa4fe5df"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.5.0",
+            "commit": "080bf87c8847f154b37cda856978bc00aa4fe5df"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.5.0",
+            "commit": "080bf87c8847f154b37cda856978bc00aa4fe5df"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 15 Nov 2022 21:12:23 GMT",
+      "tag": "@internal/chat-component-bindings_v1.4.1-beta.1",
+      "version": "1.4.1-beta.1",
+      "comments": {
+        "none": [
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "c8e8d74de3f7804e0187538d696bbfe7a37e0248",
+            "comment": "Bumped"
+          }
+        ],
+        "patch": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "8cb67542c822c72db69c77e223747d55fe5b4d54",
+            "comment": "Allow a range of communication services dependency packages"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.4.1-beta.1",
+            "commit": "4c9756eb717a363c2d533804fcba8d1caf3cfb40"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.4.1-beta.1",
+            "commit": "4c9756eb717a363c2d533804fcba8d1caf3cfb40"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.4.1-beta.1",
+            "commit": "4c9756eb717a363c2d533804fcba8d1caf3cfb40"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Fri, 21 Oct 2022 23:02:10 GMT",
+      "tag": "@internal/chat-component-bindings_v1.4.0",
+      "version": "1.4.0",
+      "comments": {
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "7d276116ce0b5aab82b1adc3e24b32709b0db47c",
+            "comment": "Bump package version after hotfix release"
+          },
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "f42faa2a9830ad1a7bcabba08d9aafcd49632e8b",
+            "comment": "Bumped"
+          }
+        ],
+        "patch": [
+          {
+            "author": "carolinecao@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "a5bc97184d00866780829779d7ec53e12b86b3c8",
+            "comment": "Show datetime when there are more than 5 mins between each message"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.4.0",
+            "commit": "6e9b927acf587b957b60434f6ccc8265277d2434"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.4.0",
+            "commit": "6e9b927acf587b957b60434f6ccc8265277d2434"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.4.0",
+            "commit": "6e9b927acf587b957b60434f6ccc8265277d2434"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 05 Oct 2022 18:13:55 GMT",
+      "tag": "@internal/chat-component-bindings_v1.3.2-beta.1",
+      "version": "1.3.2-beta.1",
+      "comments": {
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "7d276116ce0b5aab82b1adc3e24b32709b0db47c",
+            "comment": "Bump package version after hotfix release"
+          },
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "f42faa2a9830ad1a7bcabba08d9aafcd49632e8b",
+            "comment": "Bumped"
+          }
+        ],
+        "patch": [
+          {
+            "author": "carolinecao@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "a5bc97184d00866780829779d7ec53e12b86b3c8",
+            "comment": "Show datetime when there are more than 5 mins between each message"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.3.2-beta.1",
+            "commit": "14adcdc3a3699659701ab1a81c80f1418e384170"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.3.2-beta.1",
+            "commit": "14adcdc3a3699659701ab1a81c80f1418e384170"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.3.2-beta.1",
+            "commit": "14adcdc3a3699659701ab1a81c80f1418e384170"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 29 Jun 2022 17:31:08 GMT",
+      "tag": "@internal/chat-component-bindings_v1.3.1-beta.1",
+      "version": "1.3.1-beta.1",
+      "comments": {
+        "none": [
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "ad6decf11884d8904622209a60e6b8163a5c99ef",
+            "comment": "Bumped"
+          }
+        ],
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.3.1-beta.1",
+            "commit": "ca7646cfad4f55c21d80355235d29b35ca2c40c1"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.3.1-beta.1",
+            "commit": "ca7646cfad4f55c21d80355235d29b35ca2c40c1"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.3.1-beta.1",
+            "commit": "ca7646cfad4f55c21d80355235d29b35ca2c40c1"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 13 Jun 2022 18:29:31 GMT",
+      "tag": "@internal/chat-component-bindings_v1.3.0",
+      "version": "1.3.0",
+      "comments": {
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "4d202fa62dc3f90002ccec181f0f2509286e773f",
+            "comment": "Reorganize generated API file paths"
+          },
+          {
+            "author": "carolinecao@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "5f0c4c7145ed08da3ce79f36aa003b5646bb75b8",
+            "comment": "bump package versions for release"
+          },
+          {
+            "author": "94866715+dmceachernmsft@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "69590a2800120d0a0e836bbc27dcc8608f36e4a0",
+            "comment": "introduce exception handling for creating list messages and get read reciepts chat handlers."
+          },
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "4c4fb0e799e2f0f75f4dd2d1569035008e7495ae",
+            "comment": "Use deletedOn property of a message to detect deleted messages instead of checking for empty content"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "6af9d22c8c15c36f2d44401cd18b499e3138269f",
+            "comment": "Use rushx to enable error report for rush build"
+          }
+        ],
+        "patch": [
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "f515aee5b3217b46f7967a244adcd718f5691641",
+            "comment": "Remove dependency on azure/communication-signalling, instead use types from azure/communication-chat"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.3.0",
+            "commit": "de87d04e8d99bc266b4d44bdea7608a78a52008e"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.3.0",
+            "commit": "de87d04e8d99bc266b4d44bdea7608a78a52008e"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.3.0",
+            "commit": "de87d04e8d99bc266b4d44bdea7608a78a52008e"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "d418ac9cb9362b509c3f3ff62f689ffe7a950fb8",
+            "comment": "Allow removal of files when editing a message "
+          },
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "934ba677f4ae65954fc63f2be529e5a4adc35371",
+            "comment": "Updating @azure/communication-chat to 1.2.0"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 19 Apr 2022 20:46:15 GMT",
+      "tag": "@internal/chat-component-bindings_v1.2.2-beta.1",
+      "version": "1.2.2-beta.1",
+      "comments": {
+        "prerelease": [
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "924823d2e13514c2134c2992aeaf6f9b570be5f6",
+            "comment": "Adding file metadata parsing to selectors"
+          },
+          {
+            "author": "carolinecao@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "b942e0172f5653433dfddf448334f4d2c7e4cd88",
+            "comment": "fetch read receipt when participant join the chat, also not show read receipt info when having more than 20 participants"
+          },
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "58fe34d53c7e37d6c4d14dab52acc4320d761846",
+            "comment": "Modifying the updateMessage handler method to allow passing metadata as a parameter"
+          }
+        ],
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "9f89b36eecd7c7bba9edbb66f1b495056124871c",
+            "comment": "Setup package versions after prerelease"
+          }
+        ],
+        "patch": [
+          {
+            "author": "carolinecao@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "9af6a7a6a6b0f0b5fa3847161b199c6bf8622396",
+            "comment": "do not caculate read receipt details, pass read receipt array down to component level"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "afbd965062089e677bd01bb5ff3708ff22dab49b",
+            "comment": "Disable Read Receipt details in meeting interop"
+          },
+          {
+            "author": "carolinecao@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "d5e29cd192c4aded94cdfae48305a33a2fbedda8",
+            "comment": "Filter read receipt to not include myself"
+          },
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "b6bf2d91ccf189584f22058cd6bf38a1c000e860",
+            "comment": "Do not show \"Not In Thread\" Error Banner shown to user when a BotContact is a participant in Teams Interop Chats"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.2.2-beta.1",
+            "commit": "124893bcd653ceab6c1fd7461e14ee978c8a7ac9"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.2.2-beta.1",
+            "commit": "124893bcd653ceab6c1fd7461e14ee978c8a7ac9"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.2.2-beta.1",
+            "commit": "124893bcd653ceab6c1fd7461e14ee978c8a7ac9"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Fri, 11 Mar 2022 19:20:04 GMT",
+      "tag": "@internal/chat-component-bindings_v1.2.0",
+      "version": "1.2.0",
+      "comments": {
+        "none": [
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "90510f339a17d66eed782cd58c3faadefac15967",
+            "comment": "Bump package version to 1.1.1-beta.1"
+          },
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "97c1d1ad3fddaed8156846ac18f4c077025ce878",
+            "comment": "Fix eslint warnings. Update builds to fail on eslint warnings."
+          }
+        ],
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.2.0",
+            "commit": "8840a94fa6175db937f697b1c6a6a64cc2fb743f"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.2.0",
+            "commit": "8840a94fa6175db937f697b1c6a6a64cc2fb743f"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.2.0",
+            "commit": "8840a94fa6175db937f697b1c6a6a64cc2fb743f"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 01 Mar 2022 16:42:56 GMT",
+      "tag": "@internal/chat-component-bindings_v1.1.1-beta.1",
+      "version": "1.1.1-beta.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "carolinecao@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "491af2253f921b66fa92093a81ae3f098f03ea67",
+            "comment": "using messageid to check read info instead of readon time stamp"
+          },
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "cf149e82f77ce8bd7c4707b1bfc84bbfd9c9c2df",
+            "comment": "Upgrade @azure/communication-signaling to 1.0.0.beta.12"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.1.1-beta.1",
+            "commit": "ad59ff742c9fad2fceb1b819cb259c1ee8f29e62"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.1.1-beta.1",
+            "commit": "ad59ff742c9fad2fceb1b819cb259c1ee8f29e62"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.1.1-beta.1",
+            "commit": "ad59ff742c9fad2fceb1b819cb259c1ee8f29e62"
+          }
+        ],
+        "prerelease": [
+          {
+            "author": "carolinecao@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "836ec9a6e9897a1fd4be8ded469b2eaecf2e96fe",
+            "comment": "submenu showing who read the message (name and avatar)"
+          },
+          {
+            "author": "carolinecao@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "fd7e18031220c8602e8f7a1d97356e3bb9d8aa97",
+            "comment": "Removed participant should not show up in read information "
+          },
+          {
+            "author": "96077406+carocao-msft@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "2feaab4c28a0686078e5795ecf27def1367ab5a4",
+            "comment": "Added Feature to show how many people have read the message"
+          }
+        ],
+        "none": [
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "d2d53d1842efd37b3ed6286ebcce983efeea79cb",
+            "comment": "Bump package version to 1.0.1"
+          },
+          {
+            "author": "94866715+dmceachernmsft@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "75b3b7e3db16e0c0d533246b08212bbe0a441279",
+            "comment": "update acs-common package and nanoid per dependabot"
+          },
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "87979c60be946d0e1f9dc5bc732cff6cdfc91b70",
+            "comment": "Include all files in stable flavor build"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "8061151ddd7b6b13e387b8c591d9fc11cc2c43fe",
+            "comment": "Follow the import trace from every index.ts and not to compile non-exported files"
+          }
+        ],
+        "minor": [
+          {
+            "author": "anjulgarg@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "d8f0172cf1da6b9000c66da84e31a980bdc0cd31",
+            "comment": "Add options param to sendMessage for sending metadata"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 24 Jan 2022 23:18:54 GMT",
+      "tag": "@internal/chat-component-bindings_v1.0.1",
+      "version": "1.0.1",
+      "comments": {
+        "none": [
+          {
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "630f03cc58eb8b730fc3fccbea46e6e59c5c1c8d",
+            "comment": "Bump package version to 1.0.1"
+          },
+          {
+            "author": "jinan@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "883659f7c75d212aa9f1493f40c995e91d01d3f9",
+            "comment": "Remove dependencies of tscc for conditional build"
+          },
+          {
+            "author": "jinan@microsoft.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "4ab44b83d81e23dbace1e80173ba8fae9e04c0a3",
+            "comment": "Add flavor switch and build variant to the repo"
+          },
+          {
+            "author": "jiangnanhello@live.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "e8ca86750c4548dd2796638eae88f6188017d39b",
+            "comment": "- Add a separate folder for stable api review - Add `build:all` script for easy api generating"
+          }
+        ],
+        "patch": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "f9e922fd4ff9e2c5f3da8807b71c18560fe869a0",
+            "comment": "Move @azure/communication-chat to peer dependency"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.0.1",
+            "commit": "192c0fc9ba6a08e1877402d565545e3b2aa9d1ae"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.0.1",
+            "commit": "192c0fc9ba6a08e1877402d565545e3b2aa9d1ae"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.0.1",
+            "commit": "192c0fc9ba6a08e1877402d565545e3b2aa9d1ae"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 04 Jan 2022 22:57:09 GMT",
+      "tag": "@internal/chat-component-bindings_v1.0.1",
+      "version": "1.0.1",
+      "comments": {
+        "none": [
+          {
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "37423747ed57559ac4a1280244a4e765e4838899",
+            "comment": "Conditional build of stable flavor"
+          },
+          {
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "package": "@internal/chat-component-bindings",
+            "commit": "f9cdec1a3af3a0093790ae40a44c6a44906afbab",
+            "comment": "Create release branch"
+          }
+        ],
+        "patch": [
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/acs-ui-common to v1.0.1",
+            "commit": "8adade9eda05f6344554be0384e1da977283cee6"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/chat-stateful-client to v1.0.1",
+            "commit": "8adade9eda05f6344554be0384e1da977283cee6"
+          },
+          {
+            "author": "beachball",
+            "package": "@internal/chat-component-bindings",
+            "comment": "Bump @internal/react-components to v1.0.1",
+            "commit": "8adade9eda05f6344554be0384e1da977283cee6"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Mon, 06 Dec 2021 19:41:59 GMT",
+      "tag": "@internal/chat-component-bindings_v1.0.0",
+      "version": "1.0.0",
+      "comments": {
+        "prerelease": [
+          {
+            "comment": "Set pagesize to 50 to fix thread incomplete",
+            "author": "jinan@microsoft.com",
+            "commit": "8629d2352fe460d3a235cfb0ff16e9ca3df49e6b",
+            "package": "@internal/chat-component-bindings"
+          }
+        ],
+        "none": [
+          {
+            "comment": "Bump package version to 1.0.0-beta.8",
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "commit": "6edef280ec539406a390c3bb19efa9f306730116",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Add eslint rule to force brackets for if, else, switch",
+            "author": "anjulgarg@live.com",
+            "commit": "694b8b7148a105add029c3b39c965600b6e45ac3",
+            "package": "@internal/chat-component-bindings"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 17 Nov 2021 22:21:27 GMT",
+      "tag": "@internal/chat-component-bindings_v1.0.0-beta.8",
+      "version": "1.0.0-beta.8",
+      "comments": {
+        "prerelease": [
+          {
+            "comment": "Update MessageThread selector to filter out unsupported messages",
+            "author": "2684369+JamesBurnside@users.noreply.github.com",
+            "commit": "f87bf0c6588a4fff9469a130d0492ce429a57779",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Disallow removing Teams participants from chat",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "e48c62fcdd5d112821d158000f171055632e1ee9",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Update according to azure review",
+            "author": "jinan@microsoft.com",
+            "commit": "6708f87c37794a4411c7a1eb2586fa996aeb7757",
+            "package": "@internal/chat-component-bindings"
+          }
+        ],
+        "none": [
+          {
+            "comment": "Bump package version to 1.0.0-beta.7",
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "commit": "5a5507a2034f691a887cb8875281319874d6ed65",
+            "package": "@internal/chat-component-bindings"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 27 Oct 2021 19:40:46 GMT",
+      "tag": "@internal/chat-component-bindings_v1.0.0-beta.7",
+      "version": "1.0.0-beta.7",
+      "comments": {
+        "prerelease": [
+          {
+            "comment": "Rename `Error.inner` to `Error.innerError`",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "adab866a9c328d8bd01af921334967555099e77f",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Refactor message.attached logic",
+            "author": "jinan@microsoft.com",
+            "commit": "31882842673d3613b38f87206f2887faddf62d54",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Add release tags to all public API",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "124e02693fd0042365dd1f3d636ecc72eb5837ea",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Update to new ChatMessage types",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "963d3980a0b05a656409e5cd06b948222cc7e9ee",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Fix html message type not rendering",
+            "author": "jinan@microsoft.com",
+            "commit": "a096aefc769115301e42a491034ec6ce98f17ecb",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Remove selector instance from export Add types for selectors",
+            "author": "jinan@microsoft.com",
+            "commit": "a177869815ae6351e3a8834c8fed7d0e39073b35",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Rename `ActiveError` to `ActiveErrorMessage`",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "8d0dfc3d925ab7317739bdddbe86c8216ac73a14",
+            "package": "@internal/chat-component-bindings"
+          }
+        ],
+        "none": [
+          {
+            "comment": "Bump package version to 1.0.0-beta.6",
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "commit": "fb99740af680a42e5d0b42a5475ad2efa9bd7fb8",
+            "package": "@internal/chat-component-bindings"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Tue, 28 Sep 2021 19:19:18 GMT",
+      "tag": "@internal/chat-component-bindings_v1.0.0-beta.6",
+      "version": "1.0.0-beta.6",
+      "comments": {
+        "none": [
+          {
+            "comment": "Bump package version to 1.0.0-beta.5",
+            "author": "41898282+github-actions[bot]@users.noreply.github.com",
+            "commit": "cb54e992d9740dac94d2b8526f9066f365242c4a",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Clean old files before build",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "696a74a572f10b9305a64e78b17de4e38c88c657",
+            "package": "@internal/chat-component-bindings"
+          }
+        ],
+        "prerelease": [
+          {
+            "comment": "Bump chat sdk to version 1.1.0",
+            "author": "jinan@microsoft.com",
+            "commit": "8d053eded816621717e386d8b6a43111631b860f",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Centralize beachball config",
+            "author": "82062616+prprabhu-ms@users.noreply.github.com",
+            "commit": "f5d9cbd40f6ea0c19315a8e81642145961ba3f56",
+            "package": "@internal/chat-component-bindings"
+          },
+          {
+            "comment": "Add edited tag to messages",
+            "author": "jinan@microsoft.com",
+            "commit": "4546bc367f25c89e9029f7ab2e57a8d76d196c81",
+            "package": "@internal/chat-component-bindings"
+          }
+        ]
+      }
+    },
+    {
       "date": "Mon, 13 Sep 2021 21:02:16 GMT",
       "tag": "@internal/chat-component-bindings_v1.0.0-beta.5",
       "version": "1.0.0-beta.5",

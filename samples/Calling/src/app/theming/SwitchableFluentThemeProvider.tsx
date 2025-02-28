@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React, { useState, useMemo, createContext, useContext } from 'react';
-import { FluentThemeProvider, lightTheme, darkTheme } from '@internal/react-components';
+import { FluentThemeProvider, lightTheme, darkTheme } from '@azure/communication-react';
 import { Theme, PartialTheme } from '@fluentui/react';
+import { getThemeFromLocalStorage, saveThemeToLocalStorage } from '../utils/localStorage';
 
 /**
  * A theme with an associated name.
@@ -62,21 +63,7 @@ interface SwitchableFluentThemeContext {
   themeStore: ThemeCollection;
 }
 
-const LOCAL_STORAGE_KEY_PREFIX = 'AzureCommunicationUI_Theme';
-
-/**
- * Function to get theme from LocalStorage
- */
-const getThemeFromLocalStorage = (scopeId: string): string | null =>
-  window.localStorage.getItem(LOCAL_STORAGE_KEY_PREFIX + '_' + scopeId);
-
-/**
- * Function to save theme to LocalStorage
- */
-const saveThemeToLocalStorage = (theme: string, scopeId: string): void =>
-  window.localStorage.setItem(LOCAL_STORAGE_KEY_PREFIX + '_' + scopeId, theme);
-
-const defaultTheme: NamedTheme = defaultThemes.Light;
+const defaultTheme: NamedTheme = defaultThemes.Light as NamedTheme;
 
 /**
  * React useContext for FluentTheme state of SwitchableFluentThemeProvider
@@ -115,7 +102,6 @@ export interface SwitchableFluentThemeProviderProps {
 export const SwitchableFluentThemeProvider = (props: SwitchableFluentThemeProviderProps): JSX.Element => {
   const { children, scopeId } = props;
   const [themeStore, setThemeCollection] = useState<ThemeCollection>(props.themes ?? defaultThemes);
-
   const themeFromStorage = getThemeFromLocalStorage(scopeId);
   const initialTheme = themeStore[themeFromStorage || defaultTheme.name] ?? defaultTheme;
   const [currentTheme, _setCurrentTheme] = useState<NamedTheme>(initialTheme);

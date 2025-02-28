@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { mergeStyles } from '@fluentui/react';
+import { ParticipantListItemStyles } from '../ParticipantList';
 
 /**
  * @private
@@ -14,10 +15,13 @@ export const participantListStyle = mergeStyles({
 /**
  * @private
  */
-export const participantListItemStyle = {
+export const participantListItemStyle: ParticipantListItemStyles = {
   root: {
     paddingLeft: '1rem',
-    paddingRight: '1rem'
+    paddingRight: '1rem',
+    ':focus-visible': {
+      margin: '0.125rem'
+    }
   }
 };
 

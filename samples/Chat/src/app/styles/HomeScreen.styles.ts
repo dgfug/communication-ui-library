@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { IStackTokens, getTheme, mergeStyles } from '@fluentui/react';
-
-const palette = getTheme().palette;
+import { IButtonStyles, IStackTokens, mergeStyles } from '@fluentui/react';
 
 export const imgStyle = mergeStyles({
   width: '26.813rem',
@@ -43,9 +41,16 @@ export const listStyle = mergeStyles({
   fontSize: '0.875rem' // 14px
 });
 
-export const iconStyle = mergeStyles({
-  marginRight: 7,
-  color: palette.themePrimary
+export const listItemStackTokens = {
+  childrenGap: '0.4375rem' // 7px
+};
+
+export const listItemStyle = mergeStyles({
+  paddingBottom: '0.1rem'
+});
+
+export const listIconStyle = mergeStyles({
+  marginRight: 7
 });
 
 export const headerStyle = mergeStyles({
@@ -67,14 +72,16 @@ export const buttonStyle = mergeStyles({
   borderRadius: 3
 });
 
+export const buttonWithIconStyles: IButtonStyles = {
+  textContainer: {
+    display: 'contents'
+  }
+};
+
 export const infoContainerStyle = mergeStyles({
   width: '23.188rem'
 });
 
 export const configContainerStyle = mergeStyles({
   width: 'inherit'
-});
-
-export const startChatTextStyle = mergeStyles({
-  fontSize: '0.875rem' // 14px
 });

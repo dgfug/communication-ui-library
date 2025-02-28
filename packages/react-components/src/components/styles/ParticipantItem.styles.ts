@@ -1,26 +1,60 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { mergeStyles } from '@fluentui/react';
+import { IStyle, mergeStyles, Theme } from '@fluentui/react';
+
+const menuIconClass = 'ms-acs-participant-item-menu-icon';
 
 /**
  * @private
  */
-export const participantItemContainerStyle = mergeStyles({
-  paddingTop: '0.25rem',
-  paddingBottom: '0.25rem',
-  display: 'flex',
-  maxWidth: '20rem',
-  minWidth: '12rem',
-  cursor: 'pointer',
-  alignItems: 'center'
-});
+export const participantItemContainerStyle = (options: { clickable: boolean }, theme: Theme): IStyle => {
+  return {
+    paddingTop: '0.25rem',
+    paddingBottom: '0.25rem',
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: '8rem',
+    cursor: !options.clickable ? 'default' : 'pointer',
+    alignItems: 'center',
+    ':focus-visible': {
+      [` .${menuIconClass}`]: {
+        display: 'flex'
+      },
+      outline: `0.1rem solid ${theme.palette.themePrimary}`
+    }
+  };
+};
+
+/**
+ * @private
+ */
+export const displayNoneStyle: IStyle = {
+  display: 'none'
+};
 
 /**
  * @private
  */
 export const menuButtonContainerStyle = {
-  width: '1.5rem'
+  width: 'auto'
+};
+
+/**
+ * @private
+ */
+export const participantStateMaxWidth = '5rem';
+/**
+ * @private
+ */
+export const participantStateStringStyles: IStyle = {
+  maxWidth: participantStateMaxWidth,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  lineHeight: 'normal',
+  marginLeft: '0.5rem',
+  marginRight: 0
 };
 
 /**
@@ -36,11 +70,14 @@ export const iconContainerStyle = {
 /**
  * @private
  */
-export const iconStyles = mergeStyles({
-  display: 'flex',
-  lineHeight: 0, // ensure the icon center is on the center line and not slightly above it
-  alignItems: 'center'
-});
+export const iconStyles = mergeStyles([
+  menuIconClass,
+  {
+    display: 'flex',
+    lineHeight: 0, // ensure the icon center is on the center line and not slightly above it
+    alignItems: 'center'
+  }
+]);
 
 /**
  * @private

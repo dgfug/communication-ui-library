@@ -1,30 +1,46 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { IImageStyles, Icon, Image, PrimaryButton, Spinner, Stack, Link } from '@fluentui/react';
-import React, { useState } from 'react';
+import {
+  IImageStyles,
+  Icon,
+  Image,
+  Link,
+  List,
+  PrimaryButton,
+  Spinner,
+  Stack,
+  Text,
+  mergeStyles
+} from '@fluentui/react';
+import React, { useCallback, useState } from 'react';
 import {
   buttonStyle,
+  buttonWithIconStyles,
   configContainerStackTokens,
   configContainerStyle,
   containerTokens,
   containerStyle,
   headerStyle,
-  iconStyle,
+  listIconStyle,
+  listItemStackTokens,
+  listItemStyle,
   imgStyle,
   listStyle,
   nestedStackTokens,
-  startChatTextStyle,
   infoContainerStyle,
   infoContainerStackTokens,
   videoCameraIconStyle
 } from './styles/HomeScreen.styles';
+import { useTheme } from '@azure/communication-react';
 
 import { Chat20Filled } from '@fluentui/react-icons';
 import heroSVG from '../assets/hero.svg';
-import { getThreadId } from './utils/getThreadId';
+import heroDarkModeSVG from '../assets/hero_dark.svg';
+import { getExistingThreadIdFromURL } from './utils/getParametersFromURL';
 import { createThread } from './utils/createThread';
 import { ThemeSelector } from './theming/ThemeSelector';
+import { useSwitchableFluentTheme } from './theming/SwitchableFluentThemeProvider';
 
 const imageStyleProps: IImageStyles = {
   image: {
@@ -46,7 +62,6 @@ const HOMESCREEN_SHOWING_LOADING_SPINNER_CREATE_THREAD = 2;
 export default (): JSX.Element => {
   const spinnerLabel = 'Creating a new chat thread...';
   const iconName = 'SkypeCircleCheck';
-  const imageProps = { src: heroSVG.toString() };
   const headerTitle = 'Exceptionally simple chat app';
   const startChatButtonText = 'Start chat';
   const listItems = [
@@ -57,16 +72,19 @@ export default (): JSX.Element => {
   ];
 
   const [homeScreenState, setHomeScreenState] = useState<number>(HOMESCREEN_SHOWING_START_CHAT_BUTTON);
+  const { currentTheme } = useSwitchableFluentTheme();
+
+  const imageProps = { src: currentTheme.name === 'Light' ? heroSVG.toString() : heroDarkModeSVG.toString() };
 
   const onCreateThread = async (): Promise<void> => {
-    const exisitedThreadId = getThreadId();
+    const exisitedThreadId = getExistingThreadIdFromURL();
+    setHomeScreenState(HOMESCREEN_SHOWING_LOADING_SPINNER_CREATE_THREAD);
+
     if (exisitedThreadId && exisitedThreadId.length > 0) {
-      setHomeScreenState(HOMESCREEN_SHOWING_LOADING_SPINNER_CREATE_THREAD);
       window.location.href += `?threadId=${exisitedThreadId}`;
       return;
     }
 
-    setHomeScreenState(HOMESCREEN_SHOWING_LOADING_SPINNER_CREATE_THREAD);
     const threadId = await createThread();
     if (!threadId) {
       console.error('Failed to create a thread, returned threadId is undefined or empty string');
@@ -80,6 +98,31 @@ export default (): JSX.Element => {
     return <Spinner label={spinnerLabel} ariaLive="assertive" labelPosition="top" />;
   };
 
+  const themePrimary = useTheme().palette.themePrimary;
+
+  const onRenderListItem = useCallback(
+    (item?: string, index?: number): JSX.Element => {
+      const listText =
+        index !== 3 ? (
+          <Text>{item}</Text>
+        ) : (
+          <Text>
+            {item}{' '}
+            <Link href="https://docs.microsoft.com/azure/communication-services/overview" aria-label={`${item} sample`}>
+              {'sample'}
+            </Link>
+          </Text>
+        );
+      return (
+        <Stack horizontal tokens={listItemStackTokens} className={listItemStyle}>
+          <Icon className={mergeStyles(listIconStyle, { color: themePrimary })} iconName={iconName} />
+          {listText}
+        </Stack>
+      );
+    },
+    [themePrimary]
+  );
+
   const displayHomeScreen = (): JSX.Element => {
     return (
       <Stack
@@ -91,38 +134,24 @@ export default (): JSX.Element => {
         className={containerStyle}
       >
         <Stack className={infoContainerStyle} tokens={infoContainerStackTokens}>
-          <div tabIndex={0} className={headerStyle}>
+          <Text role={'heading'} aria-level={1} className={headerStyle}>
             {headerTitle}
-          </div>
+          </Text>
           <Stack className={configContainerStyle} tokens={configContainerStackTokens}>
             <Stack tokens={nestedStackTokens}>
-              <ul className={listStyle}>
-                <li tabIndex={0}>
-                  <Icon className={iconStyle} iconName={iconName} /> {listItems[0]}
-                </li>
-                <li tabIndex={0}>
-                  <Icon className={iconStyle} iconName={iconName} /> {listItems[1]}
-                </li>
-                <li tabIndex={0}>
-                  <Icon className={iconStyle} iconName={iconName} /> {listItems[2]}
-                </li>
-                <li tabIndex={0}>
-                  <Icon className={iconStyle} iconName={iconName} /> {listItems[3]}{' '}
-                  <Link href="https://docs.microsoft.com/azure/communication-services/overview">sample</Link>
-                </li>
-              </ul>
+              <List className={listStyle} items={listItems} onRenderCell={onRenderListItem} />
             </Stack>
             <PrimaryButton
               id="startChat"
               aria-label="Start chat"
+              text={startChatButtonText}
               className={buttonStyle}
+              styles={buttonWithIconStyles}
               onClick={() => {
                 onCreateThread();
               }}
-            >
-              <Chat20Filled className={videoCameraIconStyle} />
-              <div className={startChatTextStyle}>{startChatButtonText}</div>
-            </PrimaryButton>
+              onRenderIcon={() => <Chat20Filled className={videoCameraIconStyle} />}
+            />
             <ThemeSelector label="Theme" horizontal={true} />
           </Stack>
         </Stack>

@@ -1,16 +1,21 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 import { ErrorBar, MessageThread, ParticipantList, SendBox, TypingIndicator } from '@internal/react-components';
+
+/* @conditional-compile-remove(rich-text-editor) */
+import type { RichTextSendBox } from '@internal/react-components';
 
 import { useHandlers } from './useHandlers';
 import { useSelector } from './useSelector';
-import { sendBoxSelector } from '../sendBoxSelector';
-import { messageThreadSelector } from '../messageThreadSelector';
-import { typingIndicatorSelector } from '../typingIndicatorSelector';
+import { SendBoxSelector, sendBoxSelector } from '../sendBoxSelector';
+import { MessageThreadSelector, messageThreadSelectorWithThread } from '../messageThreadSelector';
+import { TypingIndicatorSelector, typingIndicatorSelector } from '../typingIndicatorSelector';
 import { Common, AreEqual } from '@internal/acs-ui-common';
 import { ChatHandlers } from '../handlers/createHandlers';
-import { chatParticipantListSelector } from '../chatParticipantListSelector';
-import { errorBarSelector } from '../errorBarSelector';
+import { ChatParticipantListSelector, chatParticipantListSelector } from '../chatParticipantListSelector';
+import { ErrorBarSelector, errorBarSelector } from '../errorBarSelector';
+import { ChatThreadClientContext } from '../providers/ChatThreadClientProvider';
+import { useContext } from 'react';
 
 /**
  * Primary hook to get all hooks necessary for a chat Component.
@@ -49,20 +54,20 @@ export const usePropsFor = <Component extends (props: any) => JSX.Element>(
  *
  * @public
  */
-export type GetSelector<Component extends (props: any) => JSX.Element | undefined> = AreEqual<
-  Component,
-  typeof SendBox
-> extends true
-  ? typeof sendBoxSelector
-  : AreEqual<Component, typeof MessageThread> extends true
-  ? typeof messageThreadSelector
-  : AreEqual<Component, typeof TypingIndicator> extends true
-  ? typeof typingIndicatorSelector
-  : AreEqual<Component, typeof ParticipantList> extends true
-  ? typeof chatParticipantListSelector
-  : AreEqual<Component, typeof ErrorBar> extends true
-  ? typeof errorBarSelector
-  : undefined;
+export type GetSelector<Component extends (props: any) => JSX.Element | undefined> =
+  AreEqual<Component, typeof SendBox> extends true
+    ? SendBoxSelector
+    : AreEqual<Component, typeof RichTextSendBox> extends true
+      ? /* @conditional-compile-remove(rich-text-editor) */ SendBoxSelector
+      : AreEqual<Component, typeof MessageThread> extends true
+        ? MessageThreadSelector
+        : AreEqual<Component, typeof TypingIndicator> extends true
+          ? TypingIndicatorSelector
+          : AreEqual<Component, typeof ParticipantList> extends true
+            ? ChatParticipantListSelector
+            : AreEqual<Component, typeof ErrorBar> extends true
+              ? ErrorBarSelector
+              : undefined;
 
 /**
  * Get the selector for a specified component.
@@ -78,12 +83,30 @@ export const getSelector = <Component extends (props: any) => JSX.Element | unde
   return findSelector(component);
 };
 
+const messageThreadSelectorsByThread: { [key: string]: MessageThreadSelector } = {};
+
 const findSelector = (component: (props: any) => JSX.Element | undefined): any => {
+  // For the message thread selector we need to create a new one for each thread
+  // If we have just one for the entire app, then we will have updates when not expecting due to
+  // the arguments changing
+  const getMessageThreadSelector: () => MessageThreadSelector = () => {
+    const threadId = useContext(ChatThreadClientContext)?.threadId ?? 'default-id-when-not-in-provider';
+    let messageThreadSelectorImpl = messageThreadSelectorsByThread[threadId];
+    if (!messageThreadSelectorImpl) {
+      messageThreadSelectorImpl = messageThreadSelectorWithThread();
+      messageThreadSelectorsByThread[threadId] = messageThreadSelectorImpl;
+    }
+    return messageThreadSelectorImpl;
+  };
+  /* @conditional-compile-remove(rich-text-editor) */
+  if (typeof component === 'function' && component.name === 'RichTextSendBox') {
+    return sendBoxSelector;
+  }
   switch (component) {
     case SendBox:
       return sendBoxSelector;
     case MessageThread:
-      return messageThreadSelector;
+      return getMessageThreadSelector();
     case TypingIndicator:
       return typingIndicatorSelector;
     case ParticipantList:

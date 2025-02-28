@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { IStackTokens, mergeStyles } from '@fluentui/react';
+import { FontWeights, IStackStyles, IStyle } from '@fluentui/react';
 
 export const imgStyle = mergeStyles({
   width: '16.5rem',
@@ -35,6 +36,9 @@ export const configContainerStackTokens: IStackTokens = {
 export const callContainerStackTokens: IStackTokens = {
   childrenGap: '0.75rem'
 };
+export const callOptionsGroupStyles = {
+  label: { padding: 0 }
+};
 export const headerStyle = mergeStyles({
   fontWeight: 600,
   fontSize: '1.25rem', // 20px
@@ -56,3 +60,30 @@ export const buttonStyle = mergeStyles({
   borderRadius: 3,
   padding: '0.625rem'
 });
+export const outboundTextField = mergeStyles({
+  paddingTop: '0.5rem'
+});
+export const dialpadOptionStyles: IStackStyles = {
+  root: {
+    margin: 'auto',
+    paddingTop: '0.25rem',
+    paddingBottom: '0.25rem'
+  }
+};
+
+export const alternateCallerIdCalloutStyles: IStyle = {
+  width: '25rem',
+  height: '12rem',
+  maxWidth: '90%',
+  padding: '20px 24px'
+};
+
+export const alternateCallerIdCalloutTitleStyles: IStyle = {
+  marginBottom: 12,
+  fontWeight: FontWeights.semilight
+};
+
+export const alternateCallerIdCalloutLinkStyles: IStyle = {
+  display: 'block',
+  marginTop: 20
+};

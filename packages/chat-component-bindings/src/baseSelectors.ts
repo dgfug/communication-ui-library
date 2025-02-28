@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { ChatClientState, ChatErrors, ChatMessageWithStatus } from '@internal/chat-stateful-client';
-import { ChatParticipant } from '@azure/communication-chat';
-import { TypingIndicatorReceivedEvent } from '@azure/communication-signaling';
+import { ChatMessageReadReceipt, ChatParticipant } from '@azure/communication-chat';
+import { TypingIndicatorReceivedEvent } from '@azure/communication-chat';
 import { toFlatCommunicationIdentifier } from '@internal/acs-ui-common';
 
 /**
@@ -40,6 +40,16 @@ export const getParticipants = (
   state: ChatClientState,
   props: ChatBaseSelectorProps
 ): { [key: string]: ChatParticipant } => (props.threadId && state.threads[props.threadId]?.participants) || {};
+
+/**
+ * @private
+ */
+export const getReadReceipts = (
+  state: ChatClientState,
+  props: ChatBaseSelectorProps
+): ChatMessageReadReceipt[] | undefined => {
+  return state.threads[props?.threadId]?.readReceipts;
+};
 
 /**
  * @private

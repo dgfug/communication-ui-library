@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { getTypingIndicators, getParticipants, getUserId } from './baseSelectors';
-import * as reselect from 'reselect';
+import { getTypingIndicators, getParticipants, getUserId, ChatBaseSelectorProps } from './baseSelectors';
+import { createSelector } from 'reselect';
 import { ChatParticipant } from '@azure/communication-chat';
-import { TypingIndicatorReceivedEvent } from '@azure/communication-signaling';
+import { TypingIndicatorReceivedEvent } from '@azure/communication-chat';
 import { toFlatCommunicationIdentifier } from '@internal/acs-ui-common';
 import { CommunicationParticipant } from '@internal/react-components';
 import { MINIMUM_TYPING_INTERVAL_IN_MILLISECONDS, PARTICIPANTS_THRESHOLD } from './utils/constants';
+import { ChatClientState } from '@internal/chat-stateful-client';
 
 const filterTypingIndicators = (
   typingIndicators: TypingIndicatorReceivedEvent[],
@@ -16,8 +17,8 @@ const filterTypingIndicators = (
   const filteredTypingIndicators: TypingIndicatorReceivedEvent[] = [];
   const seen = new Set();
   const date8SecondsAgo = new Date(Date.now() - MINIMUM_TYPING_INTERVAL_IN_MILLISECONDS);
-  for (let i = typingIndicators.length - 1; i >= 0; i--) {
-    const typingIndicator = typingIndicators[i];
+  const reversedTypingIndicators = typingIndicators.toReversed();
+  for (const typingIndicator of reversedTypingIndicators) {
     if (toFlatCommunicationIdentifier(typingIndicator.sender) === userId) {
       continue;
     }
@@ -44,11 +45,23 @@ const convertSdkTypingIndicatorsToCommunicationParticipants = (
 };
 
 /**
+ * Selector type for {@link TypingIndicator} component.
+ *
+ * @public
+ */
+export type TypingIndicatorSelector = (
+  state: ChatClientState,
+  props: ChatBaseSelectorProps
+) => {
+  typingUsers: CommunicationParticipant[];
+};
+
+/**
  * Selector for {@link TypingIndicator} component.
  *
  * @public
  */
-export const typingIndicatorSelector = reselect.createSelector(
+export const typingIndicatorSelector: TypingIndicatorSelector = createSelector(
   [getTypingIndicators, getParticipants, getUserId],
   (
     typingIndicators: TypingIndicatorReceivedEvent[],

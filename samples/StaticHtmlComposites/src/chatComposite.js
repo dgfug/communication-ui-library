@@ -1,20 +1,26 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { AzureCommunicationTokenCredential } from '@azure/communication-common';
 import { ChatComposite, createAzureCommunicationChatAdapter } from '@azure/communication-react';
-
+import { initializeIcons } from '@fluentui/react';
+initializeIcons();
 export const loadChatComposite = async function (args, htmlElement, props) {
-  const { userId, token, endpointUrl, threadId, displayName } = args;
+  const { userId, token, endpoint, threadId, displayName } = args;
   const adapter = await createAzureCommunicationChatAdapter({
-    endpointUrl,
+    endpoint,
     userId,
     displayName: displayName ?? 'anonymous',
     credential: new AzureCommunicationTokenCredential(token),
     threadId
   });
-  ReactDOM.render(React.createElement(ChatComposite, { ...props, adapter }, null), htmlElement);
+
+  if (!htmlElement) {
+    throw new Error('Failed to find the root element');
+  }
+
+  createRoot(htmlElement).render(React.createElement(ChatComposite, { ...props, adapter }, null));
   return adapter;
 };

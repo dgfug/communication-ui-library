@@ -1,14 +1,43 @@
 import { BeachballConfig } from 'beachball';
-import { renderHeader, renderEntry } from './changelog-custom-renders';
+import { renderPackageChangelog } from './changelog-custom-renders';
 
 export const config: BeachballConfig = {
-  branch: 'origin/main',
-  changelog: {
-    customRenderers: {
-      renderHeader,
-      renderEntry
-    }
+  changeFilePrompt: {
+    changePrompt: prompt => {
+      const changeAreaPrompt = {
+        type: 'select',
+        name: 'area',
+        message: 'Change area',
+        choices: [
+          { value: 'fix', title: 'Bug fix' },
+          { value: 'feature', title: 'Feature' },
+          { value: 'improvement', title: 'Improvement' },
+        ],
+      };
+      const workstreamPrompt = {
+        type: 'text',
+        name: 'workstream',
+        message: 'Workstream',
+      }
+      return [prompt.changeType, changeAreaPrompt, workstreamPrompt, prompt.description];
+    },
   },
+  changelog: {
+    renderPackageChangelog: renderPackageChangelog,
+    groups: [{
+      masterPackageName: '@azure/communication-react',
+      include: 'packages/*',
+      changelogPath: 'packages/communication-react'
+    }]
+  },
+  ignorePatterns: [
+    // do not require change files for tests or snapshots
+    "**/*.test.ts?(x)",
+    "**/tests/**",
+    "**/__snapshots__/**",
+    "**/*-snapshots/**",
+    "**/playwright.config.ts"
+  ],
   tag: "next",
   changehint: 'Run "rush changelog" to create required change files',
   // We use package groups to bump all our internal dependent packages together.
@@ -23,8 +52,7 @@ export const config: BeachballConfig = {
       include: "packages/*",
       disallowedChangeTypes: [
         "major",
-        "minor",
-        "patch"
+        "none"
       ]
     }
   ]

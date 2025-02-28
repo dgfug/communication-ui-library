@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { RemoteVideoStream } from '@azure/communication-calling';
 import { RemoteVideoStreamState } from './CallClientState';
@@ -30,11 +30,15 @@ export class RemoteVideoStreamSubscriber {
 
   private subscribe = (): void => {
     this._remoteVideoStream.on('isAvailableChanged', this.isAvailableChanged);
+    this._remoteVideoStream.on('isReceivingChanged', this.isReceivingChanged);
+    this._remoteVideoStream.on('sizeChanged', this.isSizeChanged);
     this.checkAndUpdateScreenShareState();
   };
 
   public unsubscribe = (): void => {
     this._remoteVideoStream.off('isAvailableChanged', this.isAvailableChanged);
+    this._remoteVideoStream.off('isReceivingChanged', this.isReceivingChanged);
+    this._remoteVideoStream.off('sizeChanged', this.isSizeChanged);
   };
 
   private includesActiveScreenShareStream = (streams: { [key: number]: RemoteVideoStreamState }): boolean => {
@@ -97,5 +101,36 @@ export class RemoteVideoStreamSubscriber {
     );
 
     this.checkAndUpdateScreenShareState();
+  };
+
+  private isReceivingChanged = (): void => {
+    this._context.setRemoteVideoStreamIsReceiving(
+      this._callIdRef.callId,
+      this._participantKey,
+      this._remoteVideoStream.id,
+      this._remoteVideoStream.isReceiving
+    );
+  };
+
+  private isSizeChanged = (): void => {
+    if (this._remoteVideoStream?.size.width === 0 && this._remoteVideoStream?.size.height === 0) {
+      return;
+    }
+    const streamSize =
+      this._context.getState().calls[this._callIdRef.callId]?.remoteParticipants[this._participantKey]?.videoStreams[
+        this._remoteVideoStream.id
+      ]?.streamSize;
+
+    const existingAspectRatio = streamSize ? streamSize.width / streamSize.height : undefined;
+    const newAspectRatio = this._remoteVideoStream?.size.width / this._remoteVideoStream?.size.height;
+
+    if (!streamSize || existingAspectRatio !== newAspectRatio) {
+      this._context.setRemoteVideoStreamSize(
+        this._callIdRef.callId,
+        this._participantKey,
+        this._remoteVideoStream.id,
+        this._remoteVideoStream.size
+      );
+    }
   };
 }

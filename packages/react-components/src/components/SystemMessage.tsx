@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { IStyle, FontIcon, mergeStyles, Stack } from '@fluentui/react';
-import { ComponentSlotStyle } from '@fluentui/react-northstar';
-import React from 'react';
+import { IStyle, FontIcon, mergeStyles, Stack, Text } from '@fluentui/react';
+import React, { useEffect, useState } from 'react';
 import { systemMessageIconStyle } from './styles/SystemMessage.styles';
+import { ComponentSlotStyle } from '../types';
+import LiveMessage from './Announcer/LiveMessage';
 
 /**
  * Todo: We need to add more types of system messages that we support.
@@ -37,11 +38,25 @@ export type SystemMessageProps = {
 export const SystemMessage = (props: SystemMessageProps): JSX.Element => {
   const { iconName, content } = props;
   const Icon: JSX.Element = <FontIcon iconName={iconName} className={mergeStyles(systemMessageIconStyle)} />;
+  const [liveMessage, setLiveMessage] = useState('');
+
+  useEffect(() => {
+    // Timeout is needed to handle situation when the same user joins and leaves a chat a few times in a row, otherwise Narrator won't repeat the system message text.
+    // Because delay value is not provided, setMessage function will be executed asynchronously in the next event cycle
+    setTimeout(() => {
+      setLiveMessage(content);
+    });
+  }, [content]);
 
   return (
-    <Stack horizontal className={mergeStyles(props?.containerStyle as IStyle)}>
-      {Icon}
-      <span>{content}</span>
-    </Stack>
+    <>
+      <LiveMessage message={liveMessage} ariaLive="polite" clearOnUnmount={true} />
+      <Stack horizontal className={mergeStyles(props?.containerStyle as IStyle)} tabIndex={0}>
+        {Icon}
+        <Text style={{ wordBreak: 'break-word' }} role="status" title={content} variant={'small'}>
+          {content}
+        </Text>
+      </Stack>
+    </>
   );
 };

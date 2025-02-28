@@ -1,13 +1,14 @@
 #!/bin/sh
 
-# Check the appsettings.json file is not being checked in.
-# This contains the resource connection string which should not be checked in.
+# Check a package-lock.json file is not being checked in.
+# This repo uses rush with pnpm to manage dependencies and lock files.
 # If changes are being made to this file that should be checked in then
 # git commit --no-verify can be used.
-if git diff --cached --name-only | grep -qE 'appsettings.json'; then
+if git diff --cached --name-only | grep -qE 'package-lock.json'; then
   echo '======= COMMIT ERROR =======' >&2
-  echo 'appsettings.json has been staged for commit.' >&2
-  echo 'This often contains the resource connection string which should not be checked in to source control.' >&2
+  echo 'package-lock.json has been staged for commit.' >&2
+  echo 'This repo uses rush with pnpm to manage dependencies and lock files.' >&2
+  echo 'Instead make changes to the package.json files and use `rush update`.' >&2
   echo 'If you do want to check in changes to this file use `git commit --no-verify`.' >&2
   echo 'Otherwise unstage this file.' >&2
   echo '============================' >&2

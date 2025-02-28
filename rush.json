@@ -1,11 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
-  "rushVersion": "5.47.0",
-  "pnpmVersion": "5.17.3",
-  "pnpmOptions": {
-    "strictPeerDependencies": true
-  },
-  "nodeSupportedVersionRange": ">=12.13.0 <13.0.0 || >=14.15.0 <15.0.0",
+  "rushVersion": "5.148.0",
+  "pnpmVersion": "8.11.0",
+  "nodeSupportedVersionRange": ">=16.19.0 <23.0.0",
   "ensureConsistentVersions": true,
   "gitPolicy": {
     "versionBumpCommitMessage": "Applying package updates. [skip-ci]",
@@ -16,6 +13,12 @@
     "defaultBranch": "main"
   },
   "telemetryEnabled": false,
+  "variants": [
+    {
+      "variantName": "stable",
+      "description": "Build this repo using stable version of js sdk"
+    }
+  ],
   "projects": [
     {
       "packageName": "@internal/acs-ui-common",
@@ -35,6 +38,11 @@
     {
       "packageName": "@internal/react-composites",
       "projectFolder": "packages/react-composites",
+      "reviewCategory": "internal"
+    },
+    {
+      "packageName": "@internal/acs-ui-javascript-loaders",
+      "projectFolder": "packages/acs-ui-javascript-loaders",
       "reviewCategory": "internal"
     },
     {
@@ -58,28 +66,48 @@
       "reviewCategory": "internal"
     },
     {
-      "packageName": "calling",
+      "packageName": "@internal/calling",
       "projectFolder": "samples/Calling",
       "reviewCategory": "sample"
     },
     {
-      "packageName": "chat",
+      "packageName": "@internal/chat",
       "projectFolder": "samples/Chat",
       "reviewCategory": "sample"
     },
     {
-      "packageName": "server",
+      "packageName": "@internal/callwithchat",
+      "projectFolder": "samples/CallWithChat",
+      "reviewCategory": "sample"
+    },
+    {
+      "packageName": "@internal/calling-stateful-samples",
+      "projectFolder": "samples/CallingStateful",
+      "reviewCategory": "sample"
+    },
+    {
+      "packageName": "@internal/component-examples",
+      "projectFolder": "samples/ComponentExamples",
+      "reviewCategory": "sample"
+    },
+    {
+      "packageName": "@internal/server",
       "projectFolder": "samples/Server",
       "reviewCategory": "sample"
     },
     {
-      "packageName": "sample-static-html-composites",
+      "packageName": "@internal/sample-automation-tests",
+      "projectFolder": "samples/tests",
+      "reviewCategory": "sample"
+    },
+    {
+      "packageName": "@internal/sample-static-html-composites",
       "projectFolder": "samples/StaticHtmlComposites",
       "reviewCategory": "sample"
     },
     {
-      "packageName": "@internal/storybook",
-      "projectFolder": "packages/storybook",
+      "packageName": "@internal/storybook8",
+      "projectFolder": "packages/storybook8",
       "reviewCategory": "tools"
     },
     {
@@ -88,8 +116,28 @@
       "reviewCategory": "tools"
     },
     {
+      "packageName": "@internal/scripts",
+      "projectFolder": "common/scripts",
+      "reviewCategory": "tools"
+    },
+    {
       "packageName": "@internal/check-treeshaking",
       "projectFolder": "tools/check-treeshaking",
+      "reviewCategory": "tools"
+    },
+    {
+      "packageName": "@internal/check-typescript-regression",
+      "projectFolder": "tools/check-typescript-regression",
+      "reviewCategory": "tools"
+    },
+    {
+      "packageName": "@internal/fake-backends",
+      "projectFolder": "packages/fake-backends",
+      "reviewCategory": "tools"
+    },
+    {
+      "packageName": "@internal/eslint-plugin-custom-rules",
+      "projectFolder": "tools/custom-eslint-rules",
       "reviewCategory": "tools"
     }
   ]

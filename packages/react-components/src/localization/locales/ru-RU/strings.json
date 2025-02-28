@@ -2,7 +2,21 @@
   "participantItem": {
     "isMeText": "(Вы)",
     "menuTitle": "Дополнительные параметры",
-    "removeButtonLabel": "Удалить"
+    "removeButtonLabel": "Удалить",
+    "sharingIconLabel": "Общий доступ",
+    "mutedIconLabel": "Микрофон отключен",
+    "handRaisedIconLabel": "Поднята рука — позиция {position}",
+    "displayNamePlaceholder": "Участник без имени",
+    "participantStateRinging": "Выполняется вызов...",
+    "participantStateHold": "На удержании",
+    "participantItemAriaLabel": "{displayName}, {handRaisedState}, {mutedState}, {micDisabledState}, {cameraDisabledState}, {sharingState}, {connectionState}",
+    "participantItemWithMoreOptionsAriaLabel": "{displayName}, {handRaisedState}, {mutedState}, {micDisabledState}, {cameraDisabledState}, {sharingState}, {connectionState}, дополнительные параметры",
+    "attendeeRole": "Участник",
+    "micDisabledIconLabel": "Микрофон отключен",
+    "cameraDisabledIconLabel": "Камера отключена"
+  },
+  "ParticipantList": {
+    "overflowParticipantCount": "и еще {overflowCount}"
   },
   "typingIndicator": {
     "singleUser": "{user} вводит текст...",
@@ -12,29 +26,147 @@
     "delimiter": "; "
   },
   "sendBox": {
-    "placeholderText": "Введите сообщение"
+    "placeholderText": "Введите сообщение",
+    "textTooLong": "Длина сообщения превышает максимально допустимую.",
+    "sendButtonAriaLabel": "Отправить сообщение",
+    "attachmentUploadsPendingError": "Выполняется отправка файла. Подождите.",
+    "removeAttachment": "Удалить файл",
+    "uploading": "Отправка",
+    "uploadCompleted": "Отправка завершена",
+    "attachmentMoreMenu": "Дополнительные параметры"
+  },
+  "richTextSendBox": {
+    "placeholderText": "Введите сообщение",
+    "textTooLong": "Длина сообщения превышает максимально допустимую.",
+    "sendButtonAriaLabel": "Отправить сообщение",
+    "attachmentUploadsPendingError": "Выполняется отправка файла. Подождите.",
+    "imageUploadsPendingError": "Выполняется отправка изображения. Подождите.",
+    "removeAttachment": "Удалить файл",
+    "uploading": "Отправка",
+    "uploadCompleted": "Отправка завершена",
+    "richTextBoldTooltip": "Полужирный",
+    "richTextItalicTooltip": "Курсив",
+    "richTextUnderlineTooltip": "Подчеркнуть",
+    "richTextBulletListTooltip": "Маркированный список",
+    "richTextNumberListTooltip": "Нумерованный список",
+    "richTextIncreaseIndentTooltip": "Увеличить отступ",
+    "richTextDecreaseIndentTooltip": "Уменьшить отступ",
+    "richTextInsertTableTooltip": "Вставить таблицу",
+    "richTextFormatButtonTooltip": "Формат",
+    "richTextInsertRowOrColumnMenu": "Вставить",
+    "richTextInsertTableMenuTitle": "Вставить таблицу {column} x {row}",
+    "richTextInsertRowAboveMenu": "Вставить сверху",
+    "richTextInsertRowBelowMenu": "Вставить снизу",
+    "richTextInsertColumnLeftMenu": "Вставить слева",
+    "richTextInsertColumnRightMenu": "Вставить справа",
+    "richTextDeleteRowOrColumnMenu": "Удалить",
+    "richTextDeleteColumnMenu": "Удалить столбец",
+    "richTextDeleteRowMenu": "Удалить строку",
+    "richTextDeleteTableMenu": "Удалить таблицу",
+    "richTextToolbarAriaLabel": "Панель инструментов форматирования сообщения",
+    "richTextToolbarMoreButtonAriaLabel": "Дополнительные параметры",
+    "attachmentMoreMenu": "Дополнительные параметры",
+    "richTextNewBulletedListItemAnnouncement": "Маркер, новая строка",
+    "richTextNewNumberedListItemAnnouncement": "{0}, новая строка",
+    "richTextBulletedListAppliedAnnouncement": "Применен маркированный список",
+    "richTextNumberedListAppliedAnnouncement": "Применен нумерованный список"
+  },
+  "realTimeTextModal": {
+    "realTimeTextModalAriaLabel": "Модальное окно включения ввода в режиме реального времени",
+    "realTimeTextModalTitle": "Включить ввод в режиме реального времени?",
+    "realTimeTextModalText": "Текст в режиме реального времени (RTT) будет включен для всех участников собрания.",
+    "realTimeTextConfirmButtonLabel": "Включить",
+    "realTimeTextCancelButtonLabel": "Отмена",
+    "realTimeTextCloseModalButtonAriaLabel": "Закрыть модальное окно ввода в режиме реального времени"
+  },
+  "captionsBanner": {
+    "captionsBannerSpinnerText": "Запуск субтитров...",
+    "realTimeTextInputBoxDefaultText": "Введите сообщение в режиме реального времени",
+    "realTimeTextInputErrorMessage": "Длина сообщения не может превышать 2000 символов",
+    "realTimeTextBannerTitle": "Ввод в режиме реального времени",
+    "realTimeTextBannerContent": "Ввод в режиме реального времени включен для всех участников в течение всего собрания.",
+    "realTimeTextBannerLinkLabel": "Подробнее",
+    "captionsOnlyContainerTitle": "Субтитры",
+    "realTimeTextOnlyContainerTitle": "Текст в режиме реального времени",
+    "captionsAndRealTimeTextContainerTitle": "Субтитры и текст в реальном времени",
+    "expandButtonAriaLabel": "Развернуть",
+    "minimizeButtonAriaLabel": "Свернуть"
+  },
+  "mentionPopover": {
+    "mentionPopoverHeader": "Рекомендации"
+  },
+  "imageOverlay": {
+    "downloadButtonLabel": "Скачать",
+    "dismissButtonAriaLabel": "Закрыть",
+    "overlayVisibleMessage": "Наложение сведений об изображении"
   },
   "messageStatusIndicator": {
+    "deliveredAriaLabel": "Сообщение отправлено",
     "deliveredTooltipText": "Отправлено",
+    "seenAriaLabel": "Сообщение просмотрено другими пользователями",
     "seenTooltipText": "Просмотрено",
+    "readByTooltipText": "Прочитали: {messageThreadReadCount} из {remoteParticipantsCount}",
+    "sendingAriaLabel": "Отправка сообщения",
     "sendingTooltipText": "Отправка",
+    "failedToSendAriaLabel": "Не удалось отправить сообщение",
     "failedToSendTooltipText": "Не удалось отправить"
   },
   "endCallButton": {
-    "label": "Выйти"
+    "label": "Выйти",
+    "tooltipContent": "Покинуть вызов",
+    "leaveOption": "Выйти",
+    "endCallOption": "Завершить звонок для всех"
   },
   "cameraButton": {
-    "onLabel": "Отключить",
-    "offLabel": "Включить"
-  },
-  "microphoneButton": {
-    "onLabel": "Отключить звук",
-    "offLabel": "Включить звук"
-  },
-  "optionsButton": {
-    "label": "Параметры",
+    "onLabel": "Камера",
+    "offLabel": "Камера",
+    "tooltipDisabledContent": "Камера отключена",
+    "tooltipOnContent": "Выключить камеру",
+    "tooltipOffContent": "Включить камеру",
+    "tooltipVideoLoadingContent": "Видео загружается",
     "cameraMenuTitle": "Камера",
     "cameraMenuTooltip": "Выбрать камеру",
+    "cameraButtonSplitRoleDescription": "Разворачивающаяся кнопка",
+    "onSplitButtonAriaLabel": "Отключить камеру",
+    "offSplitButtonAriaLabel": "Включить камеру",
+    "cameraActionTurnedOnAnnouncement": "Камера включена",
+    "cameraActionTurnedOffAnnouncement": "Камера отключена",
+    "onSplitButtonPrimaryActionCamera": "Выключить камеру",
+    "offSplitButtonPrimaryActionCamera": "Включить камеру",
+    "cameraPrimaryActionSplitButtonTitle": "Использовать камеру",
+    "videoEffectsMenuItemTitle": "Эффекты",
+    "cameraButtonAriaDescription": "параметры камеры"
+  },
+  "microphoneButton": {
+    "onLabel": "Микрофон",
+    "offLabel": "Микрофон",
+    "tooltipDisabledContent": "Микрофон отключен",
+    "tooltipOnContent": "Отключить микрофон",
+    "tooltipOffContent": "Включить микрофон",
+    "microphoneMenuTitle": "Микрофон",
+    "microphoneMenuTooltip": "Выбрать микрофон",
+    "speakerMenuTitle": "Динамик",
+    "speakerMenuTooltip": "Выбрать динамик",
+    "microphoneButtonSplitRoleDescription": "Разворачивающаяся кнопка",
+    "onSplitButtonAriaLabel": "Отключить микрофон",
+    "offSplitButtonAriaLabel": "Включить микрофон",
+    "microphoneActionTurnedOnAnnouncement": "Ваш микрофон включен",
+    "microphoneActionTurnedOffAnnouncement": "Ваш микрофон отключен",
+    "offSplitButtonMicrophonePrimaryAction": "Включить микрофон",
+    "onSplitButtonMicrophonePrimaryAction": "Отключить микрофон",
+    "microphonePrimaryActionSplitButtonTitle": "Использовать микрофон",
+    "microphoneAriaDescription": "Параметры звука",
+    "deepNoiseSuppressionTitle": "Подавление шума",
+    "deepNoiseSuppressionOnAnnouncement": "Глубокое подавление шума включено",
+    "deepNoiseSuppressionOffAnnouncement": "Глубокое подавление шума отключено"
+  },
+  "devicesButton": {
+    "label": "Устройства",
+    "tooltipContent": "Управление устройствами",
+    "cameraMenuTitle": "Камера",
+    "cameraMenuTooltip": "Выбрать камеру",
+    "audioDeviceMenuTitle": "Звуковое устройство",
+    "audioDeviceMenuTooltip": "Выбрать звуковое устройство",
     "microphoneMenuTitle": "Микрофон",
     "microphoneMenuTooltip": "Выбрать микрофон",
     "speakerMenuTitle": "Динамик",
@@ -42,14 +174,139 @@
   },
   "participantsButton": {
     "label": "Люди",
+    "ariaLabel": "Люди",
+    "tooltipContent": "Показать участников",
     "menuHeader": "В этом звонке",
     "participantsListButtonLabel": "Пользователей: {numParticipants}",
     "muteAllButtonLabel": "Отключить все микрофоны",
-    "copyInviteLinkButtonLabel": "Копировать ссылку с приглашением"
+    "copyInviteLinkButtonLabel": "Копировать ссылку с приглашением",
+    "copyInviteLinkActionedAriaLabel": "Ссылка на приглашение скопирована"
   },
   "screenShareButton": {
-    "onLabel": "Остановить",
-    "offLabel": "Поделиться"
+    "onLabel": "Остановить демонстрацию",
+    "offLabel": "Демонстрировать",
+    "tooltipDisabledContent": "Демонстрация отключена",
+    "tooltipOnContent": "Демонстрация экрана",
+    "tooltipOffContent": "Демонстрировать экран"
+  },
+  "raiseHandButton": {
+    "offLabel": "Поднять руку",
+    "onLabel": "Опустить",
+    "tooltipDisabledContent": "Действие \"Поднять руку\" отключено",
+    "tooltipOnContent": "Опустить руку",
+    "tooltipOffContent": "Поднять руку"
+  },
+  "reactionButton": {
+    "label": "Отреагировать",
+    "ariaLabel": "Отреагировать",
+    "tooltipDisabledContent": "Действие реакции отключено",
+    "tooltipContent": "Отправка реакции",
+    "likeReactionTooltipContent": "Нравится",
+    "heartReactionTooltipContent": "Люблю",
+    "laughReactionTooltipContent": "Смеюсь",
+    "applauseReactionTooltipContent": "Аплодисменты",
+    "surprisedReactionTooltipContent": "Удивляюсь"
+  },
+  "realTimeText": {
+    "isTypingText": "Ввод в режиме реального времени"
+  },
+  "captionsSettingsModal": {
+    "captionsSettingsModalTitle": "Параметры субтитров",
+    "captionsSettingsSpokenLanguageDropdownLabel": "Язык речи",
+    "captionsSettingsCaptionLanguageDropdownLabel": "Язык субтитров",
+    "captionsSettingsSpokenLanguageDropdownInfoText": "Язык, на котором говорят все участники звонка.",
+    "captionsSettingsCaptionLanguageDropdownInfoText": "Субтитры будут отображаться на этом языке.",
+    "captionsSettingsConfirmButtonLabel": "Подтвердить",
+    "captionsSettingsCancelButtonLabel": "Отмена",
+    "captionsSettingsModalAriaLabel": "Модальное окно параметров субтитров",
+    "captionsSettingsCloseModalButtonAriaLabel": "Закрыть параметры субтитров"
+  },
+  "spokenLanguages": {
+    "ar-ae": "Арабский (ОАЭ)",
+    "ar-sa": "Арабский (Саудовская Аравия)",
+    "da-dk": "Датский",
+    "de-de": "Немецкий (Германия)",
+    "en-au": "Английский (Австралия)",
+    "en-ca": "Английский (Канада)",
+    "en-gb": "Английский (Соединенное Королевство)",
+    "en-in": "Английский (Индия)",
+    "en-nz": "Английский (Новая Зеландия)",
+    "en-us": "Английский (США)",
+    "es-es": "Испанский (Испания), современная сортировка",
+    "es-mx": "Испанский (Мексика)",
+    "fi-fi": "Финский",
+    "fr-ca": "Французский (Канада)",
+    "fr-fr": "Французский (Франция)",
+    "hi-in": "Хинди",
+    "it-it": "Итальянский (Италия)",
+    "ja-jp": "Японский",
+    "ko-kr": "Корейский",
+    "nb-no": "Норвежский (букмол)",
+    "nl-be": "Нидерландский (Бельгия)",
+    "nl-nl": "Нидерландский (Нидерланды)",
+    "pl-pl": "Польский",
+    "pt-br": "Португальский (Бразилия)",
+    "ru-ru": "Русский",
+    "sv-se": "Шведский",
+    "zh-cn": "Китайский (Китайская Народная Республика)",
+    "zh-hk": "Китайский (Гонконг, САР)",
+    "cs-cz": "Чешский",
+    "pt-pt": "Португальский (Португалия)",
+    "tr-tr": "Турецкий",
+    "vi-vn": "Вьетнамский",
+    "th-th": "Тайский",
+    "he-il": "Иврит",
+    "cy-gb": "Валлийский",
+    "uk-ua": "Украинский",
+    "el-gr": "Греческий",
+    "hu-hu": "Венгерский",
+    "ro-ro": "Румынский",
+    "sk-sk": "Словацкий",
+    "zh-tw": "Китайский (Тайвань)"
+  },
+  "captionLanguages": {
+    "ar": "Арабский",
+    "da": "Датский",
+    "de": "Немецкий",
+    "en": "Английский",
+    "es": "Испанский",
+    "fi": "Финский",
+    "fr-ca": "Французский (Канада)",
+    "fr": "Французский (Франция)",
+    "hi": "Хинди",
+    "it": "Итальянский",
+    "ja": "Японский",
+    "ko": "Корейский",
+    "nb": "Норвежский (букмол)",
+    "nl": "Голландский",
+    "pl": "Польский",
+    "pt": "Португальский (Бразилия)",
+    "ru": "Русский",
+    "sv": "Шведский",
+    "zh-Hans": "Китайский (упрощенное письмо)",
+    "zh-Hant": "Китайский, традиционное письмо",
+    "cs": "Чешский",
+    "pt-pt": "Португальский (Португалия)",
+    "tr": "Турецкий",
+    "vi": "Вьетнамский",
+    "th": "Тайский",
+    "he": "Иврит",
+    "cy": "Валлийский",
+    "uk": "Украинский",
+    "el": "Греческий",
+    "hu": "Венгерский",
+    "ro": "Румынский",
+    "sk": "Словацкий"
+  },
+  "startCaptionsButton": {
+    "onLabel": "Включить автоматические субтитры",
+    "offLabel": "Отключить автоматические субтитры",
+    "tooltipOnContent": "Отключить автоматические субтитры",
+    "tooltipOffContent": "Включить автоматические субтитры"
+  },
+  "startRealTimeTextButton": {
+    "label": "Включить ввод в режиме реального времени для этого звонка",
+    "tooltipOffContent": "Включить ввод в режиме реального времени для этого звонка"
   },
   "messageThread": {
     "yesterday": "Вчера",
@@ -61,13 +318,63 @@
     "friday": "Пятница",
     "saturday": "Суббота",
     "participantJoined": "присоединился к чату.",
-    "participantLeft": "покинул чат."
+    "participantLeft": "покинул чат.",
+    "editMessage": "Изменить",
+    "removeMessage": "Удалить",
+    "resendMessage": "Отправьте еще раз",
+    "failToSendTag": "Не удалось отправить",
+    "editedTag": "Изменено",
+    "liveAuthorIntro": "Сообщение от пользователя {author}",
+    "editedMessageLiveAuthorIntro": "Отредактированное сообщение от пользователя {author}",
+    "editedMessageLocalUserLiveAuthorIntro": "Отредактированное сообщение",
+    "messageContentAriaText": "{status} {author} говорит: {message}",
+    "messageContentMineAriaText": "{status} Вы сказали: {message}",
+    "editBoxTextLimit": "Превышено предельное число символов в {limitNumber} сообщении",
+    "editBoxPlaceholderText": "Отредактируйте сообщение",
+    "newMessagesIndicator": "Новые сообщения",
+    "noDisplayNameSub": "Без имени",
+    "editBoxCancelButton": "Отмена",
+    "editBoxSubmitButton": "Готово",
+    "messageReadCount": "Прочитали: {messageReadByCount} из {remoteParticipantsCount}",
+    "actionMenuMoreOptions": "Дополнительные параметры",
+    "downloadAttachment": "Скачать файл",
+    "openAttachment": "Открыть файл",
+    "blockedWarningText": "Это сообщение было удалено политикой организации.",
+    "blockedWarningLinkText": "Сведения",
+    "attachmentCardGroupMessage": "Сообщение содержит {attachmentCount} вложение",
+    "messageDeletedAnnouncementAriaLabel": "Сообщение удалено",
+    "richTextBoldTooltip": "Полужирный",
+    "richTextItalicTooltip": "Курсив",
+    "richTextUnderlineTooltip": "Подчеркнутый",
+    "richTextBulletListTooltip": "Маркированный список",
+    "richTextNumberListTooltip": "Нумерованный список",
+    "richTextIncreaseIndentTooltip": "Увеличить отступ",
+    "richTextDecreaseIndentTooltip": "Уменьшить отступ",
+    "richTextInsertTableTooltip": "Вставить таблицу",
+    "richTextFormatButtonTooltip": "Форматирование",
+    "richTextInsertRowOrColumnMenu": "Вставить",
+    "richTextInsertTableMenuTitle": "Вставить таблицу {column} x {row}",
+    "richTextInsertRowAboveMenu": "Вставить сверху",
+    "richTextInsertRowBelowMenu": "Вставить снизу",
+    "richTextInsertColumnLeftMenu": "Вставить слева",
+    "richTextInsertColumnRightMenu": "Вставить справа",
+    "richTextDeleteRowOrColumnMenu": "Удалить",
+    "richTextDeleteColumnMenu": "Удалить столбец",
+    "richTextDeleteRowMenu": "Удалить строку",
+    "richTextDeleteTableMenu": "Удалить таблицу",
+    "richTextToolbarMoreButtonAriaLabel": "Дополнительные параметры",
+    "attachmentUploadsPendingError": "Выполняется отправка файла. Подождите.",
+    "imageUploadsPendingError": "Выполняется отправка изображения. Подождите.",
+    "richTextNewBulletedListItemAnnouncement": "Маркер, новая строка",
+    "richTextNewNumberedListItemAnnouncement": "{0}, новая строка",
+    "richTextBulletedListAppliedAnnouncement": "Применен маркированный список",
+    "richTextNumberedListAppliedAnnouncement": "Применен нумерованный список"
   },
   "errorBar": {
     "unableToReachChatService": "Вы не в сети",
     "accessDenied": "Не удалось получить доступ к службам чата. Проверьте предоставленные учетные данные пользователя",
-    "userNotInThisThread": "Вы больше не находитесь в цепочке этого чата",
-    "sendMessageNotInThisThread": "Не удалось отправить сообщение, так как вы больше не находитесь в цепочке этого чата",
+    "userNotInChatThread": "Вы больше не находитесь в цепочке этого чата",
+    "sendMessageNotInChatThread": "Не удалось отправить сообщение, так как вы больше не находитесь в цепочке этого чата",
     "sendMessageGeneric": "Не удалось отправить сообщение",
     "callingNetworkFailure": "Тревожное подключение вызова — кажется, вы не в сети",
     "startVideoGeneric": "Не удалось запустить видео",
@@ -75,7 +382,469 @@
     "muteGeneric": "Не удалось отключить микрофон",
     "unmuteGeneric": "Не удалось включить микрофон",
     "speakingWhileMuted": "Микрофон отключен",
-    "startScreenShareGeneric": "Не удалось начать демонстрацию экрана",
-    "stopScreenShareGeneric": "Не удалось остановить демонстрацию экрана"
+    "startScreenShareGeneric": "Возникла проблема с запуском демонстрации экрана.",
+    "stopScreenShareGeneric": "Не удалось остановить демонстрацию экрана",
+    "callNetworkQualityLow": "Качество работы сети: низкое.",
+    "teamsMeetingCallNetworkQualityLow": "Качество работы сети: низкое.",
+    "callNoSpeakerFound": "Динамики и наушники не найдены. Подключите звуковое устройство, чтобы услышать звонок.",
+    "callNoMicrophoneFound": "Микрофоны не найдены. Подключение звукового устройства ввода.",
+    "callMicrophoneAccessDenied": "Не удается получить доступ к микрофону. Щелкните блокировку в адресной строке, чтобы предоставить разрешение на эту веб-страницу.",
+    "callMicrophoneAccessDeniedSafari": "Не удается получить доступ к микрофону. Обновите страницу, чтобы разрешить разрешения, или проверьте параметры браузера и убедитесь, что для этого веб-сайта включены разрешения.",
+    "callMicrophoneMutedBySystem": "Система отключила ваш микрофон.",
+    "callMicrophoneUnmutedBySystem": "Микрофон восстановлен, и система включила ваш звук.",
+    "callMacOsMicrophoneAccessDenied": "Не удается получить доступ к микрофону. Предоставьте разрешение на доступ к микрофону в параметрах конфиденциальности macOS.",
+    "callLocalVideoFreeze": "Низкая пропускная способность сети. Ваше видео может отображаться как приостановленное для других участников вызова.",
+    "callCameraAccessDenied": "Не удается получить доступ к камере. Щелкните блокировку в адресной строке, чтобы предоставить разрешение на эту веб-страницу.",
+    "callCameraAccessDeniedSafari": "Не удается получить доступ к камере. Обновите страницу, чтобы разрешить разрешения, или проверьте параметры браузера и убедитесь, что для этого веб-сайта включены разрешения.",
+    "callCameraAlreadyInUse": "Не удается получить доступ к камере. Возможно, оно уже используется другим приложением.",
+    "callVideoStoppedBySystem": "Воспроизведение видео остановлено системой.",
+    "callVideoRecoveredBySystem": "Воспроизведение видео возобновлено.",
+    "callMacOsCameraAccessDenied": "MacOS блокирует доступ к камере. Обновите параметры конфиденциальности, чтобы разрешить этому браузеру доступ к камере.",
+    "callMacOsScreenShareAccessDenied": "MacOS блокирует демонстрацию экрана. Обновите параметры конфиденциальности, чтобы разрешить этому браузеру записывать ваш экран.",
+    "dismissButtonAriaLabel": "Закрыть",
+    "failedToJoinCallGeneric": "Не удалось присоединиться к звонку.",
+    "failedToJoinCallInvalidMeetingLink": "Не удалось присоединиться к собранию. Недопустимая ссылка.",
+    "cameraFrozenForRemoteParticipants": "У участников звонка возникают проблемы с просмотром вашего видео. Проверьте свои устройства и сеть.",
+    "unableToStartVideoEffect": "Не удалось применить эффект видео.",
+    "startSpotlightWhileMaxParticipantsAreSpotlighted": "Не удается запустить закрепление участников, так как достигнуто предельное число закрепленных участников.",
+    "mutedByRemoteParticipant": "Ваш микрофон отключен другим участником."
+  },
+  "notificationStack": {
+    "callingNetworkFailure": {
+      "title": "Проблемы с подключением к телефону",
+      "message": "Похоже, вы не в сети. Проверьте сетевое подключение и повторите попытку.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "startVideoGeneric": {
+      "title": "Не удалось запустить видео.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "stopVideoGeneric": {
+      "title": "Не удалось остановить видео.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "muteGeneric": {
+      "title": "Не удалось отключить микрофон.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "unmuteGeneric": {
+      "title": "Не удалось включить микрофон.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "speakingWhileMuted": {
+      "title": "Ваш микрофон отключен.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "startScreenShareGeneric": {
+      "title": "Возникла проблема с запуском демонстрации экрана.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "stopScreenShareGeneric": {
+      "title": "Не удалось остановить демонстрацию экрана.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callNetworkQualityLow": {
+      "title": "Качество работы сети: низкое.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "teamsMeetingCallNetworkQualityLow": {
+      "title": "Качество работы сети: низкое.",
+      "dismissButtonAriaLabel": "Закрыть",
+      "message": "Присоединяйтесь к звонку с телефона, чтобы улучшить звук. Вы можете продолжить просмотр собрания на этом устройстве.",
+      "primaryButtonLabel": "Присоединиться по телефону"
+    },
+    "callNoSpeakerFound": {
+      "title": "Динамики и наушники не найдены",
+      "message": "Подключите звуковое устройство, чтобы прослушать звонок.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callNoMicrophoneFound": {
+      "title": "Микрофоны не найдены",
+      "message": "Подключите устройство ввода звука.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callMicrophoneAccessDenied": {
+      "title": "Не удается получить доступ к микрофону",
+      "message": "Щелкните блокировку в адресной строке, чтобы предоставить разрешение на доступ к этой веб-странице.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callMicrophoneAccessDeniedSafari": {
+      "title": "Не удается получить доступ к микрофону",
+      "message": "Обновите страницу, чтобы предоставить разрешения, или проверьте параметры браузера и включите разрешения для этого веб-сайта.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callMicrophoneMutedBySystem": {
+      "title": "Система отключила ваш микрофон.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callMicrophoneUnmutedBySystem": {
+      "title": "Микрофон восстановлен, и система включила ваш звук.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callMacOsMicrophoneAccessDenied": {
+      "title": "Не удается получить доступ к микрофону",
+      "message": "Предоставьте разрешение на доступ к микрофону в параметрах конфиденциальности macOS.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callLocalVideoFreeze": {
+      "title": "Низкая пропускная способность сети",
+      "message": "Ваше видео может отображаться как приостановленное для других участников звонка.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callCameraAccessDenied": {
+      "title": "Не удается получить доступ к камере",
+      "message": "Щелкните блокировку в адресной строке, чтобы предоставить разрешение на доступ к этой веб-странице.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callCameraAccessDeniedSafari": {
+      "title": "Не удается получить доступ к камере",
+      "message": "Обновите страницу, чтобы предоставить разрешения, или проверьте параметры браузера и включите разрешения для этого веб-сайта.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callCameraAlreadyInUse": {
+      "title": "Не удается получить доступ к камере",
+      "message": "Возможно, оно уже используется другим приложением.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callVideoStoppedBySystem": {
+      "title": "Воспроизведение видео остановлено системой.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callVideoRecoveredBySystem": {
+      "title": "Воспроизведение видео возобновлено.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callMacOsCameraAccessDenied": {
+      "title": "MacOS блокирует доступ к камере",
+      "message": "Обновите параметры конфиденциальности, чтобы разрешить этому браузеру доступ к камере.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "callMacOsScreenShareAccessDenied": {
+      "title": "MacOS блокирует совместное использование экрана",
+      "message": "Обновите параметры конфиденциальности, чтобы разрешить этому браузеру записывать ваш экран.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "failedToJoinCallGeneric": {
+      "title": "Не удалось присоединиться к вызову.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "failedToJoinCallInvalidMeetingLink": {
+      "title": "Не удалось присоединиться к собранию. Недопустимая ссылка.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "cameraFrozenForRemoteParticipants": {
+      "title": "У пользователей звонка возникли проблемы с просмотром видео",
+      "message": "Проверьте свои устройства и сеть.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "unableToStartVideoEffect": {
+      "title": "Не удалось применить эффект видео.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "startSpotlightWhileMaxParticipantsAreSpotlighted": {
+      "title": "Не удается запустить интересное для участников",
+      "message": "Максимальное число участников уже в фокусе.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "mutedByRemoteParticipant": {
+      "title": "Микрофон отключен другим участником.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "recordingStarted": {
+      "title": "Запись начата.",
+      "message": "Присоединяясь, вы даете согласие на транскрибирование этого собрания.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "transcriptionStarted": {
+      "title": "Транскрибирование запущено.",
+      "message": "Присоединяясь, вы даете согласие на транскрибирование этого собрания.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "recordingStopped": {
+      "title": "Сохранение записи.",
+      "message": "Запись прекращена.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "transcriptionStopped": {
+      "title": "Сохранение транскрибирования.",
+      "message": "Транскрибирование остановлено.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "recordingAndTranscriptionStarted": {
+      "title": "Начата запись и транскрибирование.",
+      "message": "Присоединяясь, вы даете согласие на транскрибирование этого собрания.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "recordingAndTranscriptionStopped": {
+      "title": "Сохранение записи и транскрибирования.",
+      "message": "Запись и транскрибирование остановлены.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "recordingStoppedStillTranscribing": {
+      "title": "Запись прекращена.",
+      "message": "Сейчас для этого собрания ведется только транскрибирование.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "transcriptionStoppedStillRecording": {
+      "title": "Транскрибирование остановлено.",
+      "message": "Сейчас для этого собрания ведется только запись.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "assignedBreakoutRoomOpened": {
+      "title": "Мы переместим вас в назначенную комнату через 5 секунд.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "assignedBreakoutRoomChanged": {
+      "title": "Переговорная комната изменилась",
+      "message": "Мы переместим вас в назначенную комнату через 5 секунд.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "assignedBreakoutRoomClosed": {
+      "title": "Ваша переговорная комната закрыта",
+      "message": "Мы перенастроим вас обратно на собрание через 5 секунд.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "assignedBreakoutRoomOpenedPromptJoin": {
+      "title": "Присоединиться к переговорной комнате?",
+      "message": "Вам назначена переговорная комната.",
+      "dismissButtonAriaLabel": "Закрыть",
+      "primaryButtonLabel": "Присоединиться к комнате",
+      "secondaryButtonLabel": "Позже"
+    },
+    "breakoutRoomJoined": {
+      "title": "Вы присоединились к переговорной комнате.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "breakoutRoomClosingSoon": {
+      "title": "Скоро будет достигнуто ограничение времени для комнаты.",
+      "message": "Эта комната будет закрыта через 30 секунд",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "capabilityTurnVideoOnPresent": {
+      "title": "Камера включена",
+      "message": "Включите этот параметр, если хотите демонстрировать видео.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "capabilityTurnVideoOnAbsent": {
+      "title": "Ваша камера отключена",
+      "message": "Вы больше не можете демонстрировать видео.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "capabilityUnmuteMicPresent": {
+      "title": "Ваш микрофон включен",
+      "message": "Включите микрофон, если хотите что-то сказать.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "capabilityUnmuteMicAbsent": {
+      "title": "Ваш микрофон отключен",
+      "message": "Вы больше не можете включать звук.",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "togetherModeStarted": {
+      "title": "Режим \"Вместе\" запущен",
+      "dismissButtonAriaLabel": "Закрыть"
+    },
+    "togetherModeEnded": {
+      "title": "Режим \"Вместе\" завершен",
+      "dismissButtonAriaLabel": "Закрыть"
+    }
+  },
+  "videoGallery": {
+    "screenIsBeingSharedMessage": "Вы демонстрируете свой экран",
+    "screenShareLoadingMessage": "Загрузка экрана пользователя {participant}",
+    "localScreenShareLoadingMessage": "Загрузка экрана",
+    "localVideoLabel": "Вы",
+    "localVideoCameraSwitcherLabel": "Переключить камеру",
+    "localVideoMovementLabel": "Перемещаемая локальная плитка видео",
+    "localVideoMovementAriaLabel": "Перемещаемая локальная плитка видео",
+    "localVideoSelectedDescription": "Выбрана камера {cameraName}",
+    "displayNamePlaceholder": "Участник без имени",
+    "fitRemoteParticipantToFrame": "Вписать в кадр",
+    "fillRemoteParticipantFrame": "Заполнить кадр",
+    "pinParticipantForMe": "Закрепить для меня",
+    "pinParticipantForMeLimitReached": "Закрепить (достигнуто ограничение)",
+    "unpinParticipantForMe": "Открепить",
+    "pinParticipantMenuItemAriaLabel": "Закрепить участника {participantName}",
+    "unpinParticipantMenuItemAriaLabel": "Открепить участника {participantName}",
+    "pinnedParticipantAnnouncementAriaLabel": "Участник {participantName} закреплен",
+    "unpinnedParticipantAnnouncementAriaLabel": "Участник {participantName} откреплен",
+    "startSpotlightVideoTileMenuLabel": "Закрепить видео для всех",
+    "addSpotlightVideoTileMenuLabel": "Добавить закрепление",
+    "spotlightLimitReachedMenuTitle": "Достигнуто предельное число закреплений",
+    "stopSpotlightVideoTileMenuLabel": "Не закреплять",
+    "stopSpotlightOnSelfVideoTileMenuLabel": "Открепить",
+    "attendeeRole": "Участник",
+    "muteParticipantMenuItemLabel": "Отключить микрофон",
+    "waitingScreenText": "Ожидание присоединения других участников",
+    "forbidAudio": "Отключить микрофон",
+    "permitAudio": "Разрешить использовать микрофон",
+    "forbidAudioTileMenuLabel": "Отключить микрофон",
+    "permitAudioTileMenuLabel": "Разрешить использовать микрофон",
+    "forbidVideo": "Выключить камеру",
+    "permitVideo": "Разрешить использовать камеру",
+    "forbidVideoTileMenuLabel": "Выключить камеру",
+    "permitVideoTileMenuLabel": "Разрешить использовать камеру"
+  },
+  "dialpad": {
+    "placeholderText": "Введите номер телефона",
+    "deleteButtonAriaLabel": "Удалить"
+  },
+  "holdButton": {
+    "onLabel": "Возобновить",
+    "offLabel": "Удержать",
+    "tooltipOnContent": "Возобновить звонок",
+    "tooltipOffContent": "Поставить звонок на удержание"
+  },
+  "videoTile": {
+    "participantStateRinging": "Выполняется вызов...",
+    "participantReconnecting": "Повторное подключение...",
+    "participantStateHold": "На удержании",
+    "moreOptionsButtonAriaLabel": "Дополнительные параметры {displayName} {isMuted} {micDisabledState} {cameraDisabledState} {isHandRaised} {state} {isSpeaking}",
+    "moreOptionsParticipantMutedStateMutedAriaLabel": "звук отключен",
+    "moreOptionsParticipantMutedStateUnmutedAriaLabel": "звук включен",
+    "moreOptionsParticipantHandRaisedAriaLabel": "Поднята рука",
+    "moreOptionsParticipantIsSpeakingAriaLabel": "Говорит",
+    "moreOptionsParticipantMicDisabledAriaLabel": "Микрофон отключен",
+    "moreOptionsParticipantCameraDisabledAriaLabel": "Камера отключена"
+  },
+  "CameraAndMicrophoneSitePermissionsRequest": {
+    "primaryText": "Разрешить {appName} использовать камеру и микрофон",
+    "secondaryText": "Это необходимо для того, чтобы участники могли видеть и слышать вас.",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок",
+    "primaryButtonText": "Продолжить без камеры и микрофона",
+    "ariaLabel": "Разрешить доступ к камере и микрофону"
+  },
+  "CameraSitePermissionsRequest": {
+    "primaryText": "Разрешите приложению {appName} использовать камеру",
+    "secondaryText": "Это необходимо для того, чтобы участники могли вас видеть.",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок",
+    "primaryButtonText": "Продолжить без камеры",
+    "ariaLabel": "Разрешить доступ к камере"
+  },
+  "MicrophoneSitePermissionsRequest": {
+    "primaryText": "Разрешите приложению {appName} использовать микрофон",
+    "secondaryText": "Это делается для того, чтобы участники могли вас слышать.",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок",
+    "primaryButtonText": "Продолжить без микрофона",
+    "ariaLabel": "Разрешить доступ к микрофону"
+  },
+  "CameraAndMicrophoneSitePermissionsCheck": {
+    "primaryText": "Проверка доступа к камере и микрофону",
+    "secondaryText": "Разрешить доступ при запросе. Это делается для того, чтобы участники могли вас видеть и слышать.",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок",
+    "primaryButtonText": "Продолжить без камеры и микрофона",
+    "ariaLabel": "Проверка доступа к камере и микрофону. Разрешить доступ при запросе."
+  },
+  "CameraSitePermissionsCheck": {
+    "primaryText": "Проверка доступа к камере",
+    "secondaryText": "Разрешить доступ при запросе. Это необходимо для того, чтобы участники могли вас видеть.",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок",
+    "primaryButtonText": "Продолжить без камеры",
+    "ariaLabel": "Проверка доступа к камере. Разрешить доступ при запросе."
+  },
+  "MicrophoneSitePermissionsCheck": {
+    "primaryText": "Проверка доступа к микрофону",
+    "secondaryText": "Разрешить доступ при запросе. Это делается для того, чтобы участники могли вас слышать.",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок",
+    "primaryButtonText": "Продолжить без микрофона",
+    "ariaLabel": "Проверка доступа к микрофону. Разрешить доступ при запросе."
+  },
+  "CameraAndMicrophoneSitePermissionsDenied": {
+    "primaryText": "Не удается получить доступ к камере и микрофону",
+    "secondaryText": "Щелкните значок блокировки в адресной строке, чтобы предоставить разрешение на доступ к микрофону для этой веб-страницы. Может потребоваться обновление страницы.",
+    "primaryButtonText": "Продолжить без камеры и микрофона",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок"
+  },
+  "CameraAndMicrophoneSitePermissionsDeniedSafari": {
+    "primaryText": "Не удается получить доступ к камере и микрофону",
+    "secondaryText": "Обновите страницу, чтобы предоставить разрешения, или проверьте параметры браузера и включите разрешения для этого веб-сайта.",
+    "primaryButtonText": "Продолжить без камеры и микрофона",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок"
+  },
+  "CameraSitePermissionsDenied": {
+    "primaryText": "Не удается получить доступ к камере",
+    "secondaryText": "Щелкните значок блокировки в адресной строке, чтобы предоставить разрешения камеры для этой веб-страницы. Может потребоваться обновить страницу.",
+    "primaryButtonText": "Продолжить без камеры",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок"
+  },
+  "MicrophoneSitePermissionsDenied": {
+    "primaryText": "Не удается получить доступ к микрофону",
+    "secondaryText": "Щелкните значок блокировки в адресной строке, чтобы предоставить разрешение на доступ к микрофону для этой веб-страницы. Может потребоваться обновление страницы.",
+    "primaryButtonText": "Продолжить без микрофона",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок"
+  },
+  "CameraSitePermissionsDeniedSafari": {
+    "primaryText": "Не удается получить доступ к камере",
+    "secondaryText": "Обновите страницу, чтобы предоставить разрешения, или проверьте параметры браузера и включите разрешения для этого веб-сайта.",
+    "primaryButtonText": "Продолжить без камеры",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок"
+  },
+  "MicrophoneSitePermissionsDeniedSafari": {
+    "primaryText": "Не удается получить доступ к микрофону",
+    "secondaryText": "Обновите страницу, чтобы предоставить разрешения, или проверьте параметры браузера и включите разрешения для этого веб-сайта.",
+    "primaryButtonText": "Продолжить без микрофона",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок"
+  },
+  "UnsupportedBrowser": {
+    "primaryText": "Браузер не поддерживается",
+    "secondaryText": "Присоединитесь к этому вызову с помощью совместимого браузера.",
+    "moreHelpLinkText": "См. требования к совместимости"
+  },
+  "UnsupportedBrowserVersion": {
+    "primaryText": "Необходимо обновление браузера",
+    "secondaryText": "Чтобы обеспечить наилучший возможный звонок, обновите браузер и попробуйте присоединиться к звонку еще раз.",
+    "moreHelpLinkText": "См. требования к совместимости",
+    "continueAnywayButtonText": "Начать звонок без обновления"
+  },
+  "UnsupportedOperatingSystem": {
+    "primaryText": "Операционная система не поддерживается",
+    "secondaryText": "Присоединитесь к этому вызову, используя устройство с совместимой операционной системой.",
+    "moreHelpLinkText": "См. требования к совместимости"
+  },
+  "BrowserPermissionDenied": {
+    "primaryText": "Не удается использовать камеру или микрофон",
+    "secondaryText": "Возможно, у вашего браузера нет доступа к камере или микрофону. Чтобы устранить эту проблему, откройте параметры системы.",
+    "primaryButtonText": "Повторить попытку",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок"
+  },
+  "BrowserPermissionDeniedIOS": {
+    "primaryText": "Разрешите доступ к микрофону, чтобы продолжить",
+    "secondaryText": "Таким образом, другие участники могут вас слышать.",
+    "primaryButtonText": "Повторить попытку",
+    "imageAltText": "Разрешение на доступ к микрофону и камере для iOS",
+    "linkText": "Нужна помощь? Получите справку по устранению неполадок",
+    "step1Text": "Перейдите в приложение \"Параметры\"",
+    "step2Text": "Прокрутите страницу вниз до параметров этого браузера",
+    "step3Text": "Включите микрофон (камера необязательна)",
+    "step4Text": "Попробуйте присоединиться к вызову еще раз",
+    "step1DigitText": "1",
+    "step2DigitText": "2",
+    "step3DigitText": "3",
+    "step4DigitText": "4"
+  },
+  "verticalGallery": {
+    "leftNavButtonAriaLabel": "предыдущая страница {current} из {total}",
+    "rightNavButtonAriaLabel": "следующая страница {current} из {total}"
+  },
+  "meetingConferencePhoneInfo": {
+    "meetingConferencePhoneInfoModalTitle": "Присоединиться к вызову с телефона",
+    "meetingConferencePhoneInfoModalDialIn": "Набрать номер",
+    "meetingConferencePhoneInfoModalMeetingId": "Введите идентификатор собрания",
+    "meetingConferencePhoneInfoModalWait": "Подождите, пока организатор допустит вас",
+    "meetingConferencePhoneInfoModalNoPhoneAvailable": "Нет доступных телефонов",
+    "meetingConferencePhoneInfoModalTollGeoData": "{country}, {city}",
+    "meetingConferencePhoneInfoModalTollFree": "(бесплатный)",
+    "meetingConferencePhoneInfoModalToll": "(платный)"
+  },
+  "IncomingCallNotification": {
+    "incomingCallNotificationPlaceholderId": "Неизвестный пользователь",
+    "incomingCallNotificationPlaceholderAlert": "{callerName} звонит",
+    "incomingCallNoticicationAcceptWithAudioAriaLabel": "Ответить голосом",
+    "incomingCallNoticicationAcceptWithVideoAriaLabel": "Принять видеозвонок",
+    "incomingCallNoticicationRejectAriaLabel": "Отклонить",
+    "incomingCallNotificationAcceptButtonLabel": "Принять",
+    "incomingCallNotificationRejectButtonLabel": "Отклонить",
+    "incomingCallNotificationAccceptWithVideoButtonLabel": "Ответить с видео",
+    "incomingCallNotificationDismissButtonAriaLabel": "Закрыть"
   }
 }

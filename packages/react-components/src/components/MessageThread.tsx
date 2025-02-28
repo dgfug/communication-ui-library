@@ -1,48 +1,70 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Chat, ChatItemProps, Flex, Ref, ShorthandValue } from '@fluentui/react-northstar';
+import { Icon, IStyle, mergeStyles, PrimaryButton } from '@fluentui/react';
+import { Chat } from '@fluentui-contrib/react-chat';
+import { mergeClasses, useArrowNavigationGroup } from '@fluentui/react-components';
 import {
   DownIconStyle,
   newMessageButtonContainerStyle,
   messageThreadContainerStyle,
-  chatStyle,
-  newMessageButtonStyle,
-  messageStatusContainerStyle,
-  noMessageStatusStyle
+  messageThreadWrapperContainerStyle,
+  useChatStyles,
+  buttonWithIconStyles,
+  newMessageButtonStyle
 } from './styles/MessageThread.styles';
-import { Icon, IStyle, mergeStyles, Persona, PersonaSize, PrimaryButton, Stack, IPersona } from '@fluentui/react';
-import { ComponentSlotStyle } from '@fluentui/react-northstar';
-import { LiveAnnouncer } from 'react-aria-live';
 import { delay } from './utils/delay';
 import {
-  BaseCustomStylesProps,
+  BaseCustomStyles,
   ChatMessage,
   CustomMessage,
   SystemMessage,
-  ChatMessagePayload,
-  CommunicationParticipant,
   OnRenderAvatarCallback,
-  SystemMessagePayload
+  Message,
+  ReadReceiptsBySenderId,
+  ComponentSlotStyle
 } from '../types';
-import { MessageStatusIndicator, MessageStatusIndicatorProps } from './MessageStatusIndicator';
+/* @conditional-compile-remove(data-loss-prevention) */
+import { BlockedMessage } from '../types';
+import { MessageStatusIndicatorProps } from './MessageStatusIndicator';
 import { memoizeFnAll, MessageStatus } from '@internal/acs-ui-common';
-import { SystemMessage as SystemMessageComponent, SystemMessageIconTypes } from './SystemMessage';
-import { ChatMessageComponent } from './ChatMessageComponent';
+/* @conditional-compile-remove(rich-text-editor-image-upload) */
+import { AttachmentMetadataInProgress } from '@internal/acs-ui-common';
+/* @conditional-compile-remove(file-sharing-acs) */
+import { MessageOptions } from '@internal/acs-ui-common';
 import { useLocale } from '../localization/LocalizationProvider';
+import { isNarrowWidth, _useContainerWidth } from './utils/responsive';
+import getParticipantsWhoHaveReadMessage from './utils/getParticipantsWhoHaveReadMessage';
+/* @conditional-compile-remove(file-sharing-acs) */
+import { AttachmentOptions } from '../types/Attachment';
+import { useTheme } from '../theming';
+import { FluentV9ThemeProvider } from './../theming/FluentV9ThemeProvider';
+import LiveAnnouncer from './Announcer/LiveAnnouncer';
+/* @conditional-compile-remove(mention) */
+import { MentionOptions } from './MentionPopover';
+import { createStyleFromV8Style } from './styles/v8StyleShim';
+import {
+  ChatMessageComponentWrapper,
+  ChatMessageComponentWrapperProps
+} from './ChatMessage/ChatMessageComponentWrapper';
+import { InlineImageOptions } from './ChatMessage/ChatMessageContent';
+import { MessageStatusIndicatorInternal } from './MessageStatusIndicatorInternal';
+import { Announcer } from './Announcer';
+/* @conditional-compile-remove(rich-text-editor) */
+import { RichTextEditorOptions, RichTextStrings } from './RichTextEditor/RichTextSendBox';
+/* @conditional-compile-remove(rich-text-editor) */
+import { loadChatMessageComponentAsRichTextEditBox } from './ChatMessage/MyMessageComponents/ChatMessageComponentAsEditBoxPicker';
 
-const NEW_MESSAGES = 'New Messages';
-
-const isMessageSame = (first: ChatMessagePayload, second: ChatMessagePayload): boolean => {
+const isMessageSame = (first: ChatMessage, second: ChatMessage): boolean => {
   return (
     first.messageId === second.messageId &&
     first.content === second.content &&
-    first.type === second.type &&
+    first.contentType === second.contentType &&
     JSON.stringify(first.createdOn) === JSON.stringify(second.createdOn) &&
     first.senderId === second.senderId &&
     first.senderDisplayName === second.senderDisplayName &&
-    first.status === second.status
+    JSON.stringify(first.editedOn) === JSON.stringify(second.editedOn)
   );
 };
 
@@ -51,49 +73,35 @@ const isMessageSame = (first: ChatMessagePayload, second: ChatMessagePayload): b
  *
  * @param messages
  */
-const getLatestChatMessage = (
-  messages: (ChatMessage | SystemMessage | CustomMessage)[]
-): ChatMessagePayload | undefined => {
-  let latestChatMessage: ChatMessagePayload | undefined = undefined;
+const getLatestChatMessage = (messages: Message[]): ChatMessage | undefined => {
   for (let i = messages.length - 1; i >= 0; i--) {
     const message = messages[i];
-    if (message.type === 'chat') {
-      const payload: ChatMessagePayload = message.payload;
-      if (payload.createdOn !== undefined) {
-        latestChatMessage = payload;
-        break;
-      }
+    if (message?.messageType === 'chat' && !!message.createdOn) {
+      return message;
     }
   }
-
-  return latestChatMessage;
+  return undefined;
 };
 
 /**
  * Compare latestMessageFromPreviousMessages & latestMessageFromNewMessages to see if the new message is not from
  * current user.
- *
- * @param latestMessageFromPreviousMessages
- * @param latestMessageFromNewMessages
- * @param userId
  */
 const isThereNewMessageNotFromCurrentUser = (
-  latestMessageFromPreviousMessages: ChatMessagePayload | undefined,
-  latestMessageFromNewMessages: ChatMessagePayload | undefined,
-  userId: string
+  userId: string,
+  latestMessageFromPreviousMessages?: ChatMessage,
+  latestMessageFromNewMessages?: ChatMessage
 ): boolean => {
   if (latestMessageFromNewMessages === undefined) {
     return false;
-  } else {
-    if (latestMessageFromPreviousMessages === undefined) {
-      return latestMessageFromNewMessages.senderId !== userId;
-    } else {
-      return (
-        !isMessageSame(latestMessageFromNewMessages, latestMessageFromPreviousMessages) &&
-        latestMessageFromNewMessages.senderId !== userId
-      );
-    }
   }
+  if (latestMessageFromPreviousMessages === undefined) {
+    return latestMessageFromNewMessages.senderId !== userId;
+  }
+  return (
+    !isMessageSame(latestMessageFromNewMessages, latestMessageFromPreviousMessages) &&
+    latestMessageFromNewMessages.senderId !== userId
+  );
 };
 
 /**
@@ -101,27 +109,22 @@ const isThereNewMessageNotFromCurrentUser = (
  * sender, messages that have failed to send, and messages from the current user that is marked as SEEN. This is meant
  * as an indirect way to detect if user is at bottom of the chat when the component updates with new messages. If we
  * updated this component due to current user sending a message we want to then call scrollToBottom.
- *
- * @param latestMessageFromPreviousMessages
- * @param latestMessageFromNewMessages
  */
 const didUserSendTheLatestMessage = (
-  latestMessageFromPreviousMessages: ChatMessagePayload | undefined,
-  latestMessageFromNewMessages: ChatMessagePayload | undefined,
-  userId: string
+  userId: string,
+  latestMessageFromPreviousMessages?: ChatMessage,
+  latestMessageFromNewMessages?: ChatMessage
 ): boolean => {
   if (latestMessageFromNewMessages === undefined) {
     return false;
-  } else {
-    if (latestMessageFromPreviousMessages === undefined) {
-      return latestMessageFromNewMessages.senderId === userId;
-    } else {
-      return (
-        !isMessageSame(latestMessageFromNewMessages, latestMessageFromPreviousMessages) &&
-        latestMessageFromNewMessages.senderId === userId
-      );
-    }
   }
+  if (latestMessageFromPreviousMessages === undefined) {
+    return latestMessageFromNewMessages.senderId === userId;
+  }
+  return (
+    !isMessageSame(latestMessageFromNewMessages, latestMessageFromPreviousMessages) &&
+    latestMessageFromNewMessages.senderId === userId
+  );
 };
 
 /**
@@ -129,17 +132,28 @@ const didUserSendTheLatestMessage = (
  *
  * @public
  */
-export interface MessageThreadStylesProps extends BaseCustomStylesProps {
+export interface MessageThreadStyles extends BaseCustomStyles {
   /** Styles for load previous messages container. */
   loadPreviousMessagesButtonContainer?: IStyle;
   /** Styles for new message container. */
   newMessageButtonContainer?: IStyle;
   /** Styles for chat container. */
   chatContainer?: ComponentSlotStyle;
+  /** styles for my chat items.  */
+  myChatItemMessageContainer?: ComponentSlotStyle;
+  /** styles for chat items.  */
+  chatItemMessageContainer?: ComponentSlotStyle;
+  /** Styles for my chat message container. */
+  myChatMessageContainer?: ComponentSlotStyle;
+  /** Styles for my chat message container in case of failure. */
+  failedMyChatMessageContainer?: ComponentSlotStyle;
   /** Styles for chat message container. */
   chatMessageContainer?: ComponentSlotStyle;
   /** Styles for system message container. */
   systemMessageContainer?: ComponentSlotStyle;
+  /** Styles for blocked message container. */
+  /* @conditional-compile-remove(data-loss-prevention) */
+  blockedMessageContainer?: ComponentSlotStyle;
   /** Styles for message status indicator container. */
   messageStatusContainer?: (mine: boolean) => IStyle;
 }
@@ -176,6 +190,56 @@ export interface MessageThreadStrings {
   editMessage: string;
   /** String for removing message in floating menu */
   removeMessage: string;
+  /** String for resending failed message in floating menu */
+  resendMessage?: string;
+  /** String for indicating failed to send messages */
+  failToSendTag?: string;
+  /** String for LiveMessage introduction for the Chat Message */
+  liveAuthorIntro: string;
+  /** String for LiveMessage introduction for the edited Chat Message by remote user */
+  editedMessageLiveAuthorIntro: string;
+  /** String for LiveMessage introduction for the edited Chat Message sent by local user */
+  editedMessageLocalUserLiveAuthorIntro: string;
+  /** String for aria text of remote user's message content */
+  messageContentAriaText: string;
+  /** String for aria text of local user's message content */
+  messageContentMineAriaText: string;
+  /** String for warning on text limit exceeded in EditBox*/
+  editBoxTextLimit: string;
+  /** String for placeholder text in EditBox when there is no user input*/
+  editBoxPlaceholderText: string;
+  /** String for new messages indicator*/
+  newMessagesIndicator: string;
+  /** String for showing message read status in floating menu */
+  messageReadCount?: string;
+  /** String for replacing display name when there is none*/
+  noDisplayNameSub: string;
+  /** String for Cancel button in EditBox*/
+  editBoxCancelButton: string;
+  /** String for Submit in EditBox when there is no user input*/
+  editBoxSubmitButton: string;
+  /** String for action menu indicating there are more options */
+  actionMenuMoreOptions?: string;
+  /** Aria label to announce when a message is deleted */
+  messageDeletedAnnouncementAriaLabel: string;
+  /* @conditional-compile-remove(file-sharing-acs) */
+  /** String for download attachment button in attachment card */
+  downloadAttachment: string;
+  /** String for open attachment button in attachment card */
+  openAttachment: string;
+  /* @conditional-compile-remove(data-loss-prevention) */
+  /** String for policy violation message removal */
+  blockedWarningText: string;
+  /* @conditional-compile-remove(data-loss-prevention) */
+  /** String for policy violation message removal details link */
+  blockedWarningLinkText: string;
+  /** String for aria text in attachment card group*/
+  attachmentCardGroupMessage: string;
+  /* @conditional-compile-remove(rich-text-editor-image-upload) */
+  /**
+   * Error message indicating that one or more image uploads are not complete.
+   */
+  imageUploadsPendingError: string;
 }
 
 /**
@@ -184,26 +248,24 @@ export interface MessageThreadStrings {
  * @public
  */
 export interface JumpToNewMessageButtonProps {
+  /** String for button text */
+  text: string;
+  /** Callback for when button is clicked */
   onClick: () => void;
 }
 
 const DefaultJumpToNewMessageButton = (props: JumpToNewMessageButtonProps): JSX.Element => {
-  const { onClick } = props;
+  const { text, onClick } = props;
   return (
-    <PrimaryButton className={newMessageButtonStyle} onClick={onClick}>
-      <Icon iconName="Down" className={DownIconStyle} />
-      {NEW_MESSAGES}
-    </PrimaryButton>
+    <PrimaryButton
+      className={newMessageButtonStyle}
+      styles={buttonWithIconStyles}
+      text={text}
+      onClick={onClick}
+      onRenderIcon={() => <Icon iconName="Down" className={DownIconStyle} />}
+    />
   );
 };
-
-const generateParticipantsStr = (participants: CommunicationParticipant[]): string =>
-  participants
-    .map(
-      (participant) =>
-        `${!participant.displayName || participant.displayName === '' ? 'No name' : participant.displayName}`
-    )
-    .join(', ');
 
 /**
  * A component to render a single message.
@@ -212,167 +274,107 @@ const generateParticipantsStr = (participants: CommunicationParticipant[]): stri
  */
 export type MessageRenderer = (props: MessageProps) => JSX.Element;
 
-const ParticipantSystemMessageComponent = ({
-  payload,
-  style
-}: {
-  payload: SystemMessagePayload<'participantAdded' | 'participantRemoved'>;
-  style?: ComponentSlotStyle;
-}): JSX.Element => {
-  const { strings } = useLocale();
-  const participantsStr = generateParticipantsStr(payload.participants);
-  const messageSuffix =
-    payload.type === 'participantAdded'
-      ? strings.messageThread.participantJoined
-      : strings.messageThread.participantLeft;
-
-  if (participantsStr !== '') {
-    return (
-      <SystemMessageComponent
-        iconName={(payload.iconName ?? '') as SystemMessageIconTypes}
-        content={`${participantsStr} ${messageSuffix}`}
-        containerStyle={style}
-      />
-    );
-  }
-  return <></>;
-};
-
-const DefaultSystemMessage: MessageRenderer = (props: MessageProps) => {
-  if (props.message.type === 'system') {
-    const payload = props.message.payload;
-    if (payload.type === 'content') {
-      return (
-        <SystemMessageComponent
-          iconName={(payload.iconName ?? '') as SystemMessageIconTypes}
-          content={payload.content ?? ''}
-          containerStyle={props?.messageContainerStyle}
-        />
-      );
-    }
-    if (payload.type === 'participantAdded' || payload.type === 'participantRemoved') {
-      return <ParticipantSystemMessageComponent payload={payload} style={props.messageContainerStyle} />;
-    }
-  }
-  return <></>;
-};
-
 const memoizeAllMessages = memoizeFnAll(
   (
-    _messageKey: string,
-    message: ChatMessage | SystemMessage | CustomMessage,
+    message: Message,
     showMessageDate: boolean,
     showMessageStatus: boolean,
-    onRenderAvatar: OnRenderAvatarCallback | undefined,
-    styles: MessageThreadStylesProps | undefined,
-    onRenderMessageStatus:
-      | ((messageStatusIndicatorProps: MessageStatusIndicatorProps) => JSX.Element | null)
-      | undefined,
-    defaultStatusRenderer: (status: MessageStatus) => JSX.Element,
-    defaultChatMessageRenderer: (message: MessageProps) => JSX.Element,
     strings: MessageThreadStrings,
-    _attached?: boolean | string,
-    statusToRender?: MessageStatus,
-    onRenderMessage?: (message: MessageProps, defaultOnRender?: MessageRenderer) => JSX.Element,
-    onUpdateMessage?: (messageId: string, content: string) => Promise<void>,
-    onDeleteMessage?: (messageId: string) => Promise<void>
-  ): ShorthandValue<ChatItemProps> => {
-    const messageProps: MessageProps = {
+    index: number,
+    onUpdateMessage?: UpdateMessageCallback,
+    onCancelEditMessage?: CancelEditCallback,
+    onDeleteMessage?: (messageId: string) => Promise<void>,
+    onSendMessage?: (
+      content: string,
+      /* @conditional-compile-remove(file-sharing-acs) */
+      options?: MessageOptions
+    ) => Promise<void>,
+    disableEditing?: boolean,
+    lastSeenChatMessage?: string,
+    lastSendingChatMessage?: string,
+    lastDeliveredChatMessage?: string
+  ): _ChatMessageProps => {
+    let key: string | undefined = message.messageId;
+    let statusToRender: MessageStatus | undefined = undefined;
+
+    if (
+      message.messageType === 'chat' ||
+      /* @conditional-compile-remove(data-loss-prevention) */ message.messageType === 'blocked'
+    ) {
+      if ((!message.messageId || message.messageId === '') && 'clientMessageId' in message) {
+        key = message.clientMessageId;
+      }
+      if (showMessageStatus && message.mine) {
+        switch (message.messageId) {
+          case lastSeenChatMessage: {
+            statusToRender = 'seen';
+            break;
+          }
+          case lastSendingChatMessage: {
+            statusToRender = 'sending';
+            break;
+          }
+          case lastDeliveredChatMessage: {
+            statusToRender = 'delivered';
+            break;
+          }
+        }
+      }
+      if (message.mine && message.status === 'failed') {
+        statusToRender = 'failed';
+      }
+    }
+    return {
+      key: key ?? 'id_' + index,
+      statusToRender,
       message,
       strings,
       showDate: showMessageDate,
       onUpdateMessage,
-      onDeleteMessage
+      onCancelEditMessage,
+      onDeleteMessage,
+      onSendMessage,
+      disableEditing,
+      showMessageStatus
     };
-
-    if (message.type === 'chat') {
-      const payload: ChatMessagePayload = message.payload;
-      messageProps.messageContainerStyle = styles?.chatMessageContainer;
-
-      const chatMessageComponent =
-        onRenderMessage === undefined
-          ? defaultChatMessageRenderer(messageProps)
-          : onRenderMessage(messageProps, defaultChatMessageRenderer);
-
-      const personaOptions: IPersona = {
-        text: payload.senderDisplayName,
-        hidePersonalDetails: true,
-        size: PersonaSize.size32
-      };
-
-      return {
-        gutter: payload.mine ? (
-          ''
-        ) : onRenderAvatar ? (
-          onRenderAvatar(payload.senderId ?? '', personaOptions)
-        ) : (
-          <Persona {...personaOptions} />
-        ),
-        contentPosition: payload.mine ? 'end' : 'start',
-        message: {
-          className: mergeStyles({ width: 'calc(100% - 6.25rem)' }),
-          content: (
-            <Flex hAlign={payload.mine ? 'end' : undefined} vAlign="end">
-              {chatMessageComponent}
-              <div
-                className={mergeStyles(
-                  messageStatusContainerStyle(payload.mine ?? false),
-                  styles?.messageStatusContainer ? styles.messageStatusContainer(payload.mine ?? false) : ''
-                )}
-              >
-                {showMessageStatus && statusToRender ? (
-                  onRenderMessageStatus ? (
-                    onRenderMessageStatus({ status: statusToRender })
-                  ) : (
-                    defaultStatusRenderer(statusToRender)
-                  )
-                ) : (
-                  <div className={mergeStyles(noMessageStatusStyle)} />
-                )}
-              </div>
-            </Flex>
-          )
-        },
-        attached: payload.attached,
-        key: _messageKey
-      };
-    } else if (message.type === 'system') {
-      messageProps.messageContainerStyle = styles?.systemMessageContainer;
-
-      const systemMessageComponent =
-        onRenderMessage === undefined ? (
-          <DefaultSystemMessage {...messageProps} />
-        ) : (
-          onRenderMessage(messageProps, (props) => <DefaultSystemMessage {...props} />)
-        );
-
-      return {
-        children: systemMessageComponent,
-        key: _messageKey
-      };
-    } else {
-      // We do not handle custom type message by default, users can handle custom type by using onRenderMessage function.
-      const customMessageComponent = onRenderMessage === undefined ? <></> : onRenderMessage(messageProps);
-      return {
-        children: customMessageComponent,
-        key: _messageKey
-      };
-    }
   }
 );
 
-const getLastChatMessageIdWithStatus = (
-  messages: (ChatMessage | SystemMessage | CustomMessage)[],
-  status: MessageStatus
-): string | undefined => {
+const getLastChatMessageIdWithStatus = (messages: Message[], status: MessageStatus): string | undefined => {
   for (let i = messages.length - 1; i >= 0; i--) {
     const message = messages[i];
-    if (message.type === 'chat' && message.payload.status === status && message.payload.mine) {
-      return message.payload.messageId;
+    if (message?.messageType === 'chat' && message.status === status && message.mine) {
+      return message.messageId;
     }
   }
   return undefined;
 };
+
+const getLastChatMessageForCurrentUser = (messages: Message[]): ChatMessage | undefined => {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const message = messages[i];
+    if (message?.messageType === 'chat' && message.mine) {
+      return message;
+    }
+  }
+  return undefined;
+};
+
+/**
+ * @public
+ * Callback function run when a message is updated.
+ */
+export type UpdateMessageCallback = (
+  messageId: string,
+  content: string,
+  /* @conditional-compile-remove(file-sharing-acs) */
+  options?: MessageOptions
+) => Promise<void>;
+/**
+ * @public
+ * Callback function run when a message edit is cancelled.
+ */
+export type CancelEditCallback = (messageId: string) => void;
 
 /**
  * Props for {@link MessageThread}.
@@ -385,9 +387,22 @@ export type MessageThreadProps = {
    */
   userId: string;
   /**
-   * Messages to render in message thread. A message can be of type `ChatMessage`, `SystemMessage` or `CustomMessage`.
+   * Messages to render in message thread. A message can be of type `ChatMessage`, `SystemMessage`, `BlockedMessage` or `CustomMessage`.
    */
-  messages: (ChatMessage | SystemMessage | CustomMessage)[];
+  messages: (
+    | ChatMessage
+    | SystemMessage
+    | CustomMessage
+    | /* @conditional-compile-remove(data-loss-prevention) */ BlockedMessage
+  )[];
+  /**
+   * number of participants in the thread
+   */
+  participantCount?: number;
+  /**
+   * read receipts for each sender in the chat
+   */
+  readReceiptsBySenderId?: ReadReceiptsBySenderId;
   /**
    * Allows users to pass an object containing custom CSS styles.
    * @Example
@@ -395,7 +410,7 @@ export type MessageThreadProps = {
    * <MessageThread styles={{ root: { background: 'blue' } }} />
    * ```
    */
-  styles?: MessageThreadStylesProps;
+  styles?: MessageThreadStyles;
   /**
    * Whether the new message button is disabled or not.
    *
@@ -404,6 +419,7 @@ export type MessageThreadProps = {
   disableJumpToNewMessageButton?: boolean;
   /**
    * Whether the date of each message is displayed or not.
+   * It is ignored when onDisplayDateTimeString is supplied.
    *
    * @defaultValue `false`
    */
@@ -441,8 +457,7 @@ export type MessageThreadProps = {
   /**
    * Optional callback to override render of the button for jumping to the new message.
    *
-   * @param newMessageButtonProps - button props of type JumpToNewMessageButtonProps
-   */
+   * @param newMessageButtonProps - button props of type JumpToNewMessageButtonProps 0  */
   onRenderJumpToNewMessageButton?: (newMessageButtonProps: JumpToNewMessageButtonProps) => JSX.Element;
   /**
    * Optional callback to override loading of previous messages.
@@ -460,7 +475,12 @@ export type MessageThreadProps = {
    * `messageRenderer` is not provided for `CustomMessage` and thus only available for `ChatMessage` and `SystemMessage`.
    */
   onRenderMessage?: (messageProps: MessageProps, messageRenderer?: MessageRenderer) => JSX.Element;
-
+  /* @conditional-compile-remove(file-sharing-acs) */
+  /**
+   * Optional callback to render attachments in the message component.
+   * @beta
+   */
+  onRenderAttachmentDownloads?: (message: ChatMessage) => JSX.Element;
   /**
    * Optional callback to edit a message.
    *
@@ -468,8 +488,14 @@ export type MessageThreadProps = {
    * @param content - new content of the message
    *
    */
-  onUpdateMessage?: (messageId: string, content: string) => Promise<void>;
+  onUpdateMessage?: UpdateMessageCallback;
 
+  /**
+   * Optional callback for when a message edit is cancelled.
+   *
+   * @param messageId - message id from chatClient
+   */
+  onCancelEditMessage?: CancelEditCallback;
   /**
    * Optional callback to delete a message.
    *
@@ -479,15 +505,104 @@ export type MessageThreadProps = {
   onDeleteMessage?: (messageId: string) => Promise<void>;
 
   /**
-   * Whether disable the editing feature, false by default
+   * Optional callback to send a message.
+   *
+   * @param content - message body to send
+   * @param options - message options to be included in the message
+   *
    */
-  editDisabled?: boolean;
+  onSendMessage?: (
+    content: string,
+    /* @conditional-compile-remove(file-sharing-acs) */
+    options?: MessageOptions
+  ) => Promise<void>;
+
+  /**
+  /**
+   * Disable editing messages.
+   *
+   * @remarks This removes the action menu on messages.
+   *
+   * @defaultValue `false`
+   */
+  disableEditing?: boolean;
 
   /**
    * Optional strings to override in component
    */
   strings?: Partial<MessageThreadStrings>;
+
+  /* @conditional-compile-remove(file-sharing-acs) */
+  /**
+   * @beta
+   * Optional attachment options, which defines behvaiour for uploading and downloading attachments.
+   * As this moment, the uploadOptions would be ignored and this option is intended for download only.
+   */
+  attachmentOptions?: AttachmentOptions;
+
+  /* @conditional-compile-remove(date-time-customization) */
+  /**
+   * Optional function to provide customized date format.
+   * @beta
+   */
+  onDisplayDateTimeString?: (messageDate: Date) => string;
+  /* @conditional-compile-remove(mention) */
+  /**
+   * Optional props needed to lookup a mention query and display mentions
+   * @beta
+   */
+  mentionOptions?: MentionOptions;
+  /**
+   * Optional callback called when an inline image is clicked.
+   * @beta
+   */
+  inlineImageOptions?: InlineImageOptions;
+
+  /* @conditional-compile-remove(rich-text-editor) */
+  /**
+   * Options to enable rich text editor for the edit box.
+   * @beta
+   */
+  richTextEditorOptions?: RichTextEditBoxOptions;
 };
+
+/* @conditional-compile-remove(rich-text-editor) */
+/**
+ * Options for the rich text editor edit box configuration.
+ *
+ * @beta
+ */
+export interface RichTextEditBoxOptions extends RichTextEditorOptions {
+  /* @conditional-compile-remove(rich-text-editor-image-upload) */
+  /**
+   * Optional callback to handle an inline image that's inserted in the rich text editor.
+   * When not provided, pasting images into rich text editor will be disabled.
+   * @param imageAttributes - attributes of the image such as id, src, style, etc.
+   *        It also contains the image file name which can be accessed through imageAttributes['data-image-file-name']
+   * @param messageId - the id of the message that the inlineImage belongs to.
+   */
+  onInsertInlineImage?: (imageAttributes: Record<string, string>, messageId: string) => void;
+  /* @conditional-compile-remove(rich-text-editor-image-upload) */
+  /**
+   * Optional callback invoked after inline image is removed from the UI.
+   * @param imageAttributes - attributes of the image such as id, src, style, etc.
+   *        It also contains the image file name which can be accessed through imageAttributes['data-image-file-name'].
+   *        Note that if the src attribute is a local blob url, it has been revoked at this point.
+   * @param messageId - the id of the message that the inlineImage belongs to.
+   */
+  onRemoveInlineImage?: (imageAttributes: Record<string, string>, messageId: string) => void;
+  /* @conditional-compile-remove(rich-text-editor-image-upload) */
+  /**
+   * Optional Record of type {@link AttachmentMetadataInProgress}
+   * to render the errorBar for inline images inserted in the MessageThread's edit boxes when:
+   *   - there is an error provided in the messagesInlineImagesWithProgress
+   *   - progress is less than 1 when the send button is clicked
+   *   - content html string is longer than the max allowed length.
+   *     (Note that the id and the url prop of the messagesInlineImagesWithProgress will be used as the id and src attribute of the content html
+   *     when calculating the content length, only for the purpose of displaying the content length overflow error.)
+   */
+  messagesInlineImagesWithProgress?: Record<string, AttachmentMetadataInProgress[]>;
+}
 
 /**
  * Props to render a single message.
@@ -498,13 +613,13 @@ export type MessageThreadProps = {
  */
 export type MessageProps = {
   /**
-   * Message to render. It can type `ChatMessage` or `SystemMessage` or `CustomMessage`.
+   * Message to render. It can type `ChatMessage` or `SystemMessage`, `BlockedMessage` or `CustomMessage`.
    */
-  message: ChatMessage | SystemMessage | CustomMessage;
+  message: Message;
   /**
    * Strings from parent MessageThread component
    */
-  strings: MessageThreadStrings;
+  strings: MessageThreadStrings & /* @conditional-compile-remove(rich-text-editor) */ Partial<RichTextStrings>;
   /**
    * Custom CSS styles for chat message container.
    */
@@ -516,18 +631,27 @@ export type MessageProps = {
    */
   showDate?: boolean;
   /**
-   * Whether edit feature is disabled or not
+   * Disable editing messages.
+   *
+   * @remarks This removes the action menu on messages.
+   *
+   * @defaultValue `false`
    */
-  editDisabled?: boolean;
+  disableEditing?: boolean;
   /**
    * Optional callback to edit a message.
    *
    * @param messageId - message id from chatClient
    * @param content - new content of the message
-   *
    */
-  onUpdateMessage?: (messageId: string, content: string) => Promise<void>;
+  onUpdateMessage?: UpdateMessageCallback;
 
+  /**
+   * Optional callback for when a message edit is cancelled.
+   *
+   * @param messageId - message id from chatClient
+   */
+  onCancelEditMessage?: CancelEditCallback;
   /**
    * Optional callback to delete a message.
    *
@@ -535,6 +659,28 @@ export type MessageProps = {
    *
    */
   onDeleteMessage?: (messageId: string) => Promise<void>;
+
+  /**
+   * Optional callback to send a message.
+   *
+   * @param content - message content from chatClient
+   * @param options - message options to be included in the message
+   *
+   */
+  onSendMessage?: (
+    content: string,
+    /* @conditional-compile-remove(file-sharing-acs) */
+    options?: MessageOptions
+  ) => Promise<void>;
+};
+
+/**
+ * @internal
+ */
+export type _ChatMessageProps = MessageProps & {
+  key: string;
+  statusToRender: MessageStatus | undefined;
+  showMessageStatus?: boolean;
 };
 
 /**
@@ -544,19 +690,39 @@ export type MessageProps = {
  * Users will need to provide at least chat messages and userId to render the `MessageThread` component.
  * Users can also customize `MessageThread` by passing in their own Avatar, `MessageStatusIndicator` icon, `JumpToNewMessageButton`, `LoadPreviousMessagesButton` and the behavior of these controls.
  *
- * `MessageThread` internally uses the `Chat` & `Chat.Message` component from `@fluentui/react-northstar`. You can checkout the details about these [two components](https://fluentsite.z22.web.core.windows.net/0.53.0/components/chat/props).
+ * `MessageThread` internally uses the `Chat` component from `@fluentui-contrib/chat`. You can checkout the details about these components [here](https://microsoft.github.io/fluentui-contrib/react-chat/).
  *
  * @public
  */
 export const MessageThread = (props: MessageThreadProps): JSX.Element => {
+  const theme = useTheme();
+
+  const chatBody = useMemo(() => {
+    return (
+      <FluentV9ThemeProvider v8Theme={theme}>
+        {/* Wrapper is required to call "useClasses" hook with proper context values */}
+        <MessageThreadWrapper {...props} />
+      </FluentV9ThemeProvider>
+    );
+  }, [theme, props]);
+
+  return <div className={mergeStyles(messageThreadContainerStyle, props.styles?.root)}>{chatBody}</div>;
+};
+
+/**
+ * @private
+ */
+export const MessageThreadWrapper = (props: MessageThreadProps): JSX.Element => {
   const {
     messages: newMessages,
     userId,
+    participantCount,
+    readReceiptsBySenderId,
     styles,
     disableJumpToNewMessageButton = false,
     showMessageDate = false,
     showMessageStatus = false,
-    numberOfChatMessagesToReload = 0,
+    numberOfChatMessagesToReload = 5,
     onMessageSeen,
     onRenderMessageStatus,
     onRenderAvatar,
@@ -564,10 +730,21 @@ export const MessageThread = (props: MessageThreadProps): JSX.Element => {
     onRenderJumpToNewMessageButton,
     onRenderMessage,
     onUpdateMessage,
-    onDeleteMessage
+    onCancelEditMessage,
+    onDeleteMessage,
+    onSendMessage,
+    /* @conditional-compile-remove(date-time-customization) */
+    onDisplayDateTimeString,
+    /* @conditional-compile-remove(mention) */
+    mentionOptions,
+    inlineImageOptions,
+    /* @conditional-compile-remove(file-sharing-acs) */
+    attachmentOptions,
+    /* @conditional-compile-remove(file-sharing-acs) */
+    onRenderAttachmentDownloads,
+    /* @conditional-compile-remove(rich-text-editor) */
+    richTextEditorOptions
   } = props;
-
-  const [messages, setMessages] = useState<(ChatMessage | SystemMessage | CustomMessage)[]>([]);
   // We need this state to wait for one tick and scroll to bottom after messages have been initialized.
   // Otherwise chatScrollDivRef.current.clientHeight is wrong if we scroll to bottom before messages are initialized.
   const [chatMessagesInitialized, setChatMessagesInitialized] = useState<boolean>(false);
@@ -575,27 +752,99 @@ export const MessageThread = (props: MessageThreadProps): JSX.Element => {
   const [forceUpdate, setForceUpdate] = useState<number>(0);
 
   // Used to decide if should auto scroll to bottom or show "new message" button
-  const [latestPreviousChatMessage, setLatestPreviousChatMessage] = useState<ChatMessagePayload | undefined>(undefined);
-  const [latestCurrentChatMessage, setLatestCurrentChatMessage] = useState<ChatMessagePayload | undefined>(undefined);
+  const [latestPreviousChatMessage, setLatestPreviousChatMessage] = useState<ChatMessage | undefined>(undefined);
+  const [latestCurrentChatMessage, setLatestCurrentChatMessage] = useState<ChatMessage | undefined>(undefined);
   const [existsNewChatMessage, setExistsNewChatMessage] = useState<boolean>(false);
 
   const [lastSeenChatMessage, setLastSeenChatMessage] = useState<string | undefined>(undefined);
   const [lastDeliveredChatMessage, setLastDeliveredChatMessage] = useState<string | undefined>(undefined);
   const [lastSendingChatMessage, setLastSendingChatMessage] = useState<string | undefined>(undefined);
 
+  // readCount and participantCount will only need to be updated on-fly when user hover on an indicator
+  const [readCountForHoveredIndicator, setReadCountForHoveredIndicator] = useState<number | undefined>(undefined);
+
+  const localeStrings = useLocale().strings.messageThread;
+  const strings = useMemo(() => ({ ...localeStrings, ...props.strings }), [localeStrings, props.strings]);
+  // it is required to use useState for messages
+  // as the scrolling logic requires re - render at a specific point in time
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  // id for the latest deleted message
+  const [latestDeletedMessageId, setLatestDeletedMessageId] = useState<string | undefined>(undefined);
+  // this value is used to check if a message is deleted for the previous value of messages array
+  const previousMessagesRef = useRef<Message[]>([]);
+  // an aria label for Narrator to notify when a message is deleted
+  const [deletedMessageAriaLabel, setDeletedMessageAriaLabel] = useState<string | undefined>(undefined);
+  /* @conditional-compile-remove(rich-text-editor) */
+  useEffect(() => {
+    // if rich text editor is enabled, the rich text editor component should be loaded early for good UX
+    if (richTextEditorOptions !== undefined) {
+      // this line is needed to load the Rooster JS dependencies early in the lifecycle
+      // when the rich text editor is enabled
+      loadChatMessageComponentAsRichTextEditBox();
+    }
+  }, [richTextEditorOptions]);
+
+  const onDeleteMessageCallback = useCallback(
+    async (messageId: string): Promise<void> => {
+      if (!onDeleteMessage) {
+        return;
+      }
+      try {
+        // reset deleted message label in case if there was a value already (messages are deleted 1 after another)
+        setDeletedMessageAriaLabel(undefined);
+        setLatestDeletedMessageId(messageId);
+        lastChatMessageStatus.current = 'deleted';
+        // we should set up latestDeletedMessageId before the onDeleteMessage call
+        // as otherwise in very rare cases the messages array can be updated before latestDeletedMessageId
+        await onDeleteMessage(messageId);
+      } catch (e) {
+        console.log('onDeleteMessage failed: messageId', messageId, 'error', e);
+      }
+    },
+    [onDeleteMessage]
+  );
+
   const isAllChatMessagesLoadedRef = useRef(false);
+  // isAllChatMessagesLoadedRef needs to be updated every time when a new adapter is set in order to display correct data
+  // onLoadPreviousChatMessages is updated when a new adapter is set
+  useEffect(() => {
+    if (onLoadPreviousChatMessages) {
+      isAllChatMessagesLoadedRef.current = false;
+    }
+  }, [onLoadPreviousChatMessages]);
 
   const previousTopRef = useRef<number>(-1);
   const previousHeightRef = useRef<number>(-1);
 
   const messageIdSeenByMeRef = useRef<string>('');
 
-  const chatScrollDivRef = useRef<HTMLElement>(null);
-  const chatThreadRef = useRef<HTMLElement>(null);
+  const chatScrollDivRef = useRef<HTMLDivElement>(null);
   const isLoadingChatMessagesRef = useRef(false);
 
+  useEffect(() => {
+    if (latestDeletedMessageId === undefined) {
+      setDeletedMessageAriaLabel(undefined);
+    } else {
+      if (!previousMessagesRef.current.find((message) => message.messageId === latestDeletedMessageId)) {
+        // the message is deleted in previousMessagesRef
+        // no need to update deletedMessageAriaLabel
+        setDeletedMessageAriaLabel(undefined);
+      } else if (!messages.find((message) => message.messageId === latestDeletedMessageId)) {
+        // the message is deleted in messages array but still exists in previousMessagesRef
+        // update deletedMessageAriaLabel
+        setDeletedMessageAriaLabel(strings.messageDeletedAnnouncementAriaLabel);
+      } else {
+        // the message exists in both arrays
+        // no need to update deletedMessageAriaLabel
+        setDeletedMessageAriaLabel(undefined);
+      }
+    }
+    previousMessagesRef.current = messages;
+  }, [latestDeletedMessageId, messages, strings.messageDeletedAnnouncementAriaLabel]);
+
   const messagesRef = useRef(messages);
-  const setMessagesRef = (messagesWithAttachedValue: (ChatMessage | SystemMessage | CustomMessage)[]): void => {
+  const setMessagesRef = (messagesWithAttachedValue: Message[]): void => {
     messagesRef.current = messagesWithAttachedValue;
     setMessages(messagesWithAttachedValue);
   };
@@ -612,6 +861,21 @@ export const MessageThread = (props: MessageThreadProps): JSX.Element => {
     setChatMessagesInitialized(chatMessagesInitialized);
   };
 
+  const chatThreadRef = useRef<HTMLDivElement>(null);
+
+  // When the chat thread is narrow, we perform space optimizations such as overlapping
+  // the avatar on top of the chat message and moving the chat accept/reject edit buttons
+  // to a new line
+  const chatThreadWidth = _useContainerWidth(chatThreadRef);
+  const isNarrow = chatThreadWidth ? isNarrowWidth(chatThreadWidth) : false;
+
+  /**
+   * ClientHeight controls the number of messages to render. However ClientHeight will not be initialized after the
+   * first render (not sure but I guess Fluent is updating it in hook which is after render maybe?) so we need to
+   * trigger a re-render until ClientHeight is initialized. This force re-render should only happen once.
+   */
+  const clientHeight = chatThreadRef.current?.clientHeight;
+
   // we try to only send those message status if user is scrolled to the bottom.
   const sendMessageStatusIfAtBottom = useCallback(async (): Promise<void> => {
     if (
@@ -624,22 +888,21 @@ export const MessageThread = (props: MessageThreadProps): JSX.Element => {
       return;
     }
     const messagesWithId = messagesRef.current.filter((message) => {
-      return message.type === 'chat' && !message.payload.mine && !!message.payload.messageId;
+      return message.messageType === 'chat' && !message.mine && !!message.messageId;
     });
     if (messagesWithId.length === 0) {
       return;
     }
     const lastMessage: ChatMessage = messagesWithId[messagesWithId.length - 1] as ChatMessage;
-
     try {
       if (
         onMessageSeen &&
         lastMessage &&
-        lastMessage.payload.messageId &&
-        lastMessage.payload.messageId !== messageIdSeenByMeRef.current
+        lastMessage.messageId &&
+        lastMessage.messageId !== messageIdSeenByMeRef.current
       ) {
-        await onMessageSeen(lastMessage.payload.messageId);
-        messageIdSeenByMeRef.current = lastMessage.payload.messageId;
+        await onMessageSeen(lastMessage.messageId);
+        messageIdSeenByMeRef.current = lastMessage.messageId;
       }
     } catch (e) {
       console.log('onMessageSeen Error', lastMessage, e);
@@ -661,7 +924,7 @@ export const MessageThread = (props: MessageThreadProps): JSX.Element => {
     }
 
     const atBottom =
-      Math.floor(chatScrollDivRef.current.scrollTop) >=
+      Math.ceil(chatScrollDivRef.current.scrollTop) >=
       chatScrollDivRef.current.scrollHeight - chatScrollDivRef.current.clientHeight;
     if (atBottom) {
       sendMessageStatusIfAtBottom();
@@ -674,45 +937,45 @@ export const MessageThread = (props: MessageThreadProps): JSX.Element => {
 
   // Infinite scrolling + threadInitialize function
   const fetchNewMessageWhenAtTop = useCallback(async () => {
-    if (chatScrollDivRef.current && !isLoadingChatMessagesRef.current) {
+    if (!isLoadingChatMessagesRef.current) {
       if (onLoadPreviousChatMessages) {
         isLoadingChatMessagesRef.current = true;
-        // Fetch message until scrollTop reach the threshold for fetching new message
-        while (!isAllChatMessagesLoadedRef.current && chatScrollDivRef.current.scrollTop <= 500) {
-          isAllChatMessagesLoadedRef.current = await onLoadPreviousChatMessages(numberOfChatMessagesToReload);
-          // Release CPU resources for 200 milliseconds between each loop.
-          await delay(200);
+        try {
+          // Fetch message until scrollTop reach the threshold for fetching new message
+          while (
+            !isAllChatMessagesLoadedRef.current &&
+            chatScrollDivRef.current &&
+            chatScrollDivRef.current.scrollTop <= 500
+          ) {
+            isAllChatMessagesLoadedRef.current = await onLoadPreviousChatMessages(numberOfChatMessagesToReload);
+            await delay(200);
+          }
+        } finally {
+          // Set isLoadingChatMessagesRef to false after messages are fetched
+          isLoadingChatMessagesRef.current = false;
         }
-        isLoadingChatMessagesRef.current = false;
       }
     }
   }, [numberOfChatMessagesToReload, onLoadPreviousChatMessages]);
-
-  const handleInfiniteScroll = useCallback((): void => {
-    if (!chatScrollDivRef.current) {
-      return;
-    }
-
-    fetchNewMessageWhenAtTop();
-  }, [fetchNewMessageWhenAtTop]);
 
   // The below 2 of useEffects are design for fixing infinite scrolling problem
   // Scrolling element will behave differently when scrollTop = 0(it sticks at the top)
   // we need to get previousTop before it prepend contents
   // Execute order [newMessage useEffect] => get previousTop => dom update => [messages useEffect]
   useEffect(() => {
-    if (!chatScrollDivRef.current) return;
+    if (!chatScrollDivRef.current) {
+      return;
+    }
     previousTopRef.current = chatScrollDivRef.current.scrollTop;
     previousHeightRef.current = chatScrollDivRef.current.scrollHeight;
   }, [newMessages]);
 
   useEffect(() => {
-    if (!chatScrollDivRef.current) return;
-    if (previousTopRef.current === 0) {
-      const currentHeight = chatScrollDivRef.current.scrollHeight;
-      chatScrollDivRef.current.scrollTop =
-        chatScrollDivRef.current.scrollTop + currentHeight - previousHeightRef.current;
+    if (!chatScrollDivRef.current) {
+      return;
     }
+    chatScrollDivRef.current.scrollTop =
+      chatScrollDivRef.current.scrollHeight - (previousHeightRef.current - previousTopRef.current);
   }, [messages]);
 
   // Fetch more messages to make the scroll bar appear, infinity scroll is then handled in the handleScroll function.
@@ -736,20 +999,14 @@ export const MessageThread = (props: MessageThreadProps): JSX.Element => {
   useEffect(() => {
     const chatScrollDiv = chatScrollDivRef.current;
     chatScrollDiv?.addEventListener('scroll', handleScrollToTheBottom);
-    chatScrollDiv?.addEventListener('scroll', handleInfiniteScroll);
+    chatScrollDiv?.addEventListener('scroll', fetchNewMessageWhenAtTop);
 
     return () => {
       chatScrollDiv?.removeEventListener('scroll', handleScrollToTheBottom);
-      chatScrollDiv?.removeEventListener('scroll', handleInfiniteScroll);
+      chatScrollDiv?.removeEventListener('scroll', fetchNewMessageWhenAtTop);
     };
-  }, [handleInfiniteScroll, handleScrollToTheBottom]);
+  }, [fetchNewMessageWhenAtTop, handleScrollToTheBottom]);
 
-  /**
-   * ClientHeight controls the number of messages to render. However ClientHeight will not be initialized after the
-   * first render (not sure but I guess Fluent is updating it in hook which is after render maybe?) so we need to
-   * trigger a re-render until ClientHeight is initialized. This force re-render should only happen once.
-   */
-  const clientHeight = chatThreadRef.current?.clientHeight;
   useEffect(() => {
     if (clientHeight === undefined) {
       setForceUpdate(forceUpdate + 1);
@@ -758,6 +1015,21 @@ export const MessageThread = (props: MessageThreadProps): JSX.Element => {
     // Only scroll to bottom if isAtBottomOfScrollRef is true
     isAtBottomOfScrollRef.current && scrollToBottom();
   }, [clientHeight, forceUpdate, scrollToBottom, chatMessagesInitialized]);
+  useEffect(() => {
+    const newStatus = getLastChatMessageForCurrentUser(newMessages)?.status;
+    if (newStatus !== undefined) {
+      if (lastChatMessageStatus.current === 'deleted' && newStatus === 'sending') {
+        // enforce message life cycle
+        // message status should always be [ sending -> delivered -> seen (optional) -> deleted ] or [sending -> failed -> deleted]
+        // not any other way around
+        // therefore, if current message status is deleted, we should only update it if newStatus is sending
+        lastChatMessageStatus.current = newStatus;
+      } else if (lastChatMessageStatus.current !== 'deleted') {
+        lastChatMessageStatus.current = newStatus;
+      }
+    }
+    // The hook should depend on newMessages not on messages as otherwise it will skip the sending status for a first message
+  }, [newMessages]);
 
   /**
    * This needs to run to update latestPreviousChatMessage & latestCurrentChatMessage.
@@ -774,17 +1046,17 @@ export const MessageThread = (props: MessageThreadProps): JSX.Element => {
   }, [newMessages]);
 
   /**
-   * This needs to run after messages are rendererd so we can manipulate the scroll bar.
+   * This needs to run after messages are rendered so we can manipulate the scroll bar.
    */
   useEffect(() => {
     // If user just sent the latest message then we assume we can move user to bottom of scroll.
     if (
-      isThereNewMessageNotFromCurrentUser(latestPreviousChatMessage, latestCurrentChatMessage, userId) &&
+      isThereNewMessageNotFromCurrentUser(userId, latestPreviousChatMessage, latestCurrentChatMessage) &&
       !isAtBottomOfScrollRef.current
     ) {
       setExistsNewChatMessage(true);
     } else if (
-      didUserSendTheLatestMessage(latestPreviousChatMessage, latestCurrentChatMessage, userId) ||
+      didUserSendTheLatestMessage(userId, latestPreviousChatMessage, latestCurrentChatMessage) ||
       isAtBottomOfScrollRef.current
     ) {
       scrollToBottom();
@@ -792,122 +1064,175 @@ export const MessageThread = (props: MessageThreadProps): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
-  // To rerender the defaultChatMessageRenderer if app running across days(every new day chat time stamp need to be regenerated)
-  const defaultChatMessageRenderer = useCallback(
-    (messageProps: MessageProps) => {
-      if (messageProps.message.type === 'chat') {
-        return <ChatMessageComponent {...messageProps} message={messageProps.message} />;
+  const lastChatMessageStatus = useRef<string | undefined>(undefined);
+  const participantCountRef = useRef(participantCount);
+  const readReceiptsBySenderIdRef = useRef(readReceiptsBySenderId);
+
+  participantCountRef.current = participantCount;
+  readReceiptsBySenderIdRef.current = readReceiptsBySenderId;
+
+  const onActionButtonClickMemo = useCallback(
+    (message: ChatMessage, setMessageReadBy: (readBy: { id: string; displayName: string }[]) => void) => {
+      if (participantCountRef.current && participantCountRef.current - 1 > 1 && readReceiptsBySenderIdRef.current) {
+        setMessageReadBy(getParticipantsWhoHaveReadMessage(message, readReceiptsBySenderIdRef.current));
       }
-      return <></>;
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [new Date().toDateString()]
-  );
-
-  const localeStrings = useLocale().strings.messageThread;
-  const strings = useMemo(() => ({ ...localeStrings, ...props.strings }), [localeStrings, props.strings]);
-
-  const defaultStatusRenderer: (status: MessageStatus) => JSX.Element = useCallback(
-    (status: MessageStatus) => <MessageStatusIndicator status={status} />,
     []
   );
 
-  const messagesToDisplay = useMemo(
-    () =>
-      memoizeAllMessages((memoizedMessageFn) => {
-        return messages.map(
-          (message: ChatMessage | SystemMessage | CustomMessage, index: number): ShorthandValue<ChatItemProps> => {
-            let key: string | undefined = message.payload.messageId;
-            if (message.type === 'chat' && (!message.payload.messageId || message.payload.messageId === '')) {
-              key = message.payload.clientMessageId;
-            }
+  const defaultStatusRenderer = useCallback(
+    (
+      message: ChatMessage | /* @conditional-compile-remove(data-loss-prevention) */ BlockedMessage,
+      participantCount: number,
+      readCount: number,
+      status?: MessageStatus
+    ) => {
+      // we should only announce label if the message status isn't deleted
+      // because after message is deleted, we now need to render statusIndicator for previous messages
+      // and their status has been announced already and we should not announce them again
+      const shouldAnnounce = lastChatMessageStatus.current !== 'deleted';
 
-            let statusToRender: MessageStatus | undefined = undefined;
-            if (message.type === 'chat') {
-              if (showMessageStatus && message.payload.mine) {
-                switch (message.payload.messageId) {
-                  case lastSeenChatMessage: {
-                    statusToRender = 'seen';
-                    break;
-                  }
-                  case lastSendingChatMessage: {
-                    statusToRender = 'sending';
-                    break;
-                  }
-                  case lastDeliveredChatMessage: {
-                    statusToRender = 'delivered';
-                    break;
-                  }
-                }
-              }
-              if (message.payload.mine && message.payload.status === 'failed') statusToRender = 'failed';
-            }
-
-            console.log('function: ' + onUpdateMessage);
-
-            return memoizedMessageFn(
-              key ?? 'id_' + index,
-              message,
-              showMessageDate,
-              showMessageStatus,
-              onRenderAvatar,
-              styles,
-              onRenderMessageStatus,
-              defaultStatusRenderer,
-              defaultChatMessageRenderer,
-              strings,
-              // Temporary solution to make sure we re-render if attach attribute is changed.
-              // The proper fix should be in selector.
-              message.type === 'chat' ? message.payload.attached : undefined,
-              statusToRender,
-              onRenderMessage,
-              onUpdateMessage,
-              onDeleteMessage
-            );
-          }
-        );
-      }),
-    [
-      messages,
-      showMessageDate,
-      showMessageStatus,
-      onRenderAvatar,
-      styles,
-      onRenderMessageStatus,
-      defaultStatusRenderer,
-      defaultChatMessageRenderer,
-      lastSeenChatMessage,
-      lastSendingChatMessage,
-      lastDeliveredChatMessage,
-      onRenderMessage,
-      onUpdateMessage,
-      onDeleteMessage,
-      strings
-    ]
+      const onToggleToolTip = (isToggled: boolean): void => {
+        if (isToggled && readReceiptsBySenderIdRef.current) {
+          setReadCountForHoveredIndicator(
+            getParticipantsWhoHaveReadMessage(message, readReceiptsBySenderIdRef.current).length
+          );
+        } else {
+          setReadCountForHoveredIndicator(undefined);
+        }
+      };
+      return (
+        <MessageStatusIndicatorInternal
+          status={status}
+          readCount={readCount}
+          onToggleToolTip={onToggleToolTip}
+          // -1 because participant count does not include myself
+          remoteParticipantsCount={participantCount ? participantCount - 1 : 0}
+          shouldAnnounce={shouldAnnounce}
+        />
+      );
+    },
+    []
   );
 
-  const chatBody = useMemo(() => {
-    return (
-      <LiveAnnouncer>
-        <Chat styles={styles?.chatContainer ?? chatStyle} items={messagesToDisplay} />
-      </LiveAnnouncer>
-    );
-  }, [styles?.chatContainer, messagesToDisplay]);
+  const theme = useTheme();
+
+  const messagesToDisplay = useMemo(() => {
+    return memoizeAllMessages((memoizedMessageFn) => {
+      return messages.map((message: Message, index: number): _ChatMessageProps => {
+        return memoizedMessageFn(
+          message,
+          showMessageDate,
+          showMessageStatus,
+          strings,
+          index,
+          onUpdateMessage,
+          onCancelEditMessage,
+          onDeleteMessageCallback,
+          onSendMessage,
+          props.disableEditing,
+          lastDeliveredChatMessage,
+          lastSeenChatMessage,
+          lastSendingChatMessage
+        );
+      });
+    });
+  }, [
+    lastDeliveredChatMessage,
+    lastSeenChatMessage,
+    lastSendingChatMessage,
+    messages,
+    onCancelEditMessage,
+    onDeleteMessageCallback,
+    onSendMessage,
+    onUpdateMessage,
+    props.disableEditing,
+    showMessageDate,
+    showMessageStatus,
+    strings
+  ]);
+
+  const classes = useChatStyles();
+  const chatArrowNavigationAttributes = useArrowNavigationGroup({ axis: 'vertical', memorizeCurrent: false });
 
   return (
-    <Ref innerRef={chatThreadRef}>
-      <Stack className={mergeStyles(messageThreadContainerStyle, styles?.root)} grow>
-        <Ref innerRef={chatScrollDivRef}>{chatBody}</Ref>
-        {existsNewChatMessage && !disableJumpToNewMessageButton && (
-          <div className={mergeStyles(newMessageButtonContainerStyle, styles?.newMessageButtonContainer)}>
-            {onRenderJumpToNewMessageButton ? (
-              onRenderJumpToNewMessageButton({ onClick: scrollToBottom })
-            ) : (
-              <DefaultJumpToNewMessageButton onClick={scrollToBottom} />
+    <div className={mergeStyles(messageThreadWrapperContainerStyle)} ref={chatThreadRef}>
+      {/* Always ensure New Messages button is above the chat body element in the DOM tree. This is to ensure correct
+        tab ordering. Because the New Messages button floats on top of the chat body it is in a higher z-index and
+        thus Users should be able to tab navigate to the new messages button _before_ tab focus is taken to the chat body.*/}
+      {existsNewChatMessage && !disableJumpToNewMessageButton && (
+        <div className={mergeStyles(newMessageButtonContainerStyle, styles?.newMessageButtonContainer)}>
+          {onRenderJumpToNewMessageButton ? (
+            onRenderJumpToNewMessageButton({ text: strings.newMessagesIndicator, onClick: scrollToBottom })
+          ) : (
+            <DefaultJumpToNewMessageButton text={strings.newMessagesIndicator} onClick={scrollToBottom} />
+          )}
+        </div>
+      )}
+      <LiveAnnouncer>
+        <FluentV9ThemeProvider v8Theme={theme}>
+          <Chat
+            // styles?.chatContainer used in className and style prop as style prop can't handle CSS selectors
+            className={mergeClasses(classes.root, mergeStyles(styles?.chatContainer))}
+            ref={chatScrollDivRef}
+            style={{ ...createStyleFromV8Style(styles?.chatContainer) }}
+            {...chatArrowNavigationAttributes}
+          >
+            {latestDeletedMessageId && (
+              <Announcer
+                key={latestDeletedMessageId}
+                announcementString={deletedMessageAriaLabel}
+                ariaLive={'polite'}
+              />
             )}
-          </div>
-        )}
-      </Stack>
-    </Ref>
+            {messagesToDisplay.map((message: _ChatMessageProps): JSX.Element => {
+              return (
+                <MemoChatMessageComponentWrapper
+                  {...message}
+                  userId={userId}
+                  key={message.key}
+                  styles={styles}
+                  shouldOverlapAvatarAndMessage={isNarrow}
+                  strings={strings}
+                  onRenderAvatar={onRenderAvatar}
+                  onRenderMessage={onRenderMessage}
+                  onRenderMessageStatus={onRenderMessageStatus}
+                  defaultStatusRenderer={defaultStatusRenderer}
+                  onActionButtonClick={onActionButtonClickMemo}
+                  readCount={readCountForHoveredIndicator}
+                  participantCount={participantCount}
+                  /* @conditional-compile-remove(file-sharing-acs) */
+                  actionsForAttachment={attachmentOptions?.downloadOptions?.actionsForAttachment}
+                  inlineImageOptions={inlineImageOptions}
+                  /* @conditional-compile-remove(date-time-customization) */
+                  onDisplayDateTimeString={onDisplayDateTimeString}
+                  /* @conditional-compile-remove(mention) */
+                  mentionOptions={mentionOptions}
+                  /* @conditional-compile-remove(file-sharing-acs) */
+                  onRenderAttachmentDownloads={onRenderAttachmentDownloads}
+                  /* @conditional-compile-remove(rich-text-editor) */
+                  isRichTextEditorEnabled={!!richTextEditorOptions}
+                  /* @conditional-compile-remove(rich-text-editor-image-upload) */
+                  onPaste={richTextEditorOptions?.onPaste}
+                  /* @conditional-compile-remove(rich-text-editor-image-upload) */
+                  onInsertInlineImage={richTextEditorOptions?.onInsertInlineImage}
+                  /* @conditional-compile-remove(rich-text-editor-image-upload) */
+                  inlineImagesWithProgress={
+                    richTextEditorOptions?.messagesInlineImagesWithProgress &&
+                    richTextEditorOptions?.messagesInlineImagesWithProgress[message.message.messageId]
+                  }
+                  /* @conditional-compile-remove(rich-text-editor-image-upload) */
+                  onRemoveInlineImage={richTextEditorOptions?.onRemoveInlineImage}
+                />
+              );
+            })}
+          </Chat>
+        </FluentV9ThemeProvider>
+      </LiveAnnouncer>
+    </div>
   );
 };
+
+const MemoChatMessageComponentWrapper = React.memo((obj: ChatMessageComponentWrapperProps): JSX.Element => {
+  return <ChatMessageComponentWrapper {...obj} />;
+});

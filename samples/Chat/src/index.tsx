@@ -1,20 +1,25 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './app/App';
 import { SwitchableFluentThemeProvider } from './app/theming/SwitchableFluentThemeProvider';
+import { ShakeToSendLogs } from './app/utils/ShakeToSendLogs';
 
-if (document.getElementById('root') !== undefined) {
-  ReactDOM.render(
+const domNode = document.getElementById('root');
+if (!domNode) {
+  throw new Error('Failed to find the root element');
+}
+
+createRoot(domNode).render(
+  <React.StrictMode>
     <SwitchableFluentThemeProvider scopeId="SampleChatApp">
-      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
       <div className="wrapper">
         <App />
+        <ShakeToSendLogs />
       </div>
-    </SwitchableFluentThemeProvider>,
-    document.getElementById('root')
-  );
-}
+    </SwitchableFluentThemeProvider>
+  </React.StrictMode>
+);

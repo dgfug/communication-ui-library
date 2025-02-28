@@ -1,9 +1,28 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const commonConfig = require('../../common/config/jest/jest.config');
-
-module.exports = {
-  ...commonConfig
+const jestCoverageConfig = {
+  coverageReporters: [
+    ['json', { file: 'detailed-report/calling-stateful-client.json' }],
+    ['json-summary', { file: 'summary/calling-stateful-client.json' }]
+  ]
 };
+
+const config =
+  process.env['COMMUNICATION_REACT_FLAVOR'] !== 'beta'
+    ? {
+        ...commonConfig,
+        rootDir: './preprocessed',
+        testPathIgnorePatterns: ['/node_modules/'],
+        globals: {
+          'ts-jest': {
+            tsconfig: 'tsconfig.preprocess.json'
+          }
+        },
+        ...jestCoverageConfig
+      }
+    : { ...commonConfig, ...jestCoverageConfig };
+
+module.exports = config;

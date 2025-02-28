@@ -1,14 +1,33 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { deviceManagerDeclaratify } from './DeviceManagerDeclarative';
-import { CallAgent, CallClient, CreateViewOptions, DeviceManager } from '@azure/communication-calling';
+import {
+  CallClient,
+  CallClientOptions,
+  CreateViewOptions,
+  DeviceManager,
+  Features
+} from '@azure/communication-calling';
 import { CallClientState, LocalVideoStreamState, RemoteVideoStreamState } from './CallClientState';
+/* @conditional-compile-remove(together-mode) */
+import { CallFeatureStreamState } from './CallClientState';
 import { CallContext } from './CallContext';
-import { callAgentDeclaratify } from './CallAgentDeclarative';
+import { callAgentDeclaratify, DeclarativeCallAgent } from './CallAgentDeclarative';
 import { InternalCallContext } from './InternalCallContext';
-import { createView, disposeView } from './StreamUtils';
-import { CommunicationIdentifierKind, CommunicationUserKind } from '@azure/communication-common';
+import { createView, disposeView, CreateViewResult } from './StreamUtils';
+import { CommunicationIdentifier, CommunicationUserIdentifier, getIdentifierKind } from '@azure/communication-common';
+import {
+  toFlatCommunicationIdentifier,
+  _getApplicationId,
+  _TelemetryImplementationHint
+} from '@internal/acs-ui-common';
+import { callingStatefulLogger } from './Logger';
+import { DeclarativeTeamsCallAgent, teamsCallAgentDeclaratify } from './TeamsCallAgentDeclarative';
+import { MicrosoftTeamsUserIdentifier } from '@azure/communication-common';
+import { videoStreamRendererViewDeclaratify } from './VideoStreamRendererViewDeclarative';
+/* @conditional-compile-remove(together-mode) */
+import { createView as createCallFeatureView, disposeView as disposeCallFeatureView } from './CallFeatureStreamUtils';
 
 /**
  * Defines the methods that allow CallClient {@link @azure/communication-calling#CallClient} to be used statefully.
@@ -40,8 +59,11 @@ import { CommunicationIdentifierKind, CommunicationUserKind } from '@azure/commu
  *   - RemoteVideoStream 'isAvailableChanged'
  *   - TranscriptionCallFeature 'isTranscriptionActiveChanged'
  *   - RecordingCallFeature 'isRecordingActiveChanged'
- *   - Transfer 'stateChanged'
- *   - TransferCallFeature 'transferRequested'
+ *   - LocalRecordingCallFeature 'isLocalRecordingActiveChanged'
+ *   - RaiseHandCallFeature 'raisedHandEvent'
+ *   - RaiseHandCallFeature 'loweredHandEvent'
+ *   - PPTLiveCallFeature 'isAciveChanged'
+ *   - ReactionCallFeature 'reaction'
  *
  * @public
  */
@@ -94,10 +116,13 @@ export interface StatefulCallClient extends CallClient {
    */
   createView(
     callId: string | undefined,
-    participantId: CommunicationIdentifierKind | undefined,
-    stream: LocalVideoStreamState | RemoteVideoStreamState,
+    participantId: CommunicationIdentifier | undefined,
+    stream:
+      | LocalVideoStreamState
+      | RemoteVideoStreamState
+      | /* @conditional-compile-remove(together-mode) */ CallFeatureStreamState,
     options?: CreateViewOptions
-  ): Promise<void>;
+  ): Promise<CreateViewResult | undefined>;
   /**
    * Stops rendering a {@link RemoteVideoStreamState} or {@link LocalVideoStreamState} and removes the
    * {@link VideoStreamRendererView} from the relevant {@link RemoteVideoStreamState} in {@link CallClientState} or
@@ -124,9 +149,37 @@ export interface StatefulCallClient extends CallClient {
    */
   disposeView(
     callId: string | undefined,
-    participantId: CommunicationIdentifierKind | undefined,
-    stream: LocalVideoStreamState | RemoteVideoStreamState
+    participantId: CommunicationIdentifier | undefined,
+    stream:
+      | LocalVideoStreamState
+      | RemoteVideoStreamState
+      | /* @conditional-compile-remove(together-mode) */ CallFeatureStreamState
   ): void;
+  /**
+   * The CallAgent is used to handle calls.
+   * To create the CallAgent, pass a CommunicationTokenCredential object provided from SDK.
+   * - The CallClient can only have one active CallAgent instance at a time.
+   * - You can create a new CallClient instance to create a new CallAgent.
+   * - You can dispose of a CallClient's current active CallAgent, and call the CallClient's
+   *   createCallAgent() method again to create a new CallAgent.
+   * @param tokenCredential - The token credential. Use AzureCommunicationTokenCredential from `@azure/communication-common` to create a credential.
+   * @param options - The CallAgentOptions for additional options like display name.
+   * @public
+   */
+  createCallAgent(...args: Parameters<CallClient['createCallAgent']>): Promise<DeclarativeCallAgent>;
+
+  /**
+   * The TeamsCallAgent is used to handle calls.
+   * To create the TeamsCallAgent, pass a CommunicationTokenCredential object provided from SDK.
+   * - The CallClient can only have one active TeamsCallAgent instance at a time.
+   * - You can create a new CallClient instance to create a new TeamsCallAgent.
+   * - You can dispose of a CallClient's current active TeamsCallAgent, and call the CallClient's
+   *   createTeamsCallAgent() method again to create a new TeamsCallAgent.
+   * @param tokenCredential - The token credential. Use AzureCommunicationTokenCredential from `@azure/communication-common` to create a credential.
+   * @param options - The TeamsCallAgentOptions for additional options like display name.
+   * @public
+   */
+  createTeamsCallAgent(...args: Parameters<CallClient['createTeamsCallAgent']>): Promise<DeclarativeTeamsCallAgent>;
 }
 
 /**
@@ -149,7 +202,7 @@ export type CallStateModifier = (state: CallClientState) => void;
 class ProxyCallClient implements ProxyHandler<CallClient> {
   private _context: CallContext;
   private _internalContext: InternalCallContext;
-  private _callAgent: CallAgent | undefined;
+  private _callAgent: DeclarativeCallAgent | DeclarativeTeamsCallAgent | undefined;
   private _deviceManager: DeviceManager | undefined;
   private _sdkDeviceManager: DeviceManager | undefined;
 
@@ -161,15 +214,36 @@ class ProxyCallClient implements ProxyHandler<CallClient> {
   public get<P extends keyof CallClient>(target: CallClient, prop: P): any {
     switch (prop) {
       case 'createCallAgent': {
-        return this._context.withAsyncErrorTeedToState(async (...args: Parameters<CallClient['createCallAgent']>) => {
-          // createCallAgent will throw an exception if the previous callAgent was not disposed. If the previous
-          // callAgent was disposed then it would have unsubscribed to events so we can just create a new declarative
-          // callAgent if the createCallAgent succeeds.
-          const callAgent = await target.createCallAgent(...args);
-          this._callAgent = callAgentDeclaratify(callAgent, this._context, this._internalContext);
-          this._context.setCallAgent({ displayName: this._callAgent.displayName });
-          return this._callAgent;
-        }, 'CallClient.createCallAgent');
+        return this._context.withAsyncErrorTeedToState(
+          async (...args: Parameters<CallClient['createCallAgent']>): Promise<DeclarativeCallAgent> => {
+            // createCallAgent will throw an exception if the previous callAgent was not disposed. If the previous
+            // callAgent was disposed then it would have unsubscribed to events so we can just create a new declarative
+            // callAgent if the createCallAgent succeeds.
+            const callAgent = await target.createCallAgent(...args);
+            this._callAgent = callAgentDeclaratify(callAgent, this._context, this._internalContext);
+            this._context.setCallAgent({
+              displayName: this._callAgent.displayName
+            });
+            return this._callAgent;
+          },
+          'CallClient.createCallAgent'
+        );
+      }
+      case 'createTeamsCallAgent': {
+        return this._context.withAsyncErrorTeedToState(
+          async (...args: Parameters<CallClient['createTeamsCallAgent']>): Promise<DeclarativeTeamsCallAgent> => {
+            // createCallAgent will throw an exception if the previous callAgent was not disposed. If the previous
+            // callAgent was disposed then it would have unsubscribed to events so we can just create a new declarative
+            // callAgent if the createCallAgent succeeds.
+            const callAgent = await target.createTeamsCallAgent(...args);
+            this._callAgent = teamsCallAgentDeclaratify(callAgent, this._context, this._internalContext);
+            this._context.setCallAgent({
+              displayName: undefined
+            });
+            return this._callAgent;
+          },
+          'CallClient.createTeamsCallAgent'
+        );
       }
       case 'getDeviceManager': {
         return this._context.withAsyncErrorTeedToState(async () => {
@@ -189,9 +263,28 @@ class ProxyCallClient implements ProxyHandler<CallClient> {
           } else {
             this._sdkDeviceManager = deviceManager;
           }
-          this._deviceManager = deviceManagerDeclaratify(deviceManager, this._context);
+          this._deviceManager = deviceManagerDeclaratify(deviceManager, this._context, this._internalContext);
           return this._deviceManager;
         }, 'CallClient.getDeviceManager');
+      }
+      case 'feature': {
+        return this._context.withErrorTeedToState((...args: Parameters<CallClient['feature']>) => {
+          if (args[0] === Features.DebugInfo) {
+            const feature = target.feature(Features.DebugInfo);
+            /**
+             * add to this object if we want to proxy anything else off the DebugInfo feature object.
+             */
+            return {
+              ...feature,
+              getEnvironmentInfo: async () => {
+                const environmentInfo = await feature.getEnvironmentInfo();
+                this._context.setEnvironmentInfo(environmentInfo);
+                return environmentInfo;
+              }
+            };
+          }
+          return Reflect.get(target, prop);
+        }, 'CallClient.feature');
       }
       default:
         return Reflect.get(target, prop);
@@ -209,7 +302,7 @@ export type StatefulCallClientArgs = {
    * UserId from SDK. This is provided for developer convenience to easily access the userId from the
    * state. It is not used by StatefulCallClient.
    */
-  userId: CommunicationUserKind;
+  userId: CommunicationUserIdentifier | MicrosoftTeamsUserIdentifier;
 };
 
 /**
@@ -218,6 +311,10 @@ export type StatefulCallClientArgs = {
  * @public
  */
 export type StatefulCallClientOptions = {
+  /**
+   * Options to construct the {@link @axure/communication-calling#CallClient} with.
+   */
+  callClientOptions: CallClientOptions;
   /**
    * Sets the max listeners limit of the 'stateChange' event. Defaults to the node.js EventEmitter.defaultMaxListeners
    * if not specified.
@@ -243,9 +340,25 @@ export const createStatefulCallClient = (
   args: StatefulCallClientArgs,
   options?: StatefulCallClientOptions
 ): StatefulCallClient => {
+  return _createStatefulCallClientInner(args, options);
+};
+
+/**
+ * This inner function is used to allow injection of TelemetryImplementationHint without changing the public API.
+ *
+ * @internal
+ */
+export const _createStatefulCallClientInner = (
+  args: StatefulCallClientArgs,
+  options?: StatefulCallClientOptions,
+  telemetryImplementationHint: _TelemetryImplementationHint = 'StatefulComponents'
+): StatefulCallClient => {
+  callingStatefulLogger.info(
+    `Creating calling stateful client using library version: ${_getApplicationId(telemetryImplementationHint)}`
+  );
   return createStatefulCallClientWithDeps(
-    new CallClient(),
-    new CallContext(args.userId, options?.maxStateChangeListeners),
+    new CallClient(withTelemetryTag(telemetryImplementationHint, options?.callClientOptions)),
+    new CallContext(getIdentifierKind(args.userId), options?.maxStateChangeListeners),
     new InternalCallContext()
   );
 };
@@ -274,25 +387,70 @@ export const createStatefulCallClientWithDeps = (
   });
   Object.defineProperty(callClient, 'createView', {
     configurable: false,
-    value: (
+    value: async (
       callId: string | undefined,
-      participantId: CommunicationIdentifierKind | string | undefined,
-      stream: LocalVideoStreamState | RemoteVideoStreamState,
+      participantId: CommunicationIdentifier | undefined,
+      stream:
+        | LocalVideoStreamState
+        | RemoteVideoStreamState
+        | /* @conditional-compile-remove(together-mode) */ CallFeatureStreamState,
       options?: CreateViewOptions
-    ): Promise<void> => {
-      return createView(context, internalContext, callId, participantId, stream, options);
+    ): Promise<CreateViewResult | undefined> => {
+      /* @conditional-compile-remove(together-mode) */
+      if ('feature' in stream) {
+        return await createCallFeatureView(context, internalContext, callId, stream, options);
+      }
+      const participantIdKind = participantId ? getIdentifierKind(participantId) : undefined;
+      const result = await createView(context, internalContext, callId, participantIdKind, stream, options);
+      // We only need to declaratify the VideoStreamRendererView object for remote participants. Because the updateScalingMode only needs to be called on remote participant stream views.
+      if ('id' in stream && callId && participantId && result) {
+        const participantKey = toFlatCommunicationIdentifier(participantId);
+        result.view = videoStreamRendererViewDeclaratify(result.view, context, callId, participantKey, stream.id);
+      }
+      return result;
     }
   });
   Object.defineProperty(callClient, 'disposeView', {
     configurable: false,
     value: (
       callId: string | undefined,
-      participantId: CommunicationIdentifierKind | string | undefined,
-      stream: LocalVideoStreamState | RemoteVideoStreamState
+      participantId: CommunicationIdentifier | undefined,
+      stream:
+        | LocalVideoStreamState
+        | RemoteVideoStreamState
+        | /* @conditional-compile-remove(together-mode) */ CallFeatureStreamState
     ): void => {
-      disposeView(context, internalContext, callId, participantId, stream);
+      /* @conditional-compile-remove(together-mode) */
+      if ('feature' in stream) {
+        disposeCallFeatureView(context, internalContext, callId, stream);
+      }
+      const participantIdKind = participantId ? getIdentifierKind(participantId) : undefined;
+      disposeView(context, internalContext, callId, participantIdKind, stream);
     }
   });
 
-  return new Proxy(callClient, new ProxyCallClient(context, internalContext)) as StatefulCallClient;
+  const newStatefulCallClient = new Proxy(
+    callClient,
+    new ProxyCallClient(context, internalContext)
+  ) as StatefulCallClient;
+
+  // Populate initial state
+  newStatefulCallClient.feature(Features.DebugInfo).getEnvironmentInfo();
+
+  return newStatefulCallClient;
+};
+
+const withTelemetryTag = (
+  telemetryImplementationHint: _TelemetryImplementationHint,
+  options?: CallClientOptions
+): CallClientOptions => {
+  const tags = options?.diagnostics?.tags ?? [];
+  tags.push(_getApplicationId(telemetryImplementationHint));
+  return {
+    ...options,
+    diagnostics: {
+      ...options?.diagnostics,
+      tags
+    }
+  };
 };

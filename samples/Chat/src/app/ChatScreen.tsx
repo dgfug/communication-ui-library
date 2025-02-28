@@ -1,27 +1,29 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { CommunicationUserIdentifier, CommunicationUserKind } from '@azure/communication-common';
+import { CommunicationUserIdentifier } from '@azure/communication-common';
 import {
   AvatarPersonaData,
   ChatAdapter,
   ChatComposite,
-  createAzureCommunicationChatAdapter
+  fromFlatCommunicationIdentifier,
+  toFlatCommunicationIdentifier,
+  useAzureCommunicationChatAdapter
 } from '@azure/communication-react';
 import { Stack } from '@fluentui/react';
-import React, { useEffect, useRef, useState } from 'react';
-
+import React, { useCallback, useEffect, useMemo } from 'react';
+/* @conditional-compile-remove(chat-composite-participant-pane) */
+import { useState } from 'react';
 import { ChatHeader } from './ChatHeader';
-import {
-  chatCompositeContainerStyle,
-  chatHeaderContainerStyle,
-  chatScreenContainerStyle
-} from './styles/ChatScreen.styles';
+import { chatCompositeContainerStyle, chatScreenContainerStyle } from './styles/ChatScreen.styles';
 import { createAutoRefreshingCredential } from './utils/credential';
 import { fetchEmojiForUser } from './utils/emojiCache';
 import { getBackgroundColor } from './utils/utils';
 import { useSwitchableFluentTheme } from './theming/SwitchableFluentThemeProvider';
-// import { onRenderAvatar } from './Avatar';
+/* @conditional-compile-remove(file-sharing-acs) */
+import { attachmentUploadOptions } from './utils/uploadHandler';
+/* @conditional-compile-remove(file-sharing-acs) */
+import { attachmentDownloadOptions } from './utils/downloadHandler';
 
 // These props are passed in when this component is referenced in JSX and not found in context
 interface ChatScreenProps {
@@ -30,81 +32,111 @@ interface ChatScreenProps {
   displayName: string;
   endpointUrl: string;
   threadId: string;
-  endChatHandler(): void;
-  errorHandler(): void;
+  endChatHandler(isParticipantRemoved: boolean): void;
+  /* @conditional-compile-remove(rich-text-editor-composite-support) */
+  isRichTextEditorEnabled: boolean;
 }
 
 export const ChatScreen = (props: ChatScreenProps): JSX.Element => {
-  const { displayName, endpointUrl, threadId, token, userId, errorHandler, endChatHandler } = props;
+  const {
+    displayName,
+    endpointUrl,
+    threadId,
+    token,
+    userId,
+    endChatHandler,
+    /* @conditional-compile-remove(rich-text-editor-composite-support) */ isRichTextEditorEnabled
+  } = props;
 
-  const adapterRef = useRef<ChatAdapter>();
-  const [adapter, setAdapter] = useState<ChatAdapter>();
-  const [hideParticipants, setHideParticipants] = useState<boolean>(false);
+  // Disables pull down to refresh. Prevents accidental page refresh when scrolling through chat messages
+  // Another alternative: set body style touch-action to 'none'. Achieves same result.
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'null';
+    };
+  }, []);
+
+  /* @conditional-compile-remove(chat-composite-participant-pane) */
+  const [hideParticipants, setHideParticipants] = useState<boolean>(true);
+
   const { currentTheme } = useSwitchableFluentTheme();
 
-  useEffect(() => {
-    (async () => {
-      const userIdKind = { kind: 'communicationUser', communicationUserId: userId } as CommunicationUserKind;
-      const adapter = await createAzureCommunicationChatAdapter({
-        endpointUrl: endpointUrl,
-        userId: userIdKind,
-        displayName: displayName,
-        credential: createAutoRefreshingCredential(userId, token),
-        threadId: threadId
-      });
+  const adapterAfterCreate = useCallback(
+    async (adapter: ChatAdapter): Promise<ChatAdapter> => {
       adapter.on('participantsRemoved', (listener) => {
-        // Note: We are receiving ChatParticipant.id from communication-signaling, so of type 'CommunicationIdentifierKind'
-        // while it's supposed to be of type 'CommunicationIdentifier' as defined in communication-chat
-        const removedParticipantIds = listener.participantsRemoved.map(
-          (p) => (p.id as CommunicationUserIdentifier).communicationUserId
-        );
+        const removedParticipantIds = listener.participantsRemoved.map((p) => toFlatCommunicationIdentifier(p.id));
         if (removedParticipantIds.includes(userId)) {
-          endChatHandler();
+          const removedBy = toFlatCommunicationIdentifier(listener.removedBy.id);
+          endChatHandler(removedBy !== userId);
         }
       });
-      adapter.setTopic('Your Chat sample');
       adapter.on('error', (e) => {
         console.error(e);
-        errorHandler();
       });
-      setAdapter(adapter);
-      adapterRef.current = adapter;
-    })();
+      return adapter;
+    },
+    [endChatHandler, userId]
+  );
 
-    return () => {
-      adapterRef?.current?.dispose();
-    };
-  }, [displayName, endpointUrl, threadId, token, userId, errorHandler, endChatHandler]);
+  const adapterArgs = useMemo(
+    () => ({
+      endpoint: endpointUrl,
+      userId: fromFlatCommunicationIdentifier(userId) as CommunicationUserIdentifier,
+      displayName,
+      credential: createAutoRefreshingCredential(userId, token),
+      threadId
+    }),
+    [endpointUrl, userId, displayName, token, threadId]
+  );
+  const adapter = useAzureCommunicationChatAdapter(adapterArgs, adapterAfterCreate);
+
+  // Dispose of the adapter in the window's before unload event
+  useEffect(() => {
+    const disposeAdapter = (): void => adapter?.dispose();
+    window.addEventListener('beforeunload', disposeAdapter);
+    return () => window.removeEventListener('beforeunload', disposeAdapter);
+  }, [adapter]);
 
   if (adapter) {
-    const onFetchAvatarPersonaData = (userId): Promise<AvatarPersonaData> =>
+    const onFetchAvatarPersonaData = (userId: string): Promise<AvatarPersonaData> =>
       fetchEmojiForUser(userId).then(
         (emoji) =>
-          new Promise((resolve, reject) => {
+          new Promise((resolve) => {
             return resolve({
               imageInitials: emoji,
-              initialsColor: getBackgroundColor(emoji)?.backgroundColor
+              initialsColor: emoji ? getBackgroundColor(emoji)?.backgroundColor : undefined
             });
           })
       );
-
     return (
       <Stack className={chatScreenContainerStyle}>
-        <Stack.Item className={chatHeaderContainerStyle}>
-          <ChatHeader
-            isParticipantsDisplayed={hideParticipants !== true}
-            onEndChat={() => adapter.removeParticipant(userId)}
-            setHideParticipants={setHideParticipants}
-          />
-        </Stack.Item>
-        <Stack.Item className={chatCompositeContainerStyle}>
+        <Stack.Item className={chatCompositeContainerStyle} role="main">
           <ChatComposite
             adapter={adapter}
             fluentTheme={currentTheme.theme}
-            options={{ participantPane: !hideParticipants }}
+            options={{
+              autoFocus: 'sendBoxTextField',
+              /* @conditional-compile-remove(chat-composite-participant-pane) */
+              participantPane: !hideParticipants,
+              /* @conditional-compile-remove(file-sharing-acs) */
+              attachmentOptions: {
+                uploadOptions: attachmentUploadOptions,
+                downloadOptions: attachmentDownloadOptions
+              },
+              /* @conditional-compile-remove(rich-text-editor-composite-support) */
+              richTextEditor: isRichTextEditorEnabled
+            }}
             onFetchAvatarPersonaData={onFetchAvatarPersonaData}
           />
         </Stack.Item>
+        <ChatHeader
+          /* @conditional-compile-remove(chat-composite-participant-pane) */
+          isParticipantsDisplayed={hideParticipants !== true}
+          onEndChat={() => adapter.removeParticipant(userId)}
+          /* @conditional-compile-remove(chat-composite-participant-pane) */
+          setHideParticipants={setHideParticipants}
+        />
       </Stack>
     );
   }

@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { PagedAsyncIterableIterator } from '@azure/core-paging';
 import { ChatClient, ChatThreadItem } from '@azure/communication-chat';
 import { ChatClientState } from './ChatClientState';
-import { createStatefulChatClientWithDeps, StatefulChatClient, StatefulChatClientArgs } from './StatefulChatClient';
+import { _createStatefulChatClientWithDeps, StatefulChatClient, StatefulChatClientArgs } from './StatefulChatClient';
 import { createMockChatThreadClient } from './mocks/createMockChatThreadClient';
 import { createMockIterator } from './mocks/createMockIterator';
 import { MockCommunicationUserCredential } from './mocks/MockCommunicationUserCredential';
+import { ChatMessageWithStatus } from './types/ChatMessageWithStatus';
 
 /**
  * @private
@@ -58,7 +59,7 @@ export const failingPagedAsyncIterator = <T>(error: Error): PagedAsyncIterableIt
  */
 export const defaultClientArgs: StatefulChatClientArgs = {
   displayName: '',
-  userId: { kind: 'communicationUser', communicationUserId: 'userId1' },
+  userId: { communicationUserId: 'userId1' },
   endpoint: '',
   credential: new MockCommunicationUserCredential()
 };
@@ -74,12 +75,48 @@ export type StatefulChatClientWithEventTrigger = StatefulChatClient & {
  * @private
  */
 export const createStatefulChatClientMock = (): StatefulChatClientWithEventTrigger => {
-  return createStatefulChatClientWithDeps(
+  return _createStatefulChatClientWithDeps(
     createMockChatClient(),
     defaultClientArgs
   ) as StatefulChatClientWithEventTrigger;
 };
-
+/**
+ * @private
+ */
+export const messageTemplate: ChatMessageWithStatus = {
+  id: 'MessageId',
+  content: { message: 'MessageContent' },
+  clientMessageId: undefined,
+  createdOn: new Date(),
+  sender: {
+    kind: 'communicationUser',
+    communicationUserId: 'UserId'
+  },
+  senderDisplayName: 'User',
+  type: 'text',
+  sequenceId: '',
+  version: '',
+  status: 'delivered'
+};
+/**
+ * @private
+ */
+export const messageTemplateWithResourceCache: ChatMessageWithStatus = {
+  id: 'MessageId',
+  content: { message: 'MessageContent' },
+  clientMessageId: undefined,
+  createdOn: new Date(),
+  sender: {
+    kind: 'communicationUser',
+    communicationUserId: 'UserId'
+  },
+  senderDisplayName: 'User',
+  type: 'text',
+  sequenceId: '',
+  version: '',
+  status: 'delivered',
+  resourceCache: { resource1Url: { sourceUrl: 'blob:resource1' }, resource2Url: { sourceUrl: 'blob:resource2' } }
+};
 /**
  * @private
  */
@@ -91,7 +128,7 @@ export type ChatClientWithEventTrigger = ChatClient & {
  * @private
  */
 export function createMockChatClient(): ChatClientWithEventTrigger {
-  const mockEventHandlersRef = { value: {} };
+  const mockEventHandlersRef: { value: any } = { value: {} };
   const mockChatClient: ChatClientWithEventTrigger = {} as any;
 
   mockChatClient.createChatThread = async (request) => {

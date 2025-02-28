@@ -1,14 +1,15 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
-import { concatStyleSets, Icon } from '@fluentui/react';
-import React from 'react';
+import { concatStyleSets, Icon, IStyle, PartialTheme } from '@fluentui/react';
+import { IContextualMenuProps, mergeStyles } from '@fluentui/react';
+import React, { useCallback } from 'react';
 import { useLocale } from '../localization';
 import { useTheme } from '../theming';
-import { darkTheme, lightTheme } from '../theming/themes';
+import { CallingTheme, darkTheme, lightTheme } from '../theming/themes';
 import { isDarkThemed } from '../theming/themeUtils';
 import { ControlBarButton, ControlBarButtonProps } from './ControlBarButton';
-import { endCallControlButtonStyles } from './styles/ControlBar.styles';
+import { _preventDismissOnEvent as preventDismissOnEvent } from '@internal/acs-ui-common';
 
 /**
  * Strings of {@link EndCallButton} that can be overridden.
@@ -20,6 +21,14 @@ export interface EndCallButtonStrings {
    * Label of button
    */
   label: string;
+  /** Tooltip content. */
+  tooltipContent?: string;
+
+  /** Label for leave option when ending call */
+  leaveOption?: string;
+
+  /** Label for end the whole call option when ending call */
+  endCallOption?: string;
 }
 
 /**
@@ -32,7 +41,13 @@ export interface EndCallButtonProps extends ControlBarButtonProps {
    * Utility property for using this component with `communication react eventHandlers`.
    * Maps directly to the `onClick` property.
    */
-  onHangUp?: () => Promise<void>;
+  onHangUp?: (forEveryone?: boolean) => Promise<void>;
+
+  /**
+   * Set this to true to make it a split button.
+   * The split arrow will trigger a contextual menu to allow end for everyone or just for the user.
+   */
+  enableEndCallMenu?: boolean;
 
   /**
    * Optional strings to override in component
@@ -40,7 +55,9 @@ export interface EndCallButtonProps extends ControlBarButtonProps {
   strings?: EndCallButtonStrings;
 }
 
-const onRenderEndCallIcon = (): JSX.Element => <Icon iconName="ControlButtonEndCall" />;
+const spacerClass = mergeStyles({
+  width: 4
+});
 
 /**
  * A button to end an ongoing call.
@@ -50,36 +67,154 @@ const onRenderEndCallIcon = (): JSX.Element => <Icon iconName="ControlButtonEndC
  * @public
  */
 export const EndCallButton = (props: EndCallButtonProps): JSX.Element => {
-  const { styles } = props;
+  const { styles, enableEndCallMenu, onHangUp } = props;
 
   const localeStrings = useLocale().strings.endCallButton;
   const strings = { ...localeStrings, ...props.strings };
 
-  const isDarkTheme = isDarkThemed(useTheme());
+  const theme = useTheme();
+  const isDarkTheme = isDarkThemed(theme);
   const componentStyles = concatStyleSets(
-    endCallControlButtonStyles,
-    {
-      root: {
-        background: isDarkTheme ? darkTheme.callingPalette.callRed : lightTheme.callingPalette.callRed
-      },
-      rootHovered: {
-        background: isDarkTheme ? darkTheme.callingPalette.callRedDark : lightTheme.callingPalette.callRedDark
-      },
-      rootPressed: {
-        background: isDarkTheme ? darkTheme.callingPalette.callRedDarker : lightTheme.callingPalette.callRedDarker
-      }
-    },
+    isDarkTheme ? darkThemeCallButtonStyles : lightThemeCallButtonStyles,
+    enableEndCallMenu ? menupButtonPadding : {},
     styles ?? {}
   );
 
-  return (
-    <ControlBarButton
-      {...props}
-      onClick={props.onHangUp ?? props.onClick}
-      styles={componentStyles}
-      onRenderIcon={props.onRenderIcon ?? onRenderEndCallIcon}
-      strings={strings}
-      labelKey={props.labelKey ?? 'endCallButtonLabel'}
-    />
+  const onRenderEndCallIcon = useCallback(
+    (): JSX.Element => (
+      <>
+        <Icon iconName="ControlButtonEndCall" />
+        {enableEndCallMenu && <span className={spacerClass} />}
+      </>
+    ),
+    [enableEndCallMenu]
   );
+
+  const defaultMenuProps: IContextualMenuProps = {
+    items: [
+      {
+        key: 'endForSelf',
+        text: localeStrings.leaveOption,
+        title: localeStrings.leaveOption,
+        onClick: () => {
+          onHangUp && onHangUp(false);
+        }
+      },
+      {
+        key: 'endForEveryone',
+        text: localeStrings.endCallOption,
+        title: localeStrings.endCallOption,
+        onClick: () => {
+          onHangUp && onHangUp(true);
+        }
+      }
+    ],
+    styles: props.styles,
+    calloutProps: {
+      styles: {
+        root: {
+          maxWidth: '95%'
+        }
+      },
+      preventDismissOnEvent
+    }
+  };
+
+  return (
+    <>
+      <ControlBarButton
+        {...props}
+        menuProps={enableEndCallMenu ? defaultMenuProps : props.menuProps}
+        onClick={onHangUp ? () => onHangUp() : props.onClick}
+        styles={componentStyles}
+        onRenderIcon={props.onRenderIcon ?? onRenderEndCallIcon}
+        strings={strings}
+        labelKey={props.labelKey ?? 'endCallButtonLabel'}
+      />
+    </>
+  );
+};
+
+const getButtonStyles = (
+  theme: PartialTheme & CallingTheme
+): { regular: IStyle; pressed: IStyle; hovered: IStyle } => ({
+  regular: {
+    color: theme.callingPalette.iconWhite,
+    background: theme.callingPalette.callRed,
+    '@media (forced-colors: active)': {
+      forcedColorAdjust: 'auto',
+      border: `1px ${theme.palette?.neutralQuaternaryAlt} solid`
+    },
+    ' i': {
+      color: theme.callingPalette.iconWhite
+    },
+    ':focus::after': { outlineColor: `${theme.callingPalette.iconWhite} !important` } // added !important to avoid override by FluentUI button styles
+  },
+  pressed: {
+    color: theme.callingPalette.iconWhite,
+    background: theme.callingPalette.callRedDarker,
+    border: 'none',
+    ' i': {
+      color: theme.callingPalette.iconWhite
+    },
+    '@media (forced-colors: active)': {
+      forcedColorAdjust: 'auto'
+    }
+  },
+  hovered: {
+    color: theme.callingPalette.iconWhite,
+    background: theme.callingPalette.callRedDark,
+    border: 'none',
+    ' i': {
+      color: theme.callingPalette.iconWhite
+    },
+    '@media (forced-colors: active)': {
+      forcedColorAdjust: 'auto'
+    }
+  }
+});
+
+const darkThemeButtonStyles = getButtonStyles(darkTheme);
+const lightThemeButtonStyles = getButtonStyles(lightTheme);
+
+// using media query to prevent windows from overwriting the button color
+const darkThemeCallButtonStyles = {
+  root: darkThemeButtonStyles.regular,
+  rootHovered: darkThemeButtonStyles.hovered,
+  rootPressed: darkThemeButtonStyles.pressed,
+  label: {
+    color: darkTheme.callingPalette.iconWhite
+  },
+  splitButtonMenuButton: {
+    ...(darkThemeButtonStyles.regular as object),
+    borderTop: 'none',
+    borderRight: 'none',
+    borderBottom: 'none',
+    '&:hover': darkThemeButtonStyles.hovered
+  },
+  splitButtonMenuButtonChecked: darkThemeButtonStyles.hovered,
+  splitButtonMenuButtonExpanded: darkThemeButtonStyles.pressed
+};
+
+const lightThemeCallButtonStyles = {
+  root: lightThemeButtonStyles.regular,
+  rootHovered: lightThemeButtonStyles.hovered,
+  rootPressed: lightThemeButtonStyles.pressed,
+  splitButtonMenuButton: {
+    ...(lightThemeButtonStyles.regular as object),
+    borderTop: 'none',
+    borderRight: 'none',
+    borderBottom: 'none',
+    '&:hover': lightThemeButtonStyles.hovered
+  },
+  splitButtonMenuButtonChecked: lightThemeButtonStyles.hovered,
+  splitButtonMenuButtonExpanded: lightThemeButtonStyles.pressed,
+  splitButtonMenuFocused: lightThemeButtonStyles.pressed,
+  label: {
+    color: lightTheme.callingPalette.iconWhite
+  }
+};
+
+const menupButtonPadding = {
+  root: { padding: '0 0.75rem' }
 };

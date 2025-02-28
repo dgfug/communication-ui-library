@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 const emojiCache = new Map<string, Promise<string>>();
 
@@ -9,7 +9,7 @@ const getEmoji = (userId: string): Promise<string> => {
     method: 'GET'
   };
   return new Promise<string>((resolve) => {
-    fetch('/userConfig/' + userId, getTokenRequestOptions)
+    fetch('userConfig/' + userId, getTokenRequestOptions)
       .then((data) => {
         return data.json();
       })

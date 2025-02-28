@@ -1,0 +1,42 @@
+{
+  "name": "@internal/sample-automation-tests",
+  "version": "1.0.0",
+  "description": "Automation tests for samples.",
+  "private": true,
+  "scripts": {
+    "clean": "echo skip",
+    "build": "echo skip",
+    "test": "echo skip",
+    "test:ci-coverage": "echo skip",
+    "test:e2e:bundle": "rushx _by-flavor \"cross-env SERVE_PATH=../StaticHtmlComposites/dist playwright test StaticHtmlComposites/\"",
+    "update:snapshot:bundle": "rushx _by-flavor \"cross-env SERVE_PATH=../StaticHtmlComposites/dist playwright test StaticHtmlComposites/ --update-snapshots\"",
+    "test:e2e:examples": "rushx _by-flavor \"cross-env SERVE_PATH=../ComponentExamples/dist/build playwright test ComponentExamples/\"",
+    "update:snapshot:examples": "rushx _by-flavor \"cross-env SERVE_PATH=../ComponentExamples/dist/build playwright test ComponentExamples/ --update-snapshots\"",
+    "lint": "echo skip",
+    "lint:fix": "echo skip",
+    "prettier": "",
+    "prettier:check": "",
+    "_current-flavor": "echo You are running under COMMUNICATION_REACT_FLAVOR: && env-cmd -f ../../common/config/env/.env node -p process.env.COMMUNICATION_REACT_FLAVOR",
+    "_by-flavor": "rushx _current-flavor && env-cmd -f ../../common/config/env/.env --use-shell"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@azure/communication-calling": "1.33.2-beta.1 || ^1.33.1",
+    "@azure/communication-chat": "1.6.0-beta.3 || ^1.5.4",
+    "@azure/communication-common": "^2.3.1",
+    "uuid": "^9.0.0",
+    "cross-env": "^7.0.3"
+  },
+  "devDependencies": {
+    "@azure/communication-identity": "^1.3.0",
+    "@playwright/test": "~1.50.1",
+    "@types/node": "^22.10.6",
+    "dotenv": "^10.0.0",
+    "env-cmd": "^10.1.0",
+    "if-env": "^1.0.4",
+    "express": "^4.21.2",
+    "rimraf": "^2.6.2",
+    "typescript": "5.4.5",
+    "path": "0.12.7"
+  }
+}

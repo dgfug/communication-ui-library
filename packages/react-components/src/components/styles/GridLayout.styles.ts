@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { mergeStyles } from '@fluentui/react';
 
@@ -7,9 +7,8 @@ import { mergeStyles } from '@fluentui/react';
  * @private
  */
 export const gridLayoutStyle = mergeStyles({
+  width: '100%',
   height: '100%',
   display: 'grid',
-  flexGrow: '1',
-  gap: '.5rem',
-  padding: '.5rem'
+  gridGap: '0.5rem'
 });

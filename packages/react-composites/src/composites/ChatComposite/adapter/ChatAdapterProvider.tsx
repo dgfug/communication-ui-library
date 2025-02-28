@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import React, { createContext, useContext } from 'react';
 import { ChatAdapter } from './ChatAdapter';
@@ -27,6 +27,8 @@ export const ChatAdapterProvider = (props: ChatProviderProps): JSX.Element => {
  */
 export const useAdapter = (): ChatAdapter => {
   const adapter = useContext(ChatAdapterContext);
-  if (!adapter) throw 'Cannot find adapter please initialize before usage.';
+  if (!adapter) {
+    throw 'Cannot find adapter please initialize before usage.';
+  }
   return adapter;
 };

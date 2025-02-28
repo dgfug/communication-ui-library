@@ -4,41 +4,58 @@ on:
   # Trigger via 'Actions' on GitHub
   workflow_dispatch:
 
+# cancel workflow when a newer version of the workflow is triggered on the same github ref
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy-storybook:
     name: Build and Deploy Storybook
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNS_ON }}
+    permissions: # permissions needed for the deploy-storybook script
+      pages: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.x
+          node-version: 'lts/*'
 
       - name: Restore node_modules from cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: common/temp/pnpm-store
           key: ${{ runner.os }}-${{ hashFiles('common/config/rush/pnpm-lock.yaml') }}
 
       - name: Install Rush
-        run: npm install -g @microsoft/rush@5.47.0
+        run: npm install -g @microsoft/rush@$(jq -r '.rushVersion' "rush.json")
 
       - name: Install Dependencies
-        run: rush install
+        run: rush install --max-install-attempts 3
 
-      - name: Build Storybook dependencies
-        run: rush build -T storybook
+      - name: Build Storybook
+        run: rush build -o storybook8
 
       - name: Run Storybook tests
-        run: rush test -o storybook
+        run: rush test -o storybook8
 
-      - name: Deploy Storybook
+      - name: Copy .env values
         # storybook requires the env vars to be in a .env file for access in the manager.ts
         run: |
           echo TELEMETRY_INSTRUMENTATION_KEY=${{ secrets.TELEMETRY_INSTRUMENTATION_KEY }} > .env
-          npm run deploy-storybook -- --ci
-        working-directory: ./packages/storybook
+        working-directory: ./packages/storybook8
         env:
           GH_TOKEN: ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Storybook GH Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./packages/storybook8/storybook-static
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -2,7 +2,21 @@
   "participantItem": {
     "isMeText": "(jij)",
     "menuTitle": "Meer opties",
-    "removeButtonLabel": "Verwijderen"
+    "removeButtonLabel": "Verwijderen",
+    "sharingIconLabel": "Delen",
+    "mutedIconLabel": "Gedempt",
+    "handRaisedIconLabel": "Opgestoken hand - Positie {position}",
+    "displayNamePlaceholder": "Naamloze deelnemer",
+    "participantStateRinging": "Bellen...",
+    "participantStateHold": "In de wacht",
+    "participantItemAriaLabel": "{displayName}, {handRaisedState}, {mutedState}, {micDisabledState}, {cameraDisabledState}, {sharingState}, {connectionState}",
+    "participantItemWithMoreOptionsAriaLabel": "{displayName}, {handRaisedState}, {mutedState}, {micDisabledState}, {cameraDisabledState}, {sharingState}, {connectionState}, meer opties",
+    "attendeeRole": "Genodigde",
+    "micDisabledIconLabel": "Microfoon uitgeschakeld",
+    "cameraDisabledIconLabel": "Camera uitgeschakeld"
+  },
+  "ParticipantList": {
+    "overflowParticipantCount": "+{overflowCount} meer"
   },
   "typingIndicator": {
     "singleUser": "{user} typt ...",
@@ -12,29 +26,147 @@
     "delimiter": ", "
   },
   "sendBox": {
-    "placeholderText": "Een bericht invoeren"
+    "placeholderText": "Een bericht invoeren",
+    "textTooLong": "De lengte van uw bericht overschrijdt de maximumlimiet.",
+    "sendButtonAriaLabel": "Bericht verzenden",
+    "attachmentUploadsPendingError": "Bestand wordt geüpload, even geduld.",
+    "removeAttachment": "Bestand verwijderen",
+    "uploading": "Uploaden",
+    "uploadCompleted": "Upload voltooid",
+    "attachmentMoreMenu": "Meer opties"
+  },
+  "richTextSendBox": {
+    "placeholderText": "Een bericht invoeren",
+    "textTooLong": "De lengte van uw bericht overschrijdt de maximumlimiet.",
+    "sendButtonAriaLabel": "Bericht verzenden",
+    "attachmentUploadsPendingError": "Bestand wordt geüpload, even geduld.",
+    "imageUploadsPendingError": "Afbeelding wordt geüpload, even geduld.",
+    "removeAttachment": "Bestand verwijderen",
+    "uploading": "Uploaden",
+    "uploadCompleted": "Upload voltooid",
+    "richTextBoldTooltip": "Vet",
+    "richTextItalicTooltip": "Cursief",
+    "richTextUnderlineTooltip": "Onderstrepen",
+    "richTextBulletListTooltip": "Lijst met opsommingstekens",
+    "richTextNumberListTooltip": "Genummerde lijst",
+    "richTextIncreaseIndentTooltip": "Inspringing vergroten",
+    "richTextDecreaseIndentTooltip": "Inspringing verkleinen",
+    "richTextInsertTableTooltip": "Tabel invoegen",
+    "richTextFormatButtonTooltip": "Indeling",
+    "richTextInsertRowOrColumnMenu": "Invoegen",
+    "richTextInsertTableMenuTitle": "{column} x {row} tabel invoegen",
+    "richTextInsertRowAboveMenu": "Hierboven invoegen",
+    "richTextInsertRowBelowMenu": "Hieronder invoegen",
+    "richTextInsertColumnLeftMenu": "Links invoegen",
+    "richTextInsertColumnRightMenu": "Rechts invoegen",
+    "richTextDeleteRowOrColumnMenu": "Verwijderen",
+    "richTextDeleteColumnMenu": "Kolom verwijderen",
+    "richTextDeleteRowMenu": "Rij verwijderen",
+    "richTextDeleteTableMenu": "Tabel verwijderen",
+    "richTextToolbarAriaLabel": "Werkbalk Berichtopmaak",
+    "richTextToolbarMoreButtonAriaLabel": "Meer opties",
+    "attachmentMoreMenu": "Meer opties",
+    "richTextNewBulletedListItemAnnouncement": "Opsommingsteken, nieuwe regel",
+    "richTextNewNumberedListItemAnnouncement": "{0}, nieuwe regel",
+    "richTextBulletedListAppliedAnnouncement": "Lijst met opsommingstekens toegepast",
+    "richTextNumberedListAppliedAnnouncement": "Genummerde lijst is toegepast"
+  },
+  "realTimeTextModal": {
+    "realTimeTextModalAriaLabel": "RTT Modal inschakelen",
+    "realTimeTextModalTitle": "RTT inschakelen?",
+    "realTimeTextModalText": "Tekst in realtime (RTT) wordt ingeschakeld voor iedereen in de vergadering.",
+    "realTimeTextConfirmButtonLabel": "Inschakelen",
+    "realTimeTextCancelButtonLabel": "Annuleren",
+    "realTimeTextCloseModalButtonAriaLabel": "RTT Modaal sluiten"
+  },
+  "captionsBanner": {
+    "captionsBannerSpinnerText": "Ondertitels starten...",
+    "realTimeTextInputBoxDefaultText": "Bericht in realtime typen",
+    "realTimeTextInputErrorMessage": "Het bericht mag niet langer zijn dan 2000 tekens",
+    "realTimeTextBannerTitle": "RTT",
+    "realTimeTextBannerContent": "RTT (realtime-tekst) is ingeschakeld voor alle deelnemers gedurende de hele duur van de vergadering.",
+    "realTimeTextBannerLinkLabel": "Meer informatie",
+    "captionsOnlyContainerTitle": "Ondertitels",
+    "realTimeTextOnlyContainerTitle": "Real-time tekst",
+    "captionsAndRealTimeTextContainerTitle": "Ondertitels en realtime tekst",
+    "expandButtonAriaLabel": "Uitvouwen",
+    "minimizeButtonAriaLabel": "Samenvouwen"
+  },
+  "mentionPopover": {
+    "mentionPopoverHeader": "Suggesties"
+  },
+  "imageOverlay": {
+    "downloadButtonLabel": "Downloaden",
+    "dismissButtonAriaLabel": "Sluiten",
+    "overlayVisibleMessage": "Overlay voor details afbeelding"
   },
   "messageStatusIndicator": {
+    "deliveredAriaLabel": "Bericht verzonden",
     "deliveredTooltipText": "Verzonden",
+    "seenAriaLabel": "Bericht gezien door anderen",
     "seenTooltipText": "Gezien",
+    "readByTooltipText": "Gelezen door {messageThreadReadCount} van {remoteParticipantsCount}",
+    "sendingAriaLabel": "Bericht verzenden",
     "sendingTooltipText": "Verzenden",
+    "failedToSendAriaLabel": "Het bericht is niet verzonden",
     "failedToSendTooltipText": "Kan niet verzenden"
   },
   "endCallButton": {
-    "label": "Verlaten"
+    "label": "Verlaten",
+    "tooltipContent": "Gesprek verlaten",
+    "leaveOption": "Verlaten",
+    "endCallOption": "Oproep beëindigen voor iedereen"
   },
   "cameraButton": {
-    "onLabel": "Uitschakelen",
-    "offLabel": "Inschakelen"
-  },
-  "microphoneButton": {
-    "onLabel": "Dempen",
-    "offLabel": "Dempen opheffen"
-  },
-  "optionsButton": {
-    "label": "Opties",
+    "onLabel": "Camera",
+    "offLabel": "Camera",
+    "tooltipDisabledContent": "Camera is uitgeschakeld",
+    "tooltipOnContent": "Camera uitschakelen",
+    "tooltipOffContent": "Camera inschakelen",
+    "tooltipVideoLoadingContent": "Video wordt geladen",
     "cameraMenuTitle": "Camera",
     "cameraMenuTooltip": "Camera kiezen",
+    "cameraButtonSplitRoleDescription": "Knop Splitsen",
+    "onSplitButtonAriaLabel": "Camera uitschakelen",
+    "offSplitButtonAriaLabel": "Camera inschakelen",
+    "cameraActionTurnedOnAnnouncement": "Uw camera is ingeschakeld",
+    "cameraActionTurnedOffAnnouncement": "Uw camera is uitgeschakeld",
+    "onSplitButtonPrimaryActionCamera": "Camera uitschakelen",
+    "offSplitButtonPrimaryActionCamera": "Camera inschakelen",
+    "cameraPrimaryActionSplitButtonTitle": "Camera gebruiken",
+    "videoEffectsMenuItemTitle": "Effecten",
+    "cameraButtonAriaDescription": "camera-opties"
+  },
+  "microphoneButton": {
+    "onLabel": "Microfoon",
+    "offLabel": "Microfoon",
+    "tooltipDisabledContent": "Microfoon is uitgeschakeld",
+    "tooltipOnContent": "Microfoon uitschakelen",
+    "tooltipOffContent": "Microfoon inschakelen",
+    "microphoneMenuTitle": "Microfoon",
+    "microphoneMenuTooltip": "Microfoon kiezen",
+    "speakerMenuTitle": "Luidspreker",
+    "speakerMenuTooltip": "Luidspreker kiezen",
+    "microphoneButtonSplitRoleDescription": "Knop Splitsen",
+    "onSplitButtonAriaLabel": "Microfoon dempen",
+    "offSplitButtonAriaLabel": "Dempen opheffen voor microfoon",
+    "microphoneActionTurnedOnAnnouncement": "Uw microfoon is ingeschakeld",
+    "microphoneActionTurnedOffAnnouncement": "Uw microfoon is uitgeschakeld",
+    "offSplitButtonMicrophonePrimaryAction": "Dempen opheffen voor microfoon",
+    "onSplitButtonMicrophonePrimaryAction": "Microfoon dempen",
+    "microphonePrimaryActionSplitButtonTitle": "Microfoon gebruiken",
+    "microphoneAriaDescription": "Audio-opties",
+    "deepNoiseSuppressionTitle": "Ruisonderdrukking",
+    "deepNoiseSuppressionOnAnnouncement": "Diepe ruisonderdrukking is ingeschakeld",
+    "deepNoiseSuppressionOffAnnouncement": "Diepe ruisonderdrukking is uitgeschakeld"
+  },
+  "devicesButton": {
+    "label": "Apparaten",
+    "tooltipContent": "Apparaten beheren",
+    "cameraMenuTitle": "Camera",
+    "cameraMenuTooltip": "Camera kiezen",
+    "audioDeviceMenuTitle": "Audioapparaat",
+    "audioDeviceMenuTooltip": "Audioapparaat kiezen",
     "microphoneMenuTitle": "Microfoon",
     "microphoneMenuTooltip": "Microfoon kiezen",
     "speakerMenuTitle": "Spreker",
@@ -42,14 +174,139 @@
   },
   "participantsButton": {
     "label": "Personen",
+    "ariaLabel": "Personen",
+    "tooltipContent": "Deelnemers weergeven",
     "menuHeader": "In dit gesprek",
     "participantsListButtonLabel": "{numParticipants} personen",
     "muteAllButtonLabel": "Alles dempen",
-    "copyInviteLinkButtonLabel": "Uitnodigingskoppeling kopiëren"
+    "copyInviteLinkButtonLabel": "Uitnodigingskoppeling kopiëren",
+    "copyInviteLinkActionedAriaLabel": "Uitnodigingskoppeling gekopieerd"
   },
   "screenShareButton": {
-    "onLabel": "Stoppen",
-    "offLabel": "Delen"
+    "onLabel": "Presenteren stoppen",
+    "offLabel": "Presenteren",
+    "tooltipDisabledContent": "Presenteren is uitgeschakeld",
+    "tooltipOnContent": "Uw scherm presenteren",
+    "tooltipOffContent": "Uw scherm presenteren"
+  },
+  "raiseHandButton": {
+    "offLabel": "Opsteken",
+    "onLabel": "Laten zakken",
+    "tooltipDisabledContent": "Actie Hand opsteken is uitgeschakeld",
+    "tooltipOnContent": "Hand laten zakken",
+    "tooltipOffContent": "Hand opsteken"
+  },
+  "reactionButton": {
+    "label": "Reageren",
+    "ariaLabel": "Reageren",
+    "tooltipDisabledContent": "Reactieactie is uitgeschakeld",
+    "tooltipContent": "Verzend een reactie",
+    "likeReactionTooltipContent": "Vind ik leuk",
+    "heartReactionTooltipContent": "Hartje",
+    "laughReactionTooltipContent": "Lachen",
+    "applauseReactionTooltipContent": "Applaus",
+    "surprisedReactionTooltipContent": "Verrast"
+  },
+  "realTimeText": {
+    "isTypingText": "RTT typen"
+  },
+  "captionsSettingsModal": {
+    "captionsSettingsModalTitle": "Instellingen voor ondertitels",
+    "captionsSettingsSpokenLanguageDropdownLabel": "Gesproken taal",
+    "captionsSettingsCaptionLanguageDropdownLabel": "Taal van ondertitels",
+    "captionsSettingsSpokenLanguageDropdownInfoText": "Taal die iedereen in dit gesprek spreekt.",
+    "captionsSettingsCaptionLanguageDropdownInfoText": "Bijschriften worden weergegeven in deze taal.",
+    "captionsSettingsConfirmButtonLabel": "Bevestigen",
+    "captionsSettingsCancelButtonLabel": "Annuleren",
+    "captionsSettingsModalAriaLabel": "Bijschriften instellen modaal",
+    "captionsSettingsCloseModalButtonAriaLabel": "Instelling voor ondertiteling sluiten"
+  },
+  "spokenLanguages": {
+    "ar-ae": "Arabisch - Verenigde Arabische Emiraten",
+    "ar-sa": "Arabisch - Saudi-Arabië",
+    "da-dk": "Deens",
+    "de-de": "Duits - Duitsland",
+    "en-au": "Engels - Australië",
+    "en-ca": "Engels - Canada",
+    "en-gb": "Engels - Verenigd Koninkrijk",
+    "en-in": "Engels - India",
+    "en-nz": "Engels - Nieuw-Zeeland",
+    "en-us": "Engels - Verenigde Staten",
+    "es-es": "Spaans - Spanje (modern)",
+    "es-mx": "Spaans - Mexico",
+    "fi-fi": "Fins",
+    "fr-ca": "Frans - Canada",
+    "fr-fr": "Frans - Frankrijk",
+    "hi-in": "Hindi",
+    "it-it": "Italiaans - Italië",
+    "ja-jp": "Japans",
+    "ko-kr": "Koreaans",
+    "nb-no": "Noors (Bokmål)",
+    "nl-be": "Nederlands - België",
+    "nl-nl": "Nederlands - Nederland",
+    "pl-pl": "Pools",
+    "pt-br": "Portugees - Brazilië",
+    "ru-ru": "Russisch",
+    "sv-se": "Zweeds",
+    "zh-cn": "Chinees (Volksrepubliek China)",
+    "zh-hk": "Chinees - Hongkong SAR",
+    "cs-cz": "Tsjechisch",
+    "pt-pt": "Portugees - Portugal",
+    "tr-tr": "Turks",
+    "vi-vn": "Vietnamees",
+    "th-th": "Thai",
+    "he-il": "Hebreeuws",
+    "cy-gb": "Welsh",
+    "uk-ua": "Oekraïens",
+    "el-gr": "Grieks",
+    "hu-hu": "Hongaars",
+    "ro-ro": "Roemeens",
+    "sk-sk": "Slowaaks",
+    "zh-tw": "Chinees - Taiwan"
+  },
+  "captionLanguages": {
+    "ar": "Arabisch",
+    "da": "Deens",
+    "de": "Duits",
+    "en": "Engels",
+    "es": "Spaans",
+    "fi": "Fins",
+    "fr-ca": "Frans - Canada",
+    "fr": "Frans - Frankrijk",
+    "hi": "Hindi",
+    "it": "Italiaans",
+    "ja": "Japans",
+    "ko": "Koreaans",
+    "nb": "Noors (Bokmål)",
+    "nl": "Nederlands",
+    "pl": "Pools",
+    "pt": "Portugees - Brazilië",
+    "ru": "Russisch",
+    "sv": "Zweeds",
+    "zh-Hans": "Chinees (vereenvoudigd)",
+    "zh-Hant": "Chinees (traditioneel)",
+    "cs": "Tsjechisch",
+    "pt-pt": "Portugees - Portugal",
+    "tr": "Turks",
+    "vi": "Vietnamees",
+    "th": "Thai",
+    "he": "Hebreeuws",
+    "cy": "Welsh",
+    "uk": "Oekraïens",
+    "el": "Grieks",
+    "hu": "Hongaars",
+    "ro": "Roemeens",
+    "sk": "Slowaaks"
+  },
+  "startCaptionsButton": {
+    "onLabel": "Bijschriften inschakelen",
+    "offLabel": "Ondertitels uitschakelen",
+    "tooltipOnContent": "Ondertitels uitschakelen",
+    "tooltipOffContent": "Bijschriften inschakelen"
+  },
+  "startRealTimeTextButton": {
+    "label": "RTT inschakelen voor dit gesprek",
+    "tooltipOffContent": "RTT inschakelen voor dit gesprek"
   },
   "messageThread": {
     "yesterday": "Gisteren",
@@ -61,13 +318,63 @@
     "friday": "Vrijdag",
     "saturday": "Zaterdag",
     "participantJoined": "neemt nu deel aan de chat.",
-    "participantLeft": "heeft de chat verlaten."
+    "participantLeft": "heeft de chat verlaten.",
+    "editMessage": "Bewerken",
+    "removeMessage": "Verwijderen",
+    "resendMessage": "Probeer opnieuw te verzenden",
+    "failToSendTag": "Verzenden mislukt",
+    "editedTag": "Bewerkt",
+    "liveAuthorIntro": "Bericht van {author}",
+    "editedMessageLiveAuthorIntro": "Bewerkt bericht van {author}",
+    "editedMessageLocalUserLiveAuthorIntro": "Bewerkt bericht",
+    "messageContentAriaText": "{status} {author} zei {message}",
+    "messageContentMineAriaText": "{status} U zei {message}",
+    "editBoxTextLimit": "Uw bericht heeft de limiet van {limitNumber} tekens overschreden",
+    "editBoxPlaceholderText": "Uw bericht bewerken",
+    "newMessagesIndicator": "Nieuwe berichten",
+    "noDisplayNameSub": "Geen naam",
+    "editBoxCancelButton": "Annuleren",
+    "editBoxSubmitButton": "Gereed",
+    "messageReadCount": "Gelezen door {messageReadByCount} van {remoteParticipantsCount}",
+    "actionMenuMoreOptions": "Meer opties",
+    "downloadAttachment": "Bestand downloaden",
+    "openAttachment": "Bestand openen",
+    "blockedWarningText": "Dit bericht is verwijderd vanwege organisatiebeleid.",
+    "blockedWarningLinkText": "Details",
+    "attachmentCardGroupMessage": "Het bericht heeft {attachmentCount} bijlage",
+    "messageDeletedAnnouncementAriaLabel": "Het bericht is verwijderd",
+    "richTextBoldTooltip": "Vet",
+    "richTextItalicTooltip": "Cursief",
+    "richTextUnderlineTooltip": "Onderstrepen",
+    "richTextBulletListTooltip": "Lijst met opsommingstekens",
+    "richTextNumberListTooltip": "Genummerde lijst",
+    "richTextIncreaseIndentTooltip": "Inspringing vergroten",
+    "richTextDecreaseIndentTooltip": "Inspringing verkleinen",
+    "richTextInsertTableTooltip": "Tabel invoegen",
+    "richTextFormatButtonTooltip": "Indeling",
+    "richTextInsertRowOrColumnMenu": "Invoegen",
+    "richTextInsertTableMenuTitle": "{column} x {row} tabel invoegen",
+    "richTextInsertRowAboveMenu": "Hierboven invoegen",
+    "richTextInsertRowBelowMenu": "Hieronder invoegen",
+    "richTextInsertColumnLeftMenu": "Links invoegen",
+    "richTextInsertColumnRightMenu": "Rechts invoegen",
+    "richTextDeleteRowOrColumnMenu": "Verwijderen",
+    "richTextDeleteColumnMenu": "Kolom verwijderen",
+    "richTextDeleteRowMenu": "Rij verwijderen",
+    "richTextDeleteTableMenu": "Tabel verwijderen",
+    "richTextToolbarMoreButtonAriaLabel": "Meer opties",
+    "attachmentUploadsPendingError": "Bestand wordt geüpload, even geduld.",
+    "imageUploadsPendingError": "Afbeelding wordt geüpload, even geduld.",
+    "richTextNewBulletedListItemAnnouncement": "Opsommingsteken, nieuwe regel",
+    "richTextNewNumberedListItemAnnouncement": "{0}, nieuwe regel",
+    "richTextBulletedListAppliedAnnouncement": "Lijst met opsommingstekens toegepast",
+    "richTextNumberedListAppliedAnnouncement": "Genummerde lijst is toegepast"
   },
   "errorBar": {
     "unableToReachChatService": "U bent offline",
     "accessDenied": "Kan geen toegang krijgen tot chatservices. Controleer de opgegeven gebruikersreferenties",
-    "userNotInThisThread": "U bent niet meer aanwezig in deze chatthread",
-    "sendMessageNotInThisThread": "Verzenden van bericht is mislukt omdat u zich niet meer in deze chatthread bevindt",
+    "userNotInChatThread": "U bent niet meer aanwezig in deze chatthread",
+    "sendMessageNotInChatThread": "Verzenden van bericht is mislukt omdat u zich niet meer in deze chatthread bevindt",
     "sendMessageGeneric": "Kan bericht niet verzenden",
     "callingNetworkFailure": "Er zijn problemen met het verbinden van een gesprek - Het lijkt erop dat u offline bent",
     "startVideoGeneric": "Kan video niet starten",
@@ -75,7 +382,469 @@
     "muteGeneric": "Kan microfoon niet dempen",
     "unmuteGeneric": "Kan dempen van microfoon niet opheffen",
     "speakingWhileMuted": "De microfoon is gedempt",
-    "startScreenShareGeneric": "Kan scherm delen niet starten",
-    "stopScreenShareGeneric": "Kan scherm delen niet stoppen"
+    "startScreenShareGeneric": "Er is een probleem opgetreden bij het starten van scherm delen.",
+    "stopScreenShareGeneric": "Kan scherm delen niet stoppen",
+    "callNetworkQualityLow": "De netwerkkwaliteit is laag.",
+    "teamsMeetingCallNetworkQualityLow": "De netwerkkwaliteit is laag.",
+    "callNoSpeakerFound": "Geen luidsprekers of hoofdtelefoon gevonden. Sluit een audioapparaat aan om het gesprek te beluisteren.",
+    "callNoMicrophoneFound": "Geen microfoons gevonden. Sluit een audio-invoerapparaat aan.",
+    "callMicrophoneAccessDenied": "Kan geen toegang krijgen tot de microfoon. Klik op de vergrendeling in de adresbalk om toestemming te verlenen aan deze webpagina.",
+    "callMicrophoneAccessDeniedSafari": "Kan geen toegang krijgen tot de microfoon. Vernieuw de pagina om machtigingen toe te staan of controleer de instellingen van deze browser en controleer of machtigingen zijn ingeschakeld voor deze website.",
+    "callMicrophoneMutedBySystem": "U bent gedempt door jouw systeem.",
+    "callMicrophoneUnmutedBySystem": "De microfoon is hersteld en het dempen van de microfoon is door het systeem opgeheven.",
+    "callMacOsMicrophoneAccessDenied": "Kan geen toegang krijgen tot de microfoon. Verleen microfoonmachtiging in de privacyinstellingen voor macOS.",
+    "callLocalVideoFreeze": "De netwerkbandbreedte is slecht. Je video wordt mogelijk onderbroken weergegeven voor anderen in het gesprek.",
+    "callCameraAccessDenied": "Kan geen toegang krijgen tot de camera. Klik op de vergrendeling in de adresbalk om toestemming te verlenen aan deze webpagina.",
+    "callCameraAccessDeniedSafari": "Kan geen toegang krijgen tot de camera. Vernieuw de pagina om machtigingen toe te staan of controleer de instellingen van deze browser en controleer of machtigingen zijn ingeschakeld voor deze website.",
+    "callCameraAlreadyInUse": "Kan geen toegang krijgen tot de camera. Het wordt mogelijk al gebruikt door een andere toepassing.",
+    "callVideoStoppedBySystem": "Uw video is gestopt door uw systeem.",
+    "callVideoRecoveredBySystem": "Uw video is hervat.",
+    "callMacOsCameraAccessDenied": "MacOS blokkeert de toegang tot jouw camera. Werk je privacyinstellingen bij, zodat deze browser toegang heeft tot jouw camera.",
+    "callMacOsScreenShareAccessDenied": "MacOS blokkeert scherm delen. Werk je privacyinstellingen bij, zodat deze browser jouw scherm kan opnemen.",
+    "dismissButtonAriaLabel": "Sluiten",
+    "failedToJoinCallGeneric": "Deelnemen aan gesprek mislukt.",
+    "failedToJoinCallInvalidMeetingLink": "Kan niet deelnemen aan vergadering. Ongeldige koppeling.",
+    "cameraFrozenForRemoteParticipants": "Gebruikers in het gesprek ondervinden problemen bij het zien van uw video. Controleer uw apparaten en netwerk.",
+    "unableToStartVideoEffect": "Kan video-effect niet toepassen.",
+    "startSpotlightWhileMaxParticipantsAreSpotlighted": "Kan de deelnemer(s) niet in de spotlight plaatsen omdat het maximum aantal deelnemers in de spotlight is bereikt.",
+    "mutedByRemoteParticipant": "U bent gedempt door een andere deelnemer."
+  },
+  "notificationStack": {
+    "callingNetworkFailure": {
+      "title": "Er is geen verbinding gemaakt met het gesprek",
+      "message": "U lijkt offline te zijn. Controleer de netwerkverbinding en probeer het opnieuw.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "startVideoGeneric": {
+      "title": "De video is niet gestart.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "stopVideoGeneric": {
+      "title": "De video is niet gestopt.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "muteGeneric": {
+      "title": "De microfoon is niet gedempt.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "unmuteGeneric": {
+      "title": "Het dempen van de microfoon is niet opgeheven.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "speakingWhileMuted": {
+      "title": "Uw microfoon is gedempt.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "startScreenShareGeneric": {
+      "title": "Er is een probleem opgetreden bij het starten van scherm delen.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "stopScreenShareGeneric": {
+      "title": "Kan scherm delen niet stoppen.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callNetworkQualityLow": {
+      "title": "De netwerkkwaliteit is laag.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "teamsMeetingCallNetworkQualityLow": {
+      "title": "De netwerkkwaliteit is laag.",
+      "dismissButtonAriaLabel": "Sluiten",
+      "message": "Neem deel aan dit gesprek vanaf uw telefoon voor een beter geluid. U kunt doorgaan met het weergeven van de vergadering op dit apparaat.",
+      "primaryButtonLabel": "Deelnemen via telefoon"
+    },
+    "callNoSpeakerFound": {
+      "title": "Geen luidsprekers of hoofdtelefoon gevonden",
+      "message": "Sluit een audioapparaat aan om het gesprek te beluisteren.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callNoMicrophoneFound": {
+      "title": "Geen microfoons gevonden",
+      "message": "Sluit een audio-invoerapparaat aan.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callMicrophoneAccessDenied": {
+      "title": "Geen toegang tot microfoon",
+      "message": "Klik op de vergrendeling in de adresbalk om toestemming te verlenen aan deze webpagina.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callMicrophoneAccessDeniedSafari": {
+      "title": "Geen toegang tot microfoon",
+      "message": "Vernieuw de pagina om machtigingen toe te staan of controleer de instellingen van deze browser en controleer of machtigingen zijn ingeschakeld voor deze website.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callMicrophoneMutedBySystem": {
+      "title": "U bent gedempt door jouw systeem.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callMicrophoneUnmutedBySystem": {
+      "title": "De microfoon is hersteld en het dempen van de microfoon is door het systeem opgeheven.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callMacOsMicrophoneAccessDenied": {
+      "title": "Geen toegang tot microfoon",
+      "message": "Verleen microfoonmachtiging in de privacyinstellingen voor macOS.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callLocalVideoFreeze": {
+      "title": "De netwerkbandbreedte is slecht",
+      "message": "Uw video wordt mogelijk onderbroken weergegeven voor anderen in het gesprek.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callCameraAccessDenied": {
+      "title": "Geen toegang tot camera",
+      "message": "Klik op de vergrendeling in de adresbalk om toestemming te verlenen aan deze webpagina.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callCameraAccessDeniedSafari": {
+      "title": "Geen toegang tot camera",
+      "message": "Vernieuw de pagina om machtigingen toe te staan of controleer de instellingen van deze browser en controleer of machtigingen zijn ingeschakeld voor deze website.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callCameraAlreadyInUse": {
+      "title": "Geen toegang tot camera",
+      "message": "Het wordt mogelijk al gebruikt door een andere toepassing.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callVideoStoppedBySystem": {
+      "title": "Uw video is gestopt door uw systeem.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callVideoRecoveredBySystem": {
+      "title": "Uw video is hervat.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callMacOsCameraAccessDenied": {
+      "title": "MacOS blokkeert de toegang tot uw camera",
+      "message": "Werk uw privacyinstellingen bij zodat deze browser toegang heeft tot uw camera.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "callMacOsScreenShareAccessDenied": {
+      "title": "Scherm delen wordt geblokkeerd door macOS",
+      "message": "Werk uw privacyinstellingen bij zodat deze browser uw scherm kan opnemen.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "failedToJoinCallGeneric": {
+      "title": "Deelnemen aan gesprek mislukt.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "failedToJoinCallInvalidMeetingLink": {
+      "title": "Kan niet deelnemen aan vergadering. Ongeldige koppeling.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "cameraFrozenForRemoteParticipants": {
+      "title": "Gebruikers in het gesprek ondervinden problemen bij het zien van uw video",
+      "message": "Controleer uw apparaten en netwerk.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "unableToStartVideoEffect": {
+      "title": "Kan video-effect niet toepassen.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "startSpotlightWhileMaxParticipantsAreSpotlighted": {
+      "title": "Kan spotlight niet starten op deelnemer(s)",
+      "message": "Het maximum aantal deelnemers is al gespotlight.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "mutedByRemoteParticipant": {
+      "title": "U bent gedempt door een andere deelnemer.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "recordingStarted": {
+      "title": "Opname is gestart.",
+      "message": "Door deel te nemen, geeft u toestemming voor het transcriberen van deze vergadering.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "transcriptionStarted": {
+      "title": "Transcriptie is gestart.",
+      "message": "Door deel te nemen, geeft u toestemming voor het transcriberen van deze vergadering.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "recordingStopped": {
+      "title": "De opname wordt opgeslagen.",
+      "message": "Opname is gestopt.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "transcriptionStopped": {
+      "title": "Transcriptie wordt opgeslagen.",
+      "message": "Transcriptie is gestopt.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "recordingAndTranscriptionStarted": {
+      "title": "Opname en transcriptie zijn gestart.",
+      "message": "Door deel te nemen, geeft u toestemming voor het transcriberen van deze vergadering.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "recordingAndTranscriptionStopped": {
+      "title": "Opname en transcriptie worden opgeslagen.",
+      "message": "Opname en transcriptie zijn gestopt.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "recordingStoppedStillTranscribing": {
+      "title": "Opname is gestopt.",
+      "message": "U bent nu alleen deze vergadering aan het transcriberen.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "transcriptionStoppedStillRecording": {
+      "title": "Transcriptie is gestopt.",
+      "message": "U bent nu alleen deze vergadering aan het opnemen.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "assignedBreakoutRoomOpened": {
+      "title": "U wordt over 5 seconden naar de toegewezen ruimte verplaatst.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "assignedBreakoutRoomChanged": {
+      "title": "Uw aparte vergaderruimte is gewijzigd",
+      "message": "U wordt over 5 seconden naar de toegewezen ruimte verplaatst.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "assignedBreakoutRoomClosed": {
+      "title": "Je aparte vergaderruimte is gesloten",
+      "message": "U wordt over 5 seconden terug naar de vergadering verplaatst.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "assignedBreakoutRoomOpenedPromptJoin": {
+      "title": "Deelnemen aan aparte vergaderruimte?",
+      "message": "U bent toegewezen aan een aparte vergaderruimte.",
+      "dismissButtonAriaLabel": "Sluiten",
+      "primaryButtonLabel": "Naar vergaderruimte",
+      "secondaryButtonLabel": "Later"
+    },
+    "breakoutRoomJoined": {
+      "title": "U heeft deelgenomen aan een vergaderruimte.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "breakoutRoomClosingSoon": {
+      "title": "De tijdslimiet voor de ruimte verloopt binnenkort.",
+      "message": "Deze ruimte wordt in 30 seconden gesloten.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "capabilityTurnVideoOnPresent": {
+      "title": "Uw camera is ingeschakeld",
+      "message": "Schakel deze in als u video wilt delen.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "capabilityTurnVideoOnAbsent": {
+      "title": "Uw camera is uitgeschakeld",
+      "message": "U kunt geen video meer delen.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "capabilityUnmuteMicPresent": {
+      "title": "Uw microfoon is ingeschakeld",
+      "message": "Dempen opheffen als u wilt spreken.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "capabilityUnmuteMicAbsent": {
+      "title": "Uw microfoon is uitgeschakeld",
+      "message": "U kunt het dempen niet meer opheffen.",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "togetherModeStarted": {
+      "title": "Togethermode is gestart",
+      "dismissButtonAriaLabel": "Sluiten"
+    },
+    "togetherModeEnded": {
+      "title": "Togethermode is beëindigd",
+      "dismissButtonAriaLabel": "Sluiten"
+    }
+  },
+  "videoGallery": {
+    "screenIsBeingSharedMessage": "U deelt uw scherm",
+    "screenShareLoadingMessage": "Scherm van {participant} laden",
+    "localScreenShareLoadingMessage": "Uw scherm laden",
+    "localVideoLabel": "U",
+    "localVideoCameraSwitcherLabel": "Camera wisselen",
+    "localVideoMovementLabel": "Tegel voor verwisselbare lokale video",
+    "localVideoMovementAriaLabel": "Tegel voor verwisselbare lokale video",
+    "localVideoSelectedDescription": "{cameraName} geselecteerd",
+    "displayNamePlaceholder": "Naamloze deelnemer",
+    "fitRemoteParticipantToFrame": "Aanpassen aan frame",
+    "fillRemoteParticipantFrame": "Frame vullen",
+    "pinParticipantForMe": "Voor mij vastmaken",
+    "pinParticipantForMeLimitReached": "Pin (limiet bereikt)",
+    "unpinParticipantForMe": "Losmaken",
+    "pinParticipantMenuItemAriaLabel": "{participantName} vastmaken",
+    "unpinParticipantMenuItemAriaLabel": "{participantName} losmaken",
+    "pinnedParticipantAnnouncementAriaLabel": "{participantName} vastgemaakt",
+    "unpinnedParticipantAnnouncementAriaLabel": "{participantName} losgemaakt",
+    "startSpotlightVideoTileMenuLabel": "Spotlight voor iedereen",
+    "addSpotlightVideoTileMenuLabel": "Spotlight toevoegen",
+    "spotlightLimitReachedMenuTitle": "Spotlightlimiet bereikt",
+    "stopSpotlightVideoTileMenuLabel": "Spotlighten stoppen",
+    "stopSpotlightOnSelfVideoTileMenuLabel": "Spotlight afsluiten",
+    "attendeeRole": "Genodigde",
+    "muteParticipantMenuItemLabel": "Dempen",
+    "waitingScreenText": "Wachten tot anderen deelnemen",
+    "forbidAudio": "Microfoon uitschakelen",
+    "permitAudio": "Microfoon toestaan",
+    "forbidAudioTileMenuLabel": "Microfoon uitschakelen",
+    "permitAudioTileMenuLabel": "Microfoon toestaan",
+    "forbidVideo": "Camera uitschakelen",
+    "permitVideo": "Camera toestaan",
+    "forbidVideoTileMenuLabel": "Camera uitschakelen",
+    "permitVideoTileMenuLabel": "Camera toestaan"
+  },
+  "dialpad": {
+    "placeholderText": "Telefoonnummer invoeren",
+    "deleteButtonAriaLabel": "Verwijderen"
+  },
+  "holdButton": {
+    "onLabel": "Hervatten",
+    "offLabel": "Pauze",
+    "tooltipOnContent": "Gesprek hervatten",
+    "tooltipOffContent": "Gesprek in wachtrij plaatsen"
+  },
+  "videoTile": {
+    "participantStateRinging": "Bellen...",
+    "participantReconnecting": "Opnieuw verbinding maken...",
+    "participantStateHold": "In de wacht",
+    "moreOptionsButtonAriaLabel": "Meer opties {displayName} {isMuted} {micDisabledState} {cameraDisabledState} {isHandRaised} {state} {isSpeaking}",
+    "moreOptionsParticipantMutedStateMutedAriaLabel": "gedempt",
+    "moreOptionsParticipantMutedStateUnmutedAriaLabel": "niet gedempt",
+    "moreOptionsParticipantHandRaisedAriaLabel": "Opgestoken hand",
+    "moreOptionsParticipantIsSpeakingAriaLabel": "Spreken",
+    "moreOptionsParticipantMicDisabledAriaLabel": "Microfoon uitgeschakeld",
+    "moreOptionsParticipantCameraDisabledAriaLabel": "Camera uitgeschakeld"
+  },
+  "CameraAndMicrophoneSitePermissionsRequest": {
+    "primaryText": "Toestaan dat {appName} uw camera en microfoon gebruikt",
+    "secondaryText": "Dit is zodat deelnemers u kunnen zien en horen.",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing",
+    "primaryButtonText": "Doorgaan zonder camera en microfoon",
+    "ariaLabel": "Toegang tot camera en microfoon toestaan"
+  },
+  "CameraSitePermissionsRequest": {
+    "primaryText": "{appName} toestaan om uw camera te gebruiken",
+    "secondaryText": "Dit is zodat deelnemers u kunnen zien.",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing",
+    "primaryButtonText": "Doorgaan zonder camera",
+    "ariaLabel": "Cameratoegang toestaan"
+  },
+  "MicrophoneSitePermissionsRequest": {
+    "primaryText": "{appName} toestaan om uw microfoon te gebruiken",
+    "secondaryText": "Dit is zodat deelnemers u kunnen horen.",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing",
+    "primaryButtonText": "Doorgaan zonder microfoon",
+    "ariaLabel": "Microfoontoegang toestaan"
+  },
+  "CameraAndMicrophoneSitePermissionsCheck": {
+    "primaryText": "Controleren op toegang tot camera en microfoon",
+    "secondaryText": "Toegang toestaan als hierom wordt gevraagd. Dit is zodat deelnemers u kunnen zien en horen.",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing",
+    "primaryButtonText": "Doorgaan zonder camera en microfoon",
+    "ariaLabel": "Controleren op toegang tot camera en microfoon. Toegang toestaan als hierom wordt gevraagd."
+  },
+  "CameraSitePermissionsCheck": {
+    "primaryText": "Controleren op cameratoegang",
+    "secondaryText": "Toegang toestaan als hierom wordt gevraagd. Dit is zodat deelnemers u kunnen zien.",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing",
+    "primaryButtonText": "Doorgaan zonder camera",
+    "ariaLabel": "Controleren op cameratoegang. Toegang toestaan als hierom wordt gevraagd."
+  },
+  "MicrophoneSitePermissionsCheck": {
+    "primaryText": "Controleren op toegang tot microfoon",
+    "secondaryText": "Toegang toestaan als hierom wordt gevraagd. Dit is zodat deelnemers u kunnen horen.",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing",
+    "primaryButtonText": "Doorgaan zonder microfoon",
+    "ariaLabel": "Controleren op toegang tot microfoon. Toegang toestaan als hierom wordt gevraagd."
+  },
+  "CameraAndMicrophoneSitePermissionsDenied": {
+    "primaryText": "Geen toegang tot camera en microfoon",
+    "secondaryText": "Klik op het vergrendelingspictogram op de adresbalk om microfoonmachtigingen toe te kennen aan deze webpagina. Mogelijk is een paginavernieuwing vereist.",
+    "primaryButtonText": "Doorgaan zonder camera en microfoon",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing"
+  },
+  "CameraAndMicrophoneSitePermissionsDeniedSafari": {
+    "primaryText": "Geen toegang tot camera en microfoon",
+    "secondaryText": "Vernieuw de pagina om machtigingen toe te staan of controleer de instellingen van deze browser en controleer of machtigingen zijn ingeschakeld voor deze website.",
+    "primaryButtonText": "Doorgaan zonder camera en microfoon",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing"
+  },
+  "CameraSitePermissionsDenied": {
+    "primaryText": "Geen toegang tot camera",
+    "secondaryText": "Klik op het vergrendelingspictogram op de adresbalk om cameramachtigingen toe te kennen aan deze webpagina. Mogelijk is een paginavernieuwing vereist.",
+    "primaryButtonText": "Doorgaan zonder camera",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing"
+  },
+  "MicrophoneSitePermissionsDenied": {
+    "primaryText": "Geen toegang tot microfoon",
+    "secondaryText": "Klik op het vergrendelingspictogram op de adresbalk om microfoonmachtigingen toe te kennen aan deze webpagina. Mogelijk is een paginavernieuwing vereist.",
+    "primaryButtonText": "Doorgaan zonder microfoon",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing"
+  },
+  "CameraSitePermissionsDeniedSafari": {
+    "primaryText": "Geen toegang tot camera",
+    "secondaryText": "Vernieuw de pagina om machtigingen toe te staan of controleer de instellingen van deze browser en controleer of machtigingen zijn ingeschakeld voor deze website.",
+    "primaryButtonText": "Doorgaan zonder camera",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing"
+  },
+  "MicrophoneSitePermissionsDeniedSafari": {
+    "primaryText": "Geen toegang tot microfoon",
+    "secondaryText": "Vernieuw de pagina om machtigingen toe te staan of controleer de instellingen van deze browser en controleer of machtigingen zijn ingeschakeld voor deze website.",
+    "primaryButtonText": "Doorgaan zonder microfoon",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing"
+  },
+  "UnsupportedBrowser": {
+    "primaryText": "Browser wordt niet ondersteund",
+    "secondaryText": "Neem deel aan dit gesprek via een compatibele browser.",
+    "moreHelpLinkText": "Compatibiliteitsvereisten bekijken"
+  },
+  "UnsupportedBrowserVersion": {
+    "primaryText": "Browserupdate vereist",
+    "secondaryText": "Werk uw browser bij en probeer opnieuw deel te nemen aan het gesprek om ervoor te zorgen dat u het beste kunt bellen.",
+    "moreHelpLinkText": "Compatibiliteitsvereisten bekijken",
+    "continueAnywayButtonText": "Oproep starten zonder bij te werken"
+  },
+  "UnsupportedOperatingSystem": {
+    "primaryText": "Besturingssysteem niet ondersteund",
+    "secondaryText": "Neem deel aan dit gesprek via een apparaat met een compatibel besturingssysteem.",
+    "moreHelpLinkText": "Compatibiliteitsvereisten bekijken"
+  },
+  "BrowserPermissionDenied": {
+    "primaryText": "Kan uw camera of microfoon niet gebruiken",
+    "secondaryText": "Uw browser heeft mogelijk geen toegang tot uw camera of microfoon. Open Systeemvoorkeuren om dit op te lossen.",
+    "primaryButtonText": "Opnieuw proberen",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing"
+  },
+  "BrowserPermissionDeniedIOS": {
+    "primaryText": "Microfoontoegang toestaan om door te gaan",
+    "secondaryText": "Zodat andere deelnemers u kunnen horen.",
+    "primaryButtonText": "Opnieuw proberen",
+    "imageAltText": "Machtigingslocatie voor microfoon en cameraapparaat voor iOS",
+    "linkText": "Hulp nodig? Hulp bij probleemoplossing",
+    "step1Text": "Ga naar de app Instellingen",
+    "step2Text": "Schuif omlaag naar instellingen voor deze browser",
+    "step3Text": "Microfoon inschakelen (camera optioneel)",
+    "step4Text": "Probeer opnieuw deel te nemen aan het gesprek",
+    "step1DigitText": "1",
+    "step2DigitText": "2",
+    "step3DigitText": "3",
+    "step4DigitText": "4"
+  },
+  "verticalGallery": {
+    "leftNavButtonAriaLabel": "vorige pagina {current} van {total}",
+    "rightNavButtonAriaLabel": "volgende pagina {current} van {total}"
+  },
+  "meetingConferencePhoneInfo": {
+    "meetingConferencePhoneInfoModalTitle": "Deelnemen aan gesprek vanaf uw telefoon",
+    "meetingConferencePhoneInfoModalDialIn": "Kiesnummer",
+    "meetingConferencePhoneInfoModalMeetingId": "Vergadering-id invoeren",
+    "meetingConferencePhoneInfoModalWait": "Wachten om toegelaten te worden door organisator",
+    "meetingConferencePhoneInfoModalNoPhoneAvailable": "Geen telefoon beschikbaar",
+    "meetingConferencePhoneInfoModalTollGeoData": "{country}, {city}",
+    "meetingConferencePhoneInfoModalTollFree": "(Gratis)",
+    "meetingConferencePhoneInfoModalToll": "(niet-gratis)"
+  },
+  "IncomingCallNotification": {
+    "incomingCallNotificationPlaceholderId": "Onbekende gebruiker",
+    "incomingCallNotificationPlaceholderAlert": "{callerName} belt",
+    "incomingCallNoticicationAcceptWithAudioAriaLabel": "Accepteren met geluid",
+    "incomingCallNoticicationAcceptWithVideoAriaLabel": "Accepteren met video",
+    "incomingCallNoticicationRejectAriaLabel": "Weigeren",
+    "incomingCallNotificationAcceptButtonLabel": "Accepteren",
+    "incomingCallNotificationRejectButtonLabel": "Weigeren",
+    "incomingCallNotificationAccceptWithVideoButtonLabel": "Accepteren met video",
+    "incomingCallNotificationDismissButtonAriaLabel": "Sluiten"
   }
 }

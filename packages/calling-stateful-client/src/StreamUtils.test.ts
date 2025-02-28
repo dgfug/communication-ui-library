@@ -1,20 +1,22 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import {
   CallerInfo,
   CreateViewOptions,
+  VideoStreamRenderer,
   VideoStreamRendererView,
   LocalVideoStream as SdkLocalVideoStream,
   RemoteVideoStream as SdkRemoteVideoStream,
   VideoDeviceInfo
 } from '@azure/communication-calling';
+import { CallKind } from '@azure/communication-calling';
 import { CommunicationUserKind } from '@azure/communication-common';
 import { CallState, LocalVideoStreamState, RemoteParticipantState, RemoteVideoStreamState } from './CallClientState';
 import { CallContext } from './CallContext';
 import { InternalCallContext } from './InternalCallContext';
 import { createView, disposeView, disposeAllViewsFromCall, disposeAllViews } from './StreamUtils';
-import { createMockRemoteVideoStream } from './TestUtils';
+import { createMockLocalVideoStream, createMockRemoteVideoStream } from './TestUtils';
 import { toFlatCommunicationIdentifier } from '@internal/acs-ui-common';
 
 jest.mock('@azure/communication-calling', () => {
@@ -24,18 +26,7 @@ jest.mock('@azure/communication-calling', () => {
     }),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     LocalVideoStream: jest.fn().mockImplementation((info: VideoDeviceInfo) => {
-      return {
-        source: () => {
-          return {} as VideoDeviceInfo;
-        },
-        mediaStreamType: () => {
-          return 'Video';
-        },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        switchSource: (videoDeviceInfo: VideoDeviceInfo) => {
-          return Promise.resolve();
-        }
-      };
+      return createMockLocalVideoStream();
     }),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     VideoStreamRenderer: jest.fn().mockImplementation((videoStream: SdkLocalVideoStream | SdkRemoteVideoStream) => {
@@ -47,7 +38,10 @@ jest.mock('@azure/communication-calling', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         dispose: () => {}
       };
-    })
+    }),
+    Features: {
+      VideoEffects: undefined
+    }
   };
 });
 
@@ -71,6 +65,7 @@ interface TestData {
 
 function createMockCall(mockCallId: string): CallState {
   const call: CallState = {
+    kind: 'Call' as CallKind,
     id: mockCallId,
     callerInfo: {} as CallerInfo,
     state: 'None',
@@ -89,12 +84,39 @@ function createMockCall(mockCallId: string): CallState {
     remoteParticipants: {},
     remoteParticipantsEnded: {},
     recording: { isRecordingActive: false },
+    /* @conditional-compile-remove(local-recording-notification) */
+    localRecording: { isLocalRecordingActive: false },
+    raiseHand: { raisedHands: [] },
+    /* @conditional-compile-remove(together-mode) */
+    togetherMode: { isActive: false, streams: {}, seatingPositions: {} },
+    localParticipantReaction: undefined,
     transcription: { isTranscriptionActive: false },
-    transfer: { receivedTransferRequests: [], requestedTransfers: [] },
     screenShareRemoteParticipant: undefined,
     startTime: new Date(),
     endTime: undefined,
-    dominantSpeakers: undefined
+    dominantSpeakers: undefined,
+    captionsFeature: {
+      captions: [],
+      supportedSpokenLanguages: [],
+      supportedCaptionLanguages: [],
+      currentCaptionLanguage: '',
+      currentSpokenLanguage: '',
+      isCaptionsFeatureActive: false,
+      startCaptionsInProgress: false,
+      captionsKind: 'Captions'
+    },
+    /* @conditional-compile-remove(rtt) */
+    realTimeTextFeature: {
+      realTimeTexts: {},
+      isRealTimeTextFeatureActive: false
+    },
+    transfer: {
+      acceptedTransfers: {}
+    },
+    optimalVideoCount: {
+      maxRemoteVideoStreams: 4
+    },
+    pptLive: { isActive: false }
   };
   return call;
 }
@@ -115,6 +137,7 @@ function addMockRemoteStreamAndParticipant(
     id: streamId,
     mediaStreamType: 'Video',
     isAvailable: true,
+    isReceiving: true,
     view: undefined
   };
   participant.videoStreams[streamId] = remoteVideoStream;
@@ -151,11 +174,17 @@ function addSdkRemoteStream(
 }
 
 function addMockLocalStream(call: CallState): void {
-  call.localVideoStreams.push({} as LocalVideoStreamState);
+  call.localVideoStreams.push({ mediaStreamType: 'Video' } as LocalVideoStreamState);
 }
 
 function addSdkLocalStream(internalContext: InternalCallContext, callId: string): void {
-  internalContext.setLocalRenderInfo(callId, new SdkLocalVideoStream({} as VideoDeviceInfo), 'NotRendered', undefined);
+  internalContext.setLocalRenderInfo(
+    callId,
+    'Video',
+    new SdkLocalVideoStream({} as VideoDeviceInfo),
+    'NotRendered',
+    undefined
+  );
 }
 
 describe('stream utils', () => {
@@ -195,13 +224,17 @@ describe('stream utils', () => {
     context.setCall(call);
     addSdkLocalStream(internalContext, mockCallId);
 
-    await createView(context, internalContext, mockCallId, mockParticipantIdentifier, {} as LocalVideoStreamState);
+    // participantId is undefined since when createView is invoked without a participant Id
+    // it is supposed to be creating the view for the local participant.
+    await createView(context, internalContext, mockCallId, undefined, {
+      mediaStreamType: 'Video'
+    } as LocalVideoStreamState);
 
-    expect(internalContext.getLocalRenderInfo(mockCallId)).toBeDefined();
-    expect(internalContext.getLocalRenderInfo(mockCallId)?.stream).toBeDefined();
-    expect(internalContext.getLocalRenderInfo(mockCallId)?.renderer).toBeDefined();
-    expect(internalContext.getLocalRenderInfo(mockCallId)?.status).toBe('Rendered');
-    expect(context.getState().calls[mockCallId]?.localVideoStreams[0].view).toBeDefined();
+    expect(internalContext.getLocalRenderInfo(mockCallId, 'Video')).toBeDefined();
+    expect(internalContext.getLocalRenderInfo(mockCallId, 'Video')?.stream).toBeDefined();
+    expect(internalContext.getLocalRenderInfo(mockCallId, 'Video')?.renderer).toBeDefined();
+    expect(internalContext.getLocalRenderInfo(mockCallId, 'Video')?.status).toBe('Rendered');
+    expect(context.getState().calls[mockCallId]?.localVideoStreams[0]?.view).toBeDefined();
   });
 
   test('cleans up state and stop rendering when disposeView is called on remote stream', async () => {
@@ -430,7 +463,7 @@ describe('stream utils', () => {
 
     const views = context.getState().deviceManager.unparentedViews;
     expect(views.length).toBe(1);
-    expect(views[0].view).toBeDefined();
+    expect(views[0]?.view).toBeDefined();
   });
 
   test('is able to render LocalVideoStream not tied to a call and stop rendering it by reference find', async () => {
@@ -454,7 +487,7 @@ describe('stream utils', () => {
     } as LocalVideoStreamState;
     const incorrectVideoStream = {
       source: { name: 'b', id: 'b', deviceType: 'Unknown' },
-      mediaStreamType: 'Video'
+      mediaStreamType: 'ScreenSharing'
     } as LocalVideoStreamState;
 
     await createView(context, internalContext, undefined, undefined, localVideoStream);
@@ -465,6 +498,38 @@ describe('stream utils', () => {
 
     const views = context.getState().deviceManager.unparentedViews;
     expect(views.length).toBe(1);
-    expect(views[0].view).toBeDefined();
+    expect(views[0]?.view).toBeDefined();
+  });
+
+  test('context state correctly has startVideo error when unparentedView throws an error creating a video stream', async () => {
+    // Ensure that calling sdk's createView will throw an error for this test
+    const mockedVideoStreamRenderer = VideoStreamRenderer as jest.Mock;
+    mockedVideoStreamRenderer.mockImplementationOnce(() => {
+      return {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        createView: (_options?: CreateViewOptions) => {
+          throw new Error('MOCK ERROR THROWN FOR TESTING');
+        }
+      };
+    });
+    // initialize variables for test
+    const { context, internalContext } = createContexts();
+    const localVideoStream = {
+      source: { name: 'a', id: 'a', deviceType: 'Unknown' },
+      mediaStreamType: 'Video'
+    } as LocalVideoStreamState;
+
+    // ensure no errors we are testing for exist already
+    expect(context.getState().latestErrors['Call.startVideo']).toBeUndefined();
+
+    // Act
+    try {
+      await createView(context, internalContext, undefined, undefined, localVideoStream);
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+
+    // Assert
+    expect(context.getState().latestErrors['Call.startVideo']).toBeDefined();
   });
 });

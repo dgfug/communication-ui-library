@@ -1,5 +1,5 @@
 // Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.
+// Licensed under the MIT License.
 
 import { ChatThreadItem } from '@azure/communication-chat';
 import { PagedAsyncIterableIterator } from '@azure/core-paging';
@@ -7,7 +7,6 @@ import {
   ChatMessageDeletedEvent,
   ChatMessageEditedEvent,
   ChatMessageReceivedEvent,
-  ChatParticipant,
   ChatThreadCreatedEvent,
   ChatThreadDeletedEvent,
   ChatThreadPropertiesUpdatedEvent,
@@ -15,10 +14,11 @@ import {
   ParticipantsRemovedEvent,
   ReadReceiptReceivedEvent,
   TypingIndicatorReceivedEvent
-} from '@azure/communication-signaling';
-import { createStatefulChatClientWithDeps } from './StatefulChatClient';
+} from '@azure/communication-chat';
+import { ChatParticipant as SignalingChatParticipant } from '@azure/communication-signaling';
+import { _createStatefulChatClientWithDeps } from './StatefulChatClient';
 import { ChatClientState, ChatError } from './ChatClientState';
-import { Constants } from './Constants';
+import { Constants } from './constants';
 import {
   StateChangeListener,
   StatefulChatClientWithEventTrigger,
@@ -31,9 +31,19 @@ import {
 
 jest.useFakeTimers();
 
-const mockParticipants: ChatParticipant[] = [
-  { id: { kind: 'communicationUser', communicationUserId: 'user1' }, displayName: 'user1' },
-  { id: { kind: 'communicationUser', communicationUserId: 'user2' }, displayName: 'user1' }
+const mockParticipants: SignalingChatParticipant[] = [
+  {
+    id: { kind: 'communicationUser', communicationUserId: 'user1' },
+    displayName: 'user1',
+    /* @conditional-compile-remove(signaling-beta) */
+    metadata: {}
+  },
+  {
+    id: { kind: 'communicationUser', communicationUserId: 'user2' },
+    displayName: 'user1',
+    /* @conditional-compile-remove(signaling-beta) */
+    metadata: {}
+  }
 ];
 
 describe('declarative chatThread list iterators', () => {
@@ -66,6 +76,11 @@ describe('declarative chatThread list iterators', () => {
 describe('declarative chatClient basic api functions', () => {
   test('set internal store correctly when proxy getChatThreadClient and deleteThread', async () => {
     const client = createStatefulChatClientMock();
+
+    if (!mockChatThreads[0]) {
+      throw new Error('mockChatThreads is empty');
+    }
+
     await client.getChatThreadClient(mockChatThreads[0].id);
 
     expect(Object.keys(client.getState().threads).length).toBe(1);
@@ -120,9 +135,17 @@ describe('declarative chatClient subscribe to event properly after startRealtime
     const event: ChatThreadCreatedEvent = {
       threadId,
       version: '',
-      properties: { topic },
+      properties: {
+        topic,
+        /* @conditional-compile-remove(chat-beta-sdk) */ metadata: {}
+      },
       createdOn: new Date('01-01-2020'),
-      createdBy: { id: { kind: 'communicationUser', communicationUserId: 'user1' }, displayName: '' },
+      createdBy: {
+        id: { kind: 'communicationUser', communicationUserId: 'user1' },
+        displayName: '',
+        // /* @conditional-compile-remove(chat-beta-sdk) */
+        metadata: {}
+      },
       participants: mockParticipants
     };
 
@@ -136,8 +159,16 @@ describe('declarative chatClient subscribe to event properly after startRealtime
     const editedTopic = 'new topic';
     const editEvent: ChatThreadPropertiesUpdatedEvent = {
       ...event,
-      properties: { topic: editedTopic },
-      updatedBy: { displayName: '', id: { kind: 'communicationUser', communicationUserId: 'user1' } },
+      properties: {
+        topic: editedTopic,
+        /* @conditional-compile-remove(chat-beta-sdk) */ metadata: {}
+      },
+      updatedBy: {
+        displayName: '',
+        id: { kind: 'communicationUser', communicationUserId: 'user1' },
+        // /* @conditional-compile-remove(chat-beta-sdk) */
+        metadata: {}
+      },
       updatedOn: new Date('01-01-2020')
     };
     await client.triggerEvent('chatThreadPropertiesUpdated', editEvent);
@@ -147,7 +178,12 @@ describe('declarative chatClient subscribe to event properly after startRealtime
     // delete event
     const deletedEvent: ChatThreadDeletedEvent = {
       ...event,
-      deletedBy: { displayName: '', id: { kind: 'communicationUser', communicationUserId: 'user1' } },
+      deletedBy: {
+        displayName: '',
+        id: { kind: 'communicationUser', communicationUserId: 'user1' },
+        // /* @conditional-compile-remove(chat-beta-sdk) */
+        metadata: {}
+      },
       deletedOn: new Date('01-01-2020')
     };
     await client.triggerEvent('chatThreadDeleted', deletedEvent);
@@ -166,7 +202,8 @@ describe('declarative chatClient subscribe to event properly after startRealtime
       sender: { kind: 'communicationUser', communicationUserId: 'sender1' },
       senderDisplayName: '',
       message: 'message',
-      recipient: { kind: 'communicationUser', communicationUserId: 'userId1' }
+      recipient: { kind: 'communicationUser', communicationUserId: 'userId1' },
+      metadata: {}
     };
 
     await client.triggerEvent('chatMessageReceived', event);
@@ -200,7 +237,12 @@ describe('declarative chatClient subscribe to event properly after startRealtime
 
     const addedEvent: ParticipantsAddedEvent = {
       threadId,
-      addedBy: { id: { kind: 'communicationUser', communicationUserId: 'user1' }, displayName: '' },
+      addedBy: {
+        id: { kind: 'communicationUser', communicationUserId: 'user1' },
+        displayName: '',
+        // /* @conditional-compile-remove(chat-beta-sdk) */
+        metadata: {}
+      },
       addedOn: new Date('01-01-2020'),
       participantsAdded: mockParticipants,
       version: ''
@@ -209,12 +251,21 @@ describe('declarative chatClient subscribe to event properly after startRealtime
 
     expect(Object.keys(client.getState().threads[threadId]?.participants ?? {}).length).toBe(2);
 
+    if (!mockParticipants[0]) {
+      throw new Error('mockParticipants is empty');
+    }
+
     // remove event
     const removedEvent: ParticipantsRemovedEvent = {
       threadId,
       participantsRemoved: [mockParticipants[0]],
       version: '',
-      removedBy: { id: { kind: 'communicationUser', communicationUserId: 'user1' }, displayName: '' },
+      removedBy: {
+        id: { kind: 'communicationUser', communicationUserId: 'user1' },
+        displayName: '',
+        // /* @conditional-compile-remove(chat-beta-sdk) */
+        metadata: {}
+      },
       removedOn: new Date('01-01-2020')
     };
     await client.triggerEvent('participantsRemoved', removedEvent);
@@ -276,7 +327,7 @@ describe('declarative chatClient subscribe to event properly after startRealtime
     client.triggerEvent('readReceiptReceived', addedEvent);
 
     expect(client.getState().threads[threadId]?.readReceipts.length).toBe(1);
-    expect(client.getState().threads[threadId]?.readReceipts[0].chatMessageId).toBe(messageId);
+    expect(client.getState().threads[threadId]?.readReceipts[0]?.chatMessageId).toBe(messageId);
 
     expect(client.getState().threads[threadId]?.latestReadTime).toEqual(readOn);
   });
@@ -348,7 +399,7 @@ describe('stateful wraps thrown error', () => {
     baseClient.listChatThreads = (): PagedAsyncIterableIterator<ChatThreadItem> => {
       throw Error('injected error');
     };
-    const client = createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
+    const client = _createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
     expect(client.listChatThreads).toThrow(new ChatError('ChatClient.listChatThreads', new Error('injected error')));
   });
 
@@ -357,7 +408,7 @@ describe('stateful wraps thrown error', () => {
     baseClient.listChatThreads = (): PagedAsyncIterableIterator<ChatThreadItem> => {
       return failingPagedAsyncIterator(new Error('injected error'));
     };
-    const client = createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
+    const client = _createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
     const iter = client.listChatThreads();
     await expect(iter.next()).rejects.toThrow(new ChatError('ChatClient.listChatThreads', new Error('injected error')));
     await expect(iter.byPage().next()).rejects.toThrow(
@@ -370,7 +421,7 @@ describe('stateful wraps thrown error', () => {
     baseClient.createChatThread = async () => {
       throw Error('injected error');
     };
-    const client = createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
+    const client = _createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
     await expect(client.createChatThread({ topic: '' })).rejects.toThrow(
       new ChatError('ChatClient.createChatThread', new Error('injected error'))
     );
@@ -381,7 +432,7 @@ describe('stateful wraps thrown error', () => {
     baseClient.deleteChatThread = async () => {
       throw Error('injected error');
     };
-    const client = createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
+    const client = _createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
     await expect(client.deleteChatThread('')).rejects.toThrow(
       new ChatError('ChatClient.deleteChatThread', new Error('injected error'))
     );
@@ -392,7 +443,7 @@ describe('stateful wraps thrown error', () => {
     baseClient.startRealtimeNotifications = async () => {
       throw Error('injected error');
     };
-    const client = createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
+    const client = _createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
     await expect(client.startRealtimeNotifications()).rejects.toThrow(
       new ChatError('ChatClient.startRealtimeNotifications', new Error('injected error'))
     );
@@ -403,7 +454,7 @@ describe('stateful wraps thrown error', () => {
     baseClient.stopRealtimeNotifications = async () => {
       throw Error('injected error');
     };
-    const client = createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
+    const client = _createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
     await expect(client.stopRealtimeNotifications()).rejects.toThrow(
       new ChatError('ChatClient.stopRealtimeNotifications', new Error('injected error'))
     );
@@ -416,7 +467,7 @@ describe('stateful chatClient tees errors to state', () => {
     baseClient.startRealtimeNotifications = async () => {
       throw Error('injected error');
     };
-    const client = createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
+    const client = _createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
     const listener = new StateChangeListener(client);
     await expect(client.startRealtimeNotifications()).rejects.toThrow();
     expect(listener.onChangeCalledCount).toBe(1);
@@ -433,7 +484,7 @@ describe('complex error handling for startRealtimeNotifications', () => {
       errorCount++;
       throw Error(`injected error #${errorCount}`);
     };
-    const client = createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
+    const client = _createStatefulChatClientWithDeps(baseClient, defaultClientArgs);
     const listener = new StateChangeListener(client);
 
     // Generate two errors.
